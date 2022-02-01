@@ -1,0 +1,19 @@
+{
+  "name": "warhol",
+  "version": "1.0.0",
+  "description": "backend for project warhol",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ProjectWarhol/backend.git"
+  },
+  "author": "Omar Badawy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ProjectWarhol/backend/issues"
+  },
+  "homepage": "https://github.com/ProjectWarhol/backend#readme"
+}
