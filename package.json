@@ -1,10 +1,44 @@
 {
-  "name": "warhol",
+  "name": "warhol-backend",
   "version": "1.0.0",
   "description": "backend for project warhol",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_ENV=test mocha",
+    "dev": "nodemon --trace-warnings app.js",
+    "start": "node app.js",
+    "fixtures": "node db/fixtures.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --write",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "**/*.js": [
+      "npm run format",
+      "npm run lint"
+    ]
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
+    "chai-json-schema": "^1.5.1",
+    "chai-like": "^1.1.1",
+    "chai-things": "^0.2.0",
+    "deep-equal-in-any-order": "^1.1.15",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "husky": "^7.0.2",
+    "lint-staged": "^11.1.2",
+    "mocha": "^9.1.3",
+    "nodemon": "^2.0.12",
+    "prettier": "^2.3.2",
+    "sequelize-cli": "^6.2.0",
+    "sinon": "^11.1.2",
+    "supertest": "^6.1.6"
   },
   "repository": {
     "type": "git",
@@ -15,5 +49,8 @@
   "bugs": {
     "url": "https://github.com/ProjectWarhol/backend/issues"
   },
-  "homepage": "https://github.com/ProjectWarhol/backend#readme"
+  "homepage": "https://github.com/ProjectWarhol/backend#readme",
+  "dependencies": {
+    "express": "^4.17.2"
+  }
 }
