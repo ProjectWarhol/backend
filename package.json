@@ -1,7 +1,7 @@
 {
-  "name": "warhol-backend",
+  "name": "callguru-backend",
   "version": "1.0.0",
-  "description": "backend for project warhol",
+  "description": "Call Guru Backend",
   "main": "app.js",
   "scripts": {
     "test": "NODE_ENV=test mocha",
@@ -11,13 +11,41 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "setup:db": "sequelize db:drop && sequelize db:create && node db/fixtures.js",
+    "setup:testing": "NODE_ENV=test npm run setup:db"
   },
   "lint-staged": {
     "**/*.js": [
       "npm run format",
       "npm run lint"
     ]
+  },
+  "keywords": [
+    "CallGuru"
+  ],
+  "author": "CallGuru GmbH",
+  "license": "ISC",
+  "dependencies": {
+    "@snowplow/browser-tracker": "^3.1.4",
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
+    "connect-session-sequelize": "^7.1.2",
+    "cors": "^2.8.5",
+    "csurf": "^1.11.0",
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "express-validator": "^6.12.1",
+    "faker": "^5.5.3",
+    "helmet": "^4.6.0",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.6.3",
+    "pg": "^8.7.1",
+    "pg-hstore": "^2.3.4",
+    "sanitize": "^2.1.0",
+    "sequelize": "^6.6.5"
   },
   "devDependencies": {
     "chai": "^4.3.4",
@@ -31,7 +59,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-prefer-arrow": "^1.2.3",
-    "husky": "^7.0.4",
+    "husky": "^7.0.2",
     "lint-staged": "^11.1.2",
     "mocha": "^9.1.3",
     "nodemon": "^2.0.12",
@@ -42,15 +70,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ProjectWarhol/backend.git"
+    "url": "git+https://github.com/CallGuru/backend.git"
   },
-  "author": "Omar Badawy",
-  "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ProjectWarhol/backend/issues"
+    "url": "https://github.com/CallGuru/backend/issues"
   },
-  "homepage": "https://github.com/ProjectWarhol/backend#readme",
-  "dependencies": {
-    "express": "^4.17.2"
-  }
+  "homepage": "https://github.com/CallGuru/backend#readme"
 }
