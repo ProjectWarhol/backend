@@ -2,16 +2,16 @@ const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class User extends Model {
+  class UserWallet extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      this.belongsTo(models.UserWallet, {
+      this.belongsTo(models.User, {
         foreignKey: { name: 'walletId', type: DataTypes.UUID },
-        as: 'userWallet',
+        as: 'user',
       });
       /**
       this.hasMany(models.Purchased, {
@@ -42,49 +42,30 @@ module.exports = (sequelize, DataTypes) => {
       */
     }
   }
-  User.init(
+  UserWallet.init(
     {
       id: {
         type: DataTypes.UUID,
         primaryKey: true,
         defaultValue: Sequelize.UUIDV4,
       },
-      userName: {
+      publicKey: {
         type: DataTypes.STRING,
-      },
-      email: {
-        type: DataTypes.STRING,
-        allowNull: true, // change to false
         unique: true,
         validate: {
-          isEmail: true,
           notNull: false, // change to true later
+          notEmpty: false, // note change to true later
         },
-        defaultValue: 'omar.badawy@hotmail.com',
       },
       passwordHash: {
         type: DataTypes.STRING,
-        allowNull: true, // change to false
         validate: {
           notNull: false, // change to true later
-          notEmpty: false, // change to true later
-        },
-        defaultValue: 'abcd1234',
-      },
-      avatar: {
-        type: DataTypes.STRING,
-        validate: {
-          isUrl: true,
+          notEmpty: false, // note change to true later
         },
       },
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
-      resetToken: DataTypes.STRING,
-      resetTokenExp: DataTypes.DATE,
-      bio: DataTypes.STRING,
-      promoter: DataTypes.INTEGER,
-      promoting: DataTypes.INTEGER,
-      verified: DataTypes.BOOLEAN,
     },
     {
       sequelize,
@@ -92,5 +73,5 @@ module.exports = (sequelize, DataTypes) => {
       modelName: 'User',
     }
   );
-  return User;
+  return UserWallet;
 };

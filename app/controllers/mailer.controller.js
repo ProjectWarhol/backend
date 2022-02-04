@@ -30,7 +30,11 @@ const sendMail = async (email, subject, template) => {
 exports.welcomeUser = (req, res, next) => {
   // send Welcome Mail
   const { user } = res.locals;
-  sendMail(user.email, 'Welcome User', welcomeTemplate(user.invitationToken))
+  sendMail(
+    user.email,
+    'Hello there fellow Jedi',
+    welcomeTemplate(user.invitationToken)
+  )
     .then(() => {
       res.status(200).send({
         message: 'User successfully invited',
@@ -38,9 +42,7 @@ exports.welcomeUser = (req, res, next) => {
       });
     })
     .catch((err) => {
-      const error = new Error(
-        'Something went wrong while sending invitation instructions'
-      );
+      const error = new Error('Something went wrong while inviting user');
       error.err = err;
       next(error);
     });
@@ -48,15 +50,19 @@ exports.welcomeUser = (req, res, next) => {
 
 exports.sendResetPasswordInstructions = (req, res, next) => {
   const { user } = res.locals;
-  sendMail(user.email, 'Password Reset', resetTemplate(user.resetPasswordToken))
+  sendMail(
+    user.email,
+    'Reseting Password Instructions',
+    resetTemplate(user.resetPasswordToken)
+  )
     .then(() => {
       res.status(200).send({
-        message: 'reset password instructions successfully send',
+        message: 'reset instructions successfully send',
       });
     })
     .catch((err) => {
       const error = new Error(
-        'Something went wrong while sending reset password instructions'
+        'Something went wrong while sending reset instructions'
       );
       error.err = err;
       next(error);
