@@ -7,4 +7,5 @@ exports.sessionObject = (userObject) => ({
   promoters: userObject.promoters,
   promoting: userObject.promoting,
   wallet: userObject.walletId,
+  verified: userObject.verified,
 });
