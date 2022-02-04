@@ -35,7 +35,7 @@ exports.login = (req, res, next) => {
           req.session.save();
           res.status(200).send({
             message: 'Successfully logged in',
-            auth: newSessionUser,
+            user: newSessionUser,
           });
         } else {
           next(defaulLoginError);
