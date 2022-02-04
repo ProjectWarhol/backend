@@ -1,8 +1,6 @@
 ### What is the purpose of this Pull Request?
 
-
 ### if this PR fits a module please specify which one
-
 
 ### Ticket Links
 
