@@ -3,6 +3,8 @@ exports.sessionObject = (userObject) => ({
   userName: userObject.userName,
   email: userObject.email,
   avatar: userObject.avatar,
+  bio: userObject.bio,
+  promoters: userObject.promoters,
+  promoting: userObject.promoting,
   wallet: userObject.walletId,
-  collection: userObject.collectionsId,
 });

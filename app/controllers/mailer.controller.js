@@ -17,10 +17,10 @@ const sendMail = async (email, subject, template) => {
   const transporter = nodemailer.createTransport(transportObject);
 
   const response = await transporter.sendMail({
-    from: `"CallGuru" <${process.env.EMAIL_USER_ACCOUNT}>`,
+    from: `"Warhol" <${process.env.EMAIL_USER_ACCOUNT}>`,
     to: `${email}`,
     subject: `${subject}`,
-    text: `CallGuru - update Password instructions`,
+    text: `Warhol - update Password instructions`,
     html: template,
   });
 
