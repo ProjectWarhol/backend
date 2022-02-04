@@ -1,7 +1,7 @@
 {
-  "name": "callguru-backend",
+  "name": "warhol-backend",
   "version": "1.0.0",
-  "description": "Call Guru Backend",
+  "description": "project warhol backend",
   "main": "app.js",
   "scripts": {
     "test": "NODE_ENV=test mocha",
@@ -22,12 +22,11 @@
     ]
   },
   "keywords": [
-    "CallGuru"
+    "warhol"
   ],
-  "author": "CallGuru GmbH",
+  "author": "Warhol team",
   "license": "ISC",
   "dependencies": {
-    "@snowplow/browser-tracker": "^3.1.4",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
     "connect-session-sequelize": "^7.1.2",
@@ -70,10 +69,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CallGuru/backend.git"
+    "url": "git+https://github.com/ProjectWarhol/backend"
   },
   "bugs": {
-    "url": "https://github.com/CallGuru/backend/issues"
+    "url": "https://github.com/ProjectWarhol/backend/issues"
   },
-  "homepage": "https://github.com/CallGuru/backend#readme"
+  "homepage": "https://github.com/ProjectWarhol/backend#readme"
 }
