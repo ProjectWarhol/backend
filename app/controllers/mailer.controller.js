@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-const { resetTemplate, welcomeTemplate } = require('../../lib/mailTemplates');
+const { resetTemplate, welcomeTemplate } = require('../../lib/templates');
 
 require('dotenv').config();
 
@@ -28,7 +28,6 @@ const sendMail = async (email, subject, template) => {
 };
 
 exports.welcomeUser = (req, res, next) => {
-  // send Welcome Mail
   const { user } = res.locals;
   sendMail(
     user.email,

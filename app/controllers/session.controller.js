@@ -22,7 +22,6 @@ exports.login = (req, res, next) => {
   const defaulLoginError = new Error('Wrong email or password');
   defaulLoginError.status = 401;
 
-  // validation of user email & password
   User.findOne({
     where: { email },
   })
@@ -63,7 +62,7 @@ exports.validateSession = (req, res, next) => {
   if (currentUser) {
     return res.status(200).send({
       message: 'Valid session',
-      auth: currentUser,
+      user: currentUser,
     });
   }
   const error = new Error('Unauthorized');

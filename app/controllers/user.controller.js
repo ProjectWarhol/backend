@@ -20,7 +20,7 @@ exports.updateOne = (req, res, next) => {
     .then(([rowsUpdated, [updatedUser]]) => {
       if (rowsUpdated) {
         res.status(200).send({
-          message: 'User was updated successfully.',
+          message: 'User was updated successfully',
           user: updatedUser,
         });
       } else {
@@ -64,7 +64,7 @@ exports.setResetPasswordToken = async (req, res, next) => {
     });
 };
 
-// update User password // todo login user after successfully setting new password
+// update User password
 exports.updatePassword = async (req, res, next) => {
   const {
     body: { password },
@@ -114,6 +114,7 @@ exports.updatePassword = async (req, res, next) => {
     })
     .catch((err) => {
       const error = new Error('Invalid token');
+      error.status = 409;
       error.err = err;
       next(error);
     });
