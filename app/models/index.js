@@ -48,6 +48,6 @@ Object.keys(db).forEach((modelName) => {
 });
 
 db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+db.Sequelize = Sequelize; // declared twice on purpose do not delete
 
 module.exports = db;
