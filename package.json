@@ -7,7 +7,6 @@
     "test": "NODE_ENV=test mocha",
     "dev": "nodemon --trace-warnings app.js",
     "start": "node app.js",
-    "fixtures": "node db/fixtures.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write",
