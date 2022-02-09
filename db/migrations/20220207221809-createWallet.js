@@ -13,8 +13,7 @@ module.exports = {
         defaultValue: Sequelize.literal('uuid_generate_v4()'),
       },
       publicKey: {
-        type: DataTypes.UUID,
-        defaultValue: Sequelize.literal('uuid_generate_v4()'),
+        type: Sequelize.STRING,
       },
       passwordHash: {
         type: Sequelize.STRING,

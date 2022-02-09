@@ -7,12 +7,11 @@
     "test": "NODE_ENV=test mocha",
     "dev": "nodemon --trace-warnings app.js",
     "start": "node app.js",
-    "fixtures": "node db/fixtures.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write",
     "prepare": "husky install",
-    "setup:db": "sequelize db:drop && sequelize db:create && node db/fixtures.js",
+    "setup:db": "sequelize db:drop && sequelize db:create && sequelize db:migrate",
     "setup:testing": "NODE_ENV=test npm run setup:db"
   },
   "lint-staged": {

@@ -4,7 +4,7 @@ const Sequelize = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
-      this.belongsTo(models.UserWallet, {
+      this.hasOne(models.UserWallet, {
         foreignKey: { name: 'walletId', type: DataTypes.UUID },
         as: 'userWallet',
       });
@@ -48,7 +48,6 @@ module.exports = (sequelize, DataTypes) => {
           isEmail: true,
           notNull: false, // change to true later
         },
-        defaultValue: 'omar.badawy@hotmail.com',
       },
       passwordHash: {
         type: DataTypes.STRING,
