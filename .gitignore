@@ -122,3 +122,6 @@ dist
 
 # JetBrains
 .idea/
+
+# package-lock.json
+/package-lock.json

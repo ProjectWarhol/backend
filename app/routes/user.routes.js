@@ -23,7 +23,7 @@ router.patch('/:id', isLoggedIn, user.updateOne);
 // Set resetPassword attributes & send resetPasswordMail
 router.post(
   '/resetPassword',
-  user.setResetPasswordToken,
+  user.setResetToken,
   mailer.sendResetPasswordInstructions
 );
 

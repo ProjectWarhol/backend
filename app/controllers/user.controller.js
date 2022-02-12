@@ -37,10 +37,10 @@ exports.updateOne = (req, res, next) => {
 };
 
 // set updatePassword attributes
-exports.setResetPasswordToken = async (req, res, next) => {
+exports.setResetToken = async (req, res, next) => {
   const body = {
-    resetPasswordExp: Date.now() + 3600000,
-    resetPasswordToken: await generateToken(),
+    resetTokenExp: Date.now() + 3600000,
+    resetToken: await generateToken(),
   };
 
   User.update(body, {
@@ -75,14 +75,14 @@ exports.updatePassword = async (req, res, next) => {
     where: {
       [Op.or]: [
         {
-          resetPasswordToken: token,
+          resetToken: token,
         },
       ],
     },
   })
     .then(async (data) => {
       if (
-        data.resetPasswordExp > Date.now() ||
+        data.resetTokenExp > Date.now() ||
         data.invitationExp > Date.now()
       ) {
         const newPasswordHash = await bcrypt.hash(password, 12);
@@ -90,9 +90,9 @@ exports.updatePassword = async (req, res, next) => {
         // eslint-disable-next-line no-param-reassign
         data.passwordHash = newPasswordHash;
         // eslint-disable-next-line no-param-reassign
-        data.resetPasswordToken = null;
+        data.resetToken = null;
         // eslint-disable-next-line no-param-reassign
-        data.resetPasswordExp = null;
+        data.resetTokenExp = null;
 
         data
           .save()
