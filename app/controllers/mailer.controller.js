@@ -52,7 +52,7 @@ exports.sendResetPasswordInstructions = (req, res, next) => {
   sendMail(
     user.email,
     'Reseting Password Instructions',
-    resetTemplate(user.resetPasswordToken)
+    resetTemplate(user.resetToken)
   )
     .then(() => {
       res.status(200).send({
