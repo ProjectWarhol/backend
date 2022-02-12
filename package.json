@@ -1,0 +1,77 @@
+{
+  "name": "warhol-backend",
+  "version": "1.0.0",
+  "description": "project warhol backend",
+  "main": "app.js",
+  "scripts": {
+    "test": "NODE_ENV=test mocha",
+    "dev": "nodemon --trace-warnings app.js",
+    "start": "node app.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --write",
+    "prepare": "husky install",
+    "setup:db": "sequelize db:drop && sequelize db:create && sequelize db:migrate",
+    "setup:testing": "NODE_ENV=test npm run setup:db"
+  },
+  "lint-staged": {
+    "**/*.js": [
+      "npm run format",
+      "npm run lint"
+    ]
+  },
+  "keywords": [
+    "warhol"
+  ],
+  "author": "Warhol team",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
+    "connect-session-sequelize": "^7.1.2",
+    "cors": "^2.8.5",
+    "csurf": "^1.11.0",
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "express-validator": "^6.12.1",
+    "faker": "^5.5.3",
+    "helmet": "^4.6.0",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.6.3",
+    "pg": "^8.7.1",
+    "pg-hstore": "^2.3.4",
+    "sanitize": "^2.1.0",
+    "sequelize": "^6.6.5"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
+    "chai-json-schema": "^1.5.1",
+    "chai-like": "^1.1.1",
+    "chai-things": "^0.2.0",
+    "deep-equal-in-any-order": "^1.1.15",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "husky": "^7.0.2",
+    "lint-staged": "^11.1.2",
+    "mocha": "^9.1.3",
+    "nodemon": "^2.0.12",
+    "prettier": "^2.3.2",
+    "sequelize-cli": "^6.2.0",
+    "sinon": "^11.1.2",
+    "supertest": "^6.1.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ProjectWarhol/backend"
+  },
+  "bugs": {
+    "url": "https://github.com/ProjectWarhol/backend/issues"
+  },
+  "homepage": "https://github.com/ProjectWarhol/backend#readme"
+}
