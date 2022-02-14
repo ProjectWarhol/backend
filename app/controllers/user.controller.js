@@ -123,11 +123,12 @@ exports.updatePassword = async (req, res, next) => {
 // Get User object from the username in the request
 exports.retrieveOne = async (req, res, next) => {
   const {
-    params: { userId },
+    params: { userName },
+    body: { userId },
   } = req;
 
-  User.findOne({
-    where: { id: userId },
+  User.findOne(userId, {
+    where: { userName },
   })
     .then(async (userData) => {
       if (userData) {
