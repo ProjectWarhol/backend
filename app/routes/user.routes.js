@@ -17,6 +17,10 @@ router.post('/logout', isLoggedIn, session.logout);
 // Validate session cookie
 router.get('/session', isLoggedIn, session.validateSession);
 
+// Get User object
+// Not sure if we need to be logged in to req this route. A user profile should be accessible to non logged users
+router.get('/:username', user.getUser);
+
 // Update a User with id
 router.patch('/:id', isLoggedIn, user.updateOne);
 
