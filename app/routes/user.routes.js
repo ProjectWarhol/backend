@@ -18,7 +18,7 @@ router.post('/logout', isLoggedIn, session.logout);
 router.get('/session', isLoggedIn, session.validateSession);
 
 // Get User object
-router.get('/:userName', user.retrieveOne);
+router.get('/:userName', isLoggedIn, user.retrieveOne);
 
 // Update a User with id
 router.patch('/:id', isLoggedIn, user.updateOne);
