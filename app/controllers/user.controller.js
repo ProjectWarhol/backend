@@ -129,7 +129,6 @@ exports.getUser = async (req, res, next) => {
   User.findOne({
     attributes: ['userName', 'avatar', 'bio', 'promoters', 'promoting', 'verified'],
     where: { userName: username },
-    returning: true,
   })
     .then(async (data) => {
       if (data) {
