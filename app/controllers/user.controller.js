@@ -121,18 +121,20 @@ exports.updatePassword = async (req, res, next) => {
 };
 
 // Get User object from the username in the request
-exports.getUser = async (req, res, next) => {
+exports.retrieveOne = async (req, res, next) => {
   const {
-    params: { username },
+    params: { userId },
   } = req;
 
   User.findOne({
-    attributes: ['userName', 'avatar', 'bio', 'promoters', 'promoting', 'verified'],
-    where: { userName: username },
+    where: { id: userId },
   })
-    .then(async (data) => {
-      if (data) {
-        res.status(200).send(data);
+    .then(async (userData) => {
+      if (userData) {
+        res.status(200).send({
+          message: 'User data sent successfully.',
+          data: userData,
+        });
       } else {
         const error = new Error('User does not exist');
         error.status = 404;
