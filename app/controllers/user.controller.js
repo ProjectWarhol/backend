@@ -119,3 +119,32 @@ exports.updatePassword = async (req, res, next) => {
       next(error);
     });
 };
+
+// Get User object from the username in the request
+exports.retrieveOne = async (req, res, next) => {
+  const {
+    params: { userName },
+    body: { userId },
+  } = req;
+
+  User.findOne(userId, {
+    where: { userName },
+  })
+    .then(async (userData) => {
+      if (userData) {
+        res.status(200).send({
+          message: 'User data sent successfully.',
+          data: userData,
+        });
+      } else {
+        const error = new Error('User does not exist');
+        error.status = 404;
+        next(error);
+      }
+    })
+    .catch((err) => {
+      const error = new Error('Something went wrong while fetching the user.');
+      error.err = err;
+      next(error);
+    })
+};
