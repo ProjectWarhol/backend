@@ -30,8 +30,8 @@ exports.login = (req, res, next) => {
         // change to salterpassword
         if (doMatch === true) {
           const newSessionUser = sessionObject(data);
-          // req.session.user = newSessionUser;
-          // req.session.save();
+          req.session.user = newSessionUser;
+          req.session.save();
           res.status(200).send({
             message: 'Successfully logged in',
             user: newSessionUser,
