@@ -2,34 +2,7 @@ const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class User extends Model {
-    static associate(models) {
-      this.hasOne(models.UserWallet, {
-        foreignKey: { name: 'walletId', type: DataTypes.UUID },
-        as: 'userWallet',
-      });
-      // this.hasMany(models.Collection, {
-      //   foreignKey: { name: 'ownerId', type: DataTypes.UUID },
-      //   as: 'collection',
-      //   onDelete: 'cascade',
-      // });
-      // this.hasMany(models.NftPromotes, {
-      //   foreignKey: { name: 'userId', type: DataTypes.UUID },
-      //   as: 'nftPromotes',
-      //   onDelete: 'cascade',
-      // });
-      // this.hasMany(models.Comments, {
-      //   foreignKey: { name: 'userId', type: DataTypes.UUID },
-      //   as: 'comments',
-      //   onDelete: 'cascade',
-      // });
-      // this.hasMany(models.NftPictures, {
-      //   foreignKey: { name: 'ownerId', type: DataTypes.UUID },
-      //   as: 'nftPictures',
-      //   onDelete: 'cascade',
-      // });
-    }
-  }
+  class User extends Model {}
   User.init(
     {
       id: {

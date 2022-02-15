@@ -19,7 +19,7 @@ Afterwards you'll have access to `psql`, which will log you into the PostgreSQL 
 
 ## Migrate and Seed
 
-Run `sequelize db:migrate && sequelize db:seed:all`
+Run `npx sequelize db:migrate && npx sequelize db:seed:all`
 
 ## Working with serielizer
 

@@ -6,6 +6,5 @@ exports.sessionObject = (userObject) => ({
   bio: userObject.bio,
   promoters: userObject.promoters,
   promoting: userObject.promoting,
-  wallet: userObject.walletId,
   verified: userObject.verified,
 });
