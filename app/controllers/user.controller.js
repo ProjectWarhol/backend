@@ -81,10 +81,7 @@ exports.updatePassword = async (req, res, next) => {
     },
   })
     .then(async (data) => {
-      if (
-        data.resetTokenExp > Date.now() ||
-        data.invitationExp > Date.now()
-      ) {
+      if (data.resetTokenExp > Date.now() || data.invitationExp > Date.now()) {
         const newPasswordHash = await bcrypt.hash(password, 12);
 
         // eslint-disable-next-line no-param-reassign
@@ -146,5 +143,5 @@ exports.retrieveOne = async (req, res, next) => {
       const error = new Error('Something went wrong while fetching the user.');
       error.err = err;
       next(error);
-    })
+    });
 };
