@@ -81,10 +81,7 @@ exports.updatePassword = async (req, res, next) => {
     },
   })
     .then(async (data) => {
-      if (
-        data.resetTokenExp > Date.now() ||
-        data.invitationExp > Date.now()
-      ) {
+      if (data.resetTokenExp > Date.now() || data.invitationExp > Date.now()) {
         const newPasswordHash = await bcrypt.hash(password, 12);
 
         // eslint-disable-next-line no-param-reassign
@@ -133,11 +130,11 @@ exports.retrieveOne = async (req, res, next) => {
     .then(async (userData) => {
       if (userData) {
         res.status(200).send({
-          message: 'User data sent successfully.',
+          message: 'User data sent successfully',
           data: userData,
         });
       } else {
-        const error = new Error('User does not exist');
+        const error = new Error('User not found');
         error.status = 404;
         next(error);
       }
@@ -146,5 +143,5 @@ exports.retrieveOne = async (req, res, next) => {
       const error = new Error('Something went wrong while fetching the user.');
       error.err = err;
       next(error);
-    })
+    });
 };

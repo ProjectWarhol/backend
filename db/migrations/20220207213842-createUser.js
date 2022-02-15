@@ -9,8 +9,7 @@ module.exports = {
       id: {
         primaryKey: true,
         allowNull: false,
-        type: DataTypes.UUID,
-        defaultValue: Sequelize.literal('uuid_generate_v4()'),
+        type: Sequelize.STRING,
       },
       userName: {
         type: Sequelize.STRING,
@@ -36,16 +35,6 @@ module.exports = {
       promoters: Sequelize.INTEGER,
       promoting: Sequelize.INTEGER,
       verified: DataTypes.BOOLEAN,
-      walletId: {
-        type: DataTypes.UUID,
-        reference: {
-          model: {
-            tableName: 'UserWallet',
-          },
-          key: 'id',
-        },
-        allowNull: false,
-      },
     });
   },
 

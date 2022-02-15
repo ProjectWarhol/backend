@@ -1,42 +1,51 @@
+const bcrypt = require('bcrypt');
+
 module.exports = {
   up: async (queryInterface) => {
-    const walletQuery = await queryInterface.sequelize.query(
-      `SELECT id from "UserWallet";`
-    );
-
-    const walletOneId = walletQuery[0];
-    const walletTwoId = walletQuery[1];
-    const walletThreeId = walletQuery[2];
-    const walletFourId = walletQuery[3];
-
     await queryInterface.bulkInsert('User', [
       {
-        userName: 'Omar_Badawy',
+        id: 'qwertyui-asdf-asdf-asdf-zxcvbnmnbvcx',
         email: 'omar.badawy@warhol.com',
-        passwordHash: 'OmarBadawy',
+        passwordHash: await bcrypt.hash('OmarBadawy', 12),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        promoters: 1000,
+        promoting: 1001,
         verified: true,
-        walletId: walletOneId,
+        userName: 'Omar_Badawy',
       },
       {
-        userName: 'Julian_Romer',
-        email: 'julian.romer@warhol.com',
-        passwordHash: 'JulianRomer',
-        verified: true,
-        walletId: walletTwoId,
-      },
-      {
-        userName: 'Takahiro_Mitsui',
+        id: 'abcdabcd-wdfg-3f4f-fsef-ahsiru75839e',
         email: 'takahiro.Mitsui@warhol.com',
-        passwordHash: 'TakahiroMitsui',
+        passwordHash: await bcrypt.hash('TakahiroMitsui', 12),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        promoters: 9876,
+        promoting: 7654,
         verified: false,
-        walletId: walletThreeId,
+        userName: 'Takahiro_Mitsui',
       },
       {
-        userName: 'Massi_Ricci',
+        id: 'hgytjudk-74hf-98uh-jhdi-sysuh87u6vc2',
         email: 'massi.ricci@warhol.com',
-        passwordHash: 'MassiRicci',
+        passwordHash: await bcrypt.hash('MassiRicci', 12),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        promoters: 250,
+        promoting: 900,
         verified: false,
-        walletId: walletFourId,
+        userName: 'Massi_Ricci',
+      },
+      {
+        id: '1q2w3e4r-aisu-woei-poiu-yhnbgtrfuytr',
+        email: 'julian.romer@warhol.com',
+        passwordHash: await bcrypt.hash('JulianRomer', 12),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        promoters: 2000,
+        promoting: 1234,
+        verified: true,
+        userName: 'Julian_Romer',
       },
     ]);
   },
