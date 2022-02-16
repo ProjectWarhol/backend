@@ -127,11 +127,11 @@ exports.retrieveOne = async (req, res, next) => {
   User.findOne(userId, {
     where: { userName },
   })
-    .then(async (userData) => {
-      if (userData) {
+    .then(async (data) => {
+      if (data) {
         res.status(200).send({
           message: 'User data sent successfully',
-          data: userData,
+          user: data,
         });
       } else {
         const error = new Error('User not found');
