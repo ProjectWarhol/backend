@@ -5,21 +5,22 @@ const router = express.Router();
 const user = require('../controllers/user.controller');
 const session = require('../controllers/session.controller');
 const mailer = require('../controllers/mailer.controller');
+const { isLoggedIn } = require('../middlewares/authorization.middleware');
 
 // Post login request
 router.post('/login', check('email').isEmail(), session.login);
 
 // Post logout request
-router.post('/logout', session.logout);
+router.post('/logout', isLoggedIn, session.logout);
 
 // Validate session cookie
 router.get('/session', session.validateSession);
 
 // Get User object
-router.get('/:userName', user.retrieveOne);
+router.get('/:userName', isLoggedIn, user.retrieveOne);
 
 // Update a User with id
-router.patch('/:id', user.updateOne);
+router.patch('/:id', isLoggedIn, user.updateOne);
 
 // Set resetPassword attributes & send resetPasswordMail
 router.post(
