@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const db = require('../models');
+const errHandler = require('../middlewares/error_handlers.middleware')
 const { generateToken } = require('../util/tokenGenerator');
 
 const {
@@ -127,21 +128,17 @@ exports.retrieveOne = async (req, res, next) => {
   User.findOne(userId, {
     where: { userName },
   })
-    .then(async (userData) => {
-      if (userData) {
+    .then(async (data) => {
+      if (data) {
         res.status(200).send({
           message: 'User data sent successfully',
-          data: userData,
+          user: data,
         });
       } else {
-        const error = new Error('User not found');
-        error.status = 404;
-        next(error);
+        next(errHandler.noPathErrorHandler);
       }
     })
-    .catch((err) => {
-      const error = new Error('Something went wrong while fetching the user.');
-      error.err = err;
-      next(error);
+    .catch(() => {
+      next(errHandler.defaultErrorHandler);
     });
 };
