@@ -142,3 +142,28 @@ exports.retrieveOne = async (req, res, next) => {
       next(errHandler.defaultErrorHandler);
     });
 };
+
+// Create new user
+exports.createOne = async (req, res, next) => {
+  const user = {
+    userName: req.body.userName,
+    passwordHash: await bcrypt.hash(req.body.password, 12),
+  }
+
+  // Expecting frontend to check if username already exists before letting user submit request
+  const [newUser, created] = await User.findOrCreate({
+    where: { email: req.body.email },
+    defaults: user,
+  });
+  
+  if (created) {
+    res.locals.user = newUser;
+    res.status(200).send({
+      message: 'User registered successfully',
+    });
+  } else {
+    const error = new Error('Email already in use');
+    error.status = 409;
+    next(error);
+  };
+};

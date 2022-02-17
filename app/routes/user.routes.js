@@ -19,6 +19,9 @@ router.get('/session', session.validateSession);
 // Get User object
 router.get('/:userName', isLoggedIn, user.retrieveOne);
 
+// New User
+router.post('/newUser', user.createOne);
+
 // Update a User with id
 router.patch('/:id', isLoggedIn, user.updateOne);
 
