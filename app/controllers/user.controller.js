@@ -145,25 +145,44 @@ exports.retrieveOne = async (req, res, next) => {
 
 // Create new user
 exports.createOne = async (req, res, next) => {
-  const user = {
-    userName: req.body.userName,
-    passwordHash: await bcrypt.hash(req.body.password, 12),
-  };
+  const {
+    body: { userName, email, password },
+  } = req;
 
-  // Expecting frontend to check if username already exists before letting user submit request
-  const [newUser, created] = await User.findOrCreate({
-    where: { email: req.body.email },
-    defaults: user,
-  });
-  
-  if (created) {
-    res.locals.user = newUser;
-    res.status(200).send({
-      message: 'User registered successfully',
+  User.findOrCreate({
+    where: {
+      [Op.or]: [
+        { userName }, { email },
+      ]
+    },
+    defaults: {
+      ...{ userName }, ...{ email }
+    },
+  })
+    .then(async ([newUser, created]) => {
+      if (created) {
+        const newPasswordHash = await bcrypt.hash(password, 12);
+
+        // eslint-disable-next-line no-param-reassign
+        newUser.passwordHash = newPasswordHash;
+
+        newUser
+          .save()
+          .then(() => {
+            res.status(200).send({
+              message: 'User registered succesfully',
+            });
+          })
+          .catch(() => {
+            next(errHandler.defaultErrorHandler);
+          });
+      } else {
+        res.status(409).send({
+          message: 'Email or username already in use',
+        });
+      }
+    })
+    .catch(() => {
+      next(errHandler.defaultErrorHandler);
     });
-  } else {
-    const error = new Error('Email already in use');
-    error.status = 409;
-    next(error);
-  };
 };
