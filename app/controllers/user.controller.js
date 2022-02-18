@@ -148,7 +148,7 @@ exports.createOne = async (req, res, next) => {
   const user = {
     userName: req.body.userName,
     passwordHash: await bcrypt.hash(req.body.password, 12),
-  }
+  };
 
   // Expecting frontend to check if username already exists before letting user submit request
   const [newUser, created] = await User.findOrCreate({
