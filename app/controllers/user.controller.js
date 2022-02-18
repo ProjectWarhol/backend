@@ -121,18 +121,24 @@ exports.updatePassword = async (req, res, next) => {
 // Get User object from the username in the request
 exports.retrieveOne = async (req, res, next) => {
   const {
-    params: { userName },
     body: { userId },
   } = req;
 
-  User.findOne(userId, {
-    where: { userName },
-  })
-    .then(async (data) => {
+  User.findByPk(userId)
+    .then((data) => {
       if (data) {
         res.status(200).send({
           message: 'User data sent successfully',
-          user: data,
+          user: {
+            id: data.id,
+            userName: data.userName,
+            email: data.email,
+            avatar: data.avatar,
+            bio: data.bio,
+            promoters: data.promoters,
+            promoting: data.promoting,
+            verified: data.verified,
+          },
         });
       } else {
         next(errHandler.noPathErrorHandler);
