@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const db = require('../models');
-const errHandler = require('../middlewares/error_handlers.middleware')
+const errHandler = require('../middlewares/error_handlers.middleware');
+const { sessionObject } = require('../util/sessionObject');
 const { generateToken } = require('../util/tokenGenerator');
 
 const {
@@ -121,18 +122,15 @@ exports.updatePassword = async (req, res, next) => {
 // Get User object from the username in the request
 exports.retrieveOne = async (req, res, next) => {
   const {
-    params: { userName },
-    body: { userId },
+    body: { id },
   } = req;
 
-  User.findOne(userId, {
-    where: { userName },
-  })
-    .then(async (data) => {
+  User.findByPk(id)
+    .then((data) => {
       if (data) {
         res.status(200).send({
           message: 'User data sent successfully',
-          user: data,
+          user: sessionObject(data),
         });
       } else {
         next(errHandler.noPathErrorHandler);
