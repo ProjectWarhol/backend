@@ -1,6 +1,7 @@
 const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 const { User } = require('./user');
+const { Collection } = require('./collection');
 
 module.exports = (sequelize, DataTypes) => {
   class NftContent extends Model {}
@@ -28,7 +29,14 @@ module.exports = (sequelize, DataTypes) => {
       upvoted: DataTypes.INTEGER,
       downvotes: DataTypes.INTEGER,
       hasSold: DataTypes.BOOLEAN,
-      collectionId: DataTypes.BOOLEAN,
+      collectionId: {
+        type: DataTypes.UUID,
+        allowNull: true,
+        references: {
+          model: Collection,
+          key: 'id',
+        }
+      },
     },
     {
       sequelize,
