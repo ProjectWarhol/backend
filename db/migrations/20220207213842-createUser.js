@@ -9,7 +9,8 @@ module.exports = {
       id: {
         primaryKey: true,
         allowNull: false,
-        type: Sequelize.STRING,
+        type: DataTypes.UUID,
+        defaultValue: Sequelize.literal('uuid_generate_v4()'),
       },
       userName: {
         type: Sequelize.STRING,
@@ -24,9 +25,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      avatar: {
-        type: Sequelize.STRING,
-      },
+      avatar: Sequelize.STRING,
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE,
       resetToken: Sequelize.STRING,
