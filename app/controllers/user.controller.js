@@ -140,3 +140,53 @@ exports.retrieveOne = async (req, res, next) => {
       next(errHandler.defaultErrorHandler);
     });
 };
+
+// Create new user
+exports.createOne = async (req, res, next) => {
+  const {
+    body: { userName, email, password },
+  } = req;
+
+  User.findOrCreate({
+    where: {
+      [Op.or]: [
+        { userName },
+        { email },
+      ]
+    },
+    defaults: {
+      ...{ userName }, 
+      ...{ email },
+      createdAt: Date.now(),
+      promoters: 0,
+      promoting: 0,
+      verified: false,
+    },
+  })
+    .then(async ([newUser, created]) => {
+      if (created) {
+        const newPasswordHash = await bcrypt.hash(password, 12);
+
+        // eslint-disable-next-line no-param-reassign
+        newUser.passwordHash = newPasswordHash;
+
+        newUser
+          .save()
+          .then(() => {
+            res.status(200).send({
+              message: 'User registered succesfully',
+            });
+          })
+          .catch(() => {
+            next(errHandler.defaultErrorHandler);
+          });
+      } else {
+        res.status(409).send({
+          message: 'Email or username already in use',
+        });
+      }
+    })
+    .catch(() => {
+      next(errHandler.defaultErrorHandler);
+    });
+};
