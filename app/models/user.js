@@ -1,6 +1,6 @@
 const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
-const { UserWallet } = require('./userwallet');
+const { UserWallet } = require('./userWallet');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {}
