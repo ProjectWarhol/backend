@@ -1,9 +1,18 @@
 const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
-const { UserWallet } = require('./userWallet');
 
 module.exports = (sequelize, DataTypes) => {
-  class User extends Model {}
+  class User extends Model {
+    static associate(models) {
+      this.belongsTo(models.UserWallet, {
+        foreignKey: {
+          name: 'walletId',
+          type: DataTypes.UUID,
+        },
+        allowNull: true,
+      });
+    }
+  }
   User.init(
     {
       id: {
@@ -46,13 +55,6 @@ module.exports = (sequelize, DataTypes) => {
       promoters: DataTypes.INTEGER,
       promoting: DataTypes.INTEGER,
       verified: DataTypes.BOOLEAN,
-      userWallet: {
-        type: DataTypes.UUID,
-        references: {
-          model: UserWallet,
-          key: 'id',
-        }
-      }
     },
     {
       sequelize,
