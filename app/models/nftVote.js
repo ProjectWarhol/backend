@@ -1,6 +1,7 @@
 const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 const { User } = require('./user');
+const { NftContent } = require('./nftContent');
 
 module.exports = (sequelize, DataTypes) => {
   class NftVote extends Model {}
@@ -27,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
           key: 'id',
         }
       },
-      verified: DataTypes.BOOLEAN,
+      type: DataTypes.BOOLEAN,
       createdAt: DataTypes.DATE,
     },
     {
