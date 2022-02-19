@@ -152,11 +152,17 @@ exports.createOne = async (req, res, next) => {
   User.findOrCreate({
     where: {
       [Op.or]: [
-        { userName }, { email },
+        { userName },
+        { email },
       ]
     },
     defaults: {
-      ...{ userName }, ...{ email }
+      ...{ userName }, 
+      ...{ email },
+      createdAt: Date.now(),
+      promoters: 0,
+      promoting: 0,
+      verified: false,
     },
   })
     .then(async ([newUser, created]) => {
