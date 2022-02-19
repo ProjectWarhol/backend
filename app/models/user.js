@@ -1,5 +1,6 @@
 const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
+const { UserWallet } = require('./userwallet');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {}
@@ -45,6 +46,13 @@ module.exports = (sequelize, DataTypes) => {
       promoters: DataTypes.INTEGER,
       promoting: DataTypes.INTEGER,
       verified: DataTypes.BOOLEAN,
+      userWallet: {
+        type: DataTypes.UUID,
+        references: {
+          model: UserWallet,
+          key: 'id',
+        }
+      }
     },
     {
       sequelize,
