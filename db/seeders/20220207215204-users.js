@@ -1,10 +1,11 @@
 const bcrypt = require('bcrypt');
+const Sequelize = require('sequelize');
 
 module.exports = {
   up: async (queryInterface) => {
     await queryInterface.bulkInsert('User', [
       {
-        id: 'qwertyui-asdf-asdf-asdf-zxcvbnmnbvcx',
+        id: Sequelize.literal('uuid_generate_v4()'),
         email: 'omar.badawy@warhol.com',
         passwordHash: await bcrypt.hash('OmarBadawy', 12),
         createdAt: new Date(),
@@ -15,7 +16,7 @@ module.exports = {
         userName: 'Omar_Badawy',
       },
       {
-        id: 'abcdabcd-wdfg-3f4f-fsef-ahsiru75839e',
+        id: Sequelize.literal('uuid_generate_v4()'),
         email: 'takahiro.Mitsui@warhol.com',
         passwordHash: await bcrypt.hash('TakahiroMitsui', 12),
         createdAt: new Date(),
@@ -26,7 +27,7 @@ module.exports = {
         userName: 'Takahiro_Mitsui',
       },
       {
-        id: 'hgytjudk-74hf-98uh-jhdi-sysuh87u6vc2',
+        id: Sequelize.literal('uuid_generate_v4()'),
         email: 'massi.ricci@warhol.com',
         passwordHash: await bcrypt.hash('MassiRicci', 12),
         createdAt: new Date(),
@@ -37,7 +38,7 @@ module.exports = {
         userName: 'Massi_Ricci',
       },
       {
-        id: '1q2w3e4r-aisu-woei-poiu-yhnbgtrfuytr',
+        id: Sequelize.literal('uuid_generate_v4()'),
         email: 'julian.romer@warhol.com',
         passwordHash: await bcrypt.hash('JulianRomer', 12),
         createdAt: new Date(),
