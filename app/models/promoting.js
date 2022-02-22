@@ -28,16 +28,6 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         defaultValue: Sequelize.UUIDV4,
       },
-      userId: {
-        type: DataTypes.UUID,
-        references: {
-          model: {
-            tableName: 'User',
-          },
-          key: 'id',
-        },
-        allowNull: false,
-      },
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,   
     },
