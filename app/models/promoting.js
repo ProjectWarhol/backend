@@ -38,16 +38,6 @@ module.exports = (sequelize, DataTypes) => {
         },
         allowNull: false,
       },
-      promoterId: {
-        type: DataTypes.UUID,
-        references: {
-          model: {
-            tableName: 'User',
-          },
-          key: 'id',  
-        },
-        allowNull: false,
-      },
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,   
     },
