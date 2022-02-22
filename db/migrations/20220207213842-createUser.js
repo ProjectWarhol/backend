@@ -34,6 +34,7 @@ module.exports = {
       promoters: Sequelize.INTEGER,
       promoting: Sequelize.INTEGER,
       verified: DataTypes.BOOLEAN,
+      walletId: DataTypes.UUID,
     });
   },
 
