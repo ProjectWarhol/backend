@@ -2,35 +2,23 @@ const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class User extends Model {
-    static associate(models) {
-      this.belongsTo(models.UserWallet, {
-        foreignKey: {
-          name: 'walletId',
-          type: DataTypes.UUID,
-        },
-        allowNull: true,
-      });
-    }
-  }
-  User.init(
+  class UserWallet extends Model {}
+  UserWallet.init(
     {
       id: {
         type: DataTypes.UUID,
         primaryKey: true,
+        allowNull: false,
         defaultValue: Sequelize.UUIDV4,
       },
-      userName: {
-        type: DataTypes.STRING,
-      },
-      email: {
+      publicKey: {
         type: DataTypes.STRING,
         allowNull: true, // change to false
-        unique: true,
         validate: {
-          isEmail: true,
           notNull: false, // change to true later
+          notEmpty: false, // change to true later
         },
+        defaultValue: 'abcd1234',
       },
       passwordHash: {
         type: DataTypes.STRING,
@@ -41,26 +29,14 @@ module.exports = (sequelize, DataTypes) => {
         },
         defaultValue: 'abcd1234',
       },
-      avatar: {
-        type: DataTypes.STRING,
-        validate: {
-          isUrl: true,
-        },
-      },
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
-      resetToken: DataTypes.STRING,
-      resetTokenExp: DataTypes.DATE,
-      bio: DataTypes.STRING,
-      promoters: DataTypes.INTEGER,
-      promoting: DataTypes.INTEGER,
-      verified: DataTypes.BOOLEAN,
     },
     {
       sequelize,
       timestamps: true,
-      modelName: 'User',
+      modelName: 'UserWallet',
     }
   );
-  return User;
+  return UserWallet;
 };
