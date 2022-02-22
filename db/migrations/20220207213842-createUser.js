@@ -34,7 +34,16 @@ module.exports = {
       promoters: Sequelize.INTEGER,
       promoting: Sequelize.INTEGER,
       verified: DataTypes.BOOLEAN,
-      walletId: DataTypes.UUID,
+      walletId: {
+        type: DataTypes.UUID,
+        references: {
+          model: {
+            tableName: 'UserWallet',
+          },
+          key: 'id',
+        },
+        allowNull: false,
+      },
     });
   },
 
