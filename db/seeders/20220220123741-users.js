@@ -3,8 +3,8 @@ const Sequelize = require('sequelize');
 
 module.exports = {
   up: async (queryInterface) => {
-    const walletIds = await queryInterface.sequelize.query(
-      `SELECT id from "UserWallet";`
+    const accountIds = await queryInterface.sequelize.query(
+      `SELECT id from "UserAccount";`
     );
 
     await queryInterface.bulkInsert('User', [
@@ -18,7 +18,7 @@ module.exports = {
         promoting: 1001,
         verified: true,
         userName: 'Omar_Badawy',
-        walletId: walletIds[0][0].id,
+        walletId: accountIds[0][0].id,
       },
       {
         id: Sequelize.literal('uuid_generate_v4()'),
@@ -30,7 +30,7 @@ module.exports = {
         promoting: 7654,
         verified: false,
         userName: 'Takahiro_Mitsui',
-        walletId: walletIds[0][1].id,
+        walletId: accountIds[0][1].id,
       },
       {
         id: Sequelize.literal('uuid_generate_v4()'),
@@ -42,7 +42,7 @@ module.exports = {
         promoting: 900,
         verified: false,
         userName: 'Massi_Ricci',
-        walletId: walletIds[0][2].id,
+        walletId: accountIds[0][2].id,
       },
       {
         id: Sequelize.literal('uuid_generate_v4()'),
@@ -54,6 +54,7 @@ module.exports = {
         promoting: 1234,
         verified: true,
         userName: 'Julian_Romer',
+        walletId: null,
       },
     ]);
   },
