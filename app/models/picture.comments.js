@@ -4,7 +4,7 @@ const Sequelize = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class PictureComments extends Model {
     static associate(models) {
-      this.belongsToMany(models.Comments, {
+      this.belongsTo(models.Comments, {
         foreignKey: {
           name: 'commentId',
           type: DataTypes.UUID,
@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       });
 
-      this.belongsToMany(models.NftContent, {
+      this.belongsTo(models.NftContent, {
         foreignKey: {
           name: 'pictureId',
           type: DataTypes.UUID,
