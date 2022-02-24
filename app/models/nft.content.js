@@ -2,17 +2,17 @@ const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class PictureComments extends Model {
+  class NftContent extends Model {
     static associate(models) {
-      this.belongsToMany(models.Comments, {
+      this.belongsTo(models.User, {
         foreignKey: {
-          name: 'commentId',
+          name: 'ownerId',
           type: DataTypes.UUID,
         },
         allowNull: true,
       });
 
-      this.belongsToMany(models.NftContent, {
+      this.hasMany(models.PictureComments, {
         foreignKey: {
           name: 'pictureId',
           type: DataTypes.UUID,
@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
 
-  PictureComments.init(
+  NftContent.init(
     {
       id: {
         type: DataTypes.UUID,
@@ -30,12 +30,22 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: Sequelize.UUIDV4,
       },
+      title: DataTypes.STRING,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
+      contentPath: DataTypes.STRING,
+      contentSize: DataTypes.FLOAT,
+      price: DataTypes.FLOAT,
+      flags: DataTypes.INTEGER,
+      upVotes: DataTypes.INTEGER,
+      downVotes: DataTypes.INTEGER,
+      hasSold: DataTypes.BOOLEAN,
     },
     {
       sequelize,
       timestamps: true,
-      modelName: 'Comments',
+      modelName: 'NftContent',
     }
   );
-  return PictureComments;
+  return NftContent;
 };
