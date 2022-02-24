@@ -11,14 +11,6 @@ module.exports = (sequelize, DataTypes) => {
         },
         allowNull: true,
       });
-
-      this.belongsTo(models.NftContent, {
-        foreignKey: {
-          name: 'pictureId',
-          type: DataTypes.UUID,
-        },
-        allowNull: true,
-      });
     }
   }
 
