@@ -4,7 +4,7 @@ const Sequelize = require('sequelize');
 module.exports = {
   up: async (queryInterface) => {
     const walletIds = await queryInterface.sequelize.query(
-      `SELECT id from "UserWallet";`
+      `SELECT id from "UserAccount";`
     );
 
     await queryInterface.bulkInsert('User', [
