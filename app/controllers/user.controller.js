@@ -149,13 +149,10 @@ exports.createOne = async (req, res, next) => {
 
   User.findOrCreate({
     where: {
-      [Op.or]: [
-        { userName },
-        { email },
-      ]
+      [Op.or]: [{ userName }, { email }],
     },
     defaults: {
-      ...{ userName }, 
+      ...{ userName },
       ...{ email },
       createdAt: Date.now(),
       promoters: 0,
