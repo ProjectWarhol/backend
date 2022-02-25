@@ -38,11 +38,11 @@ module.exports = {
         type: DataTypes.UUID,
         references: {
           model: {
-            tableName: 'UserWallet',
+            tableName: 'UserAccount',
           },
           key: 'id',
         },
-        allowNull: false,
+        allowNull: true,
       },
     });
   },

@@ -4,7 +4,7 @@ const Sequelize = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
-      this.belongsTo(models.UserWallet, {
+      this.belongsTo(models.UserAccount, {
         foreignKey: {
           name: 'walletId',
           type: DataTypes.UUID,
