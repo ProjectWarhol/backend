@@ -11,14 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: Sequelize.UUIDV4,
       },
-      publicKey: {
-        type: DataTypes.STRING,
-        allowNull: true, // change to false
-        validate: {
-          notNull: false, // change to true later
-          notEmpty: false, // change to true later
-        },
-      },
+      publicKey: DataTypes.STRING,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
       version: DataTypes.INTEGER,
