@@ -9,15 +9,7 @@ module.exports = (sequelize, DataTypes) => {
           name: 'ownerId',
           type: DataTypes.UUID,
         },
-        allowNull: true,
-      });
-
-      this.hasMany(models.PictureComments, {
-        foreignKey: {
-          name: 'pictureId',
-          type: DataTypes.UUID,
-        },
-        allowNull: true,
+        allowNull: false,
       });
     }
   }
