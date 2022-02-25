@@ -1,29 +1,18 @@
-const { validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const db = require('../models');
 const { sessionObject } = require('../util/sessionObject');
 
 const { User } = db;
 
-const validateEmailInput = (errors, next) => {
-  if (!errors.isEmpty()) {
-    const error = new Error('Invalid email format entered');
-    error.status = 422;
-    next(error);
-  }
-};
-
 // login user and return sessionToken as cookie
 exports.login = (req, res, next) => {
-  const { email, password } = req.body;
-  const errors = validationResult(req);
+  const { name, password, type } = req.body;
 
-  validateEmailInput(errors, next);
   const defaulLoginError = new Error('Wrong email or password');
   defaulLoginError.status = 401;
 
   User.findOne({
-    where: { email },
+    where: {[type]: name},
   })
     .then((data) => {
       bcrypt.compare(password, data.passwordHash).then((doMatch) => {
