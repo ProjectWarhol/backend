@@ -9,6 +9,14 @@ module.exports = (sequelize, DataTypes) => {
           name: 'commentId',
           type: DataTypes.UUID,
         },
+        allowNull: false,
+      });
+
+      this.belongsTo(models.NftContent, {
+        foreignKey: {
+          name: 'pictureId',
+          type: DataTypes.UUID,
+        },
         allowNull: true,
       });
     }

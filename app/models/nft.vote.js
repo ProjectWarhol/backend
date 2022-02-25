@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
           name: 'contentId',
           type: DataTypes.UUID,
         },
-        allowNull: true,
+        allowNull: false,
       });
 
       this.belongsTo(models.User, {
