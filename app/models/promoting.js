@@ -29,11 +29,11 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: Sequelize.UUIDV4,
       },
       createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,   
     },
     {
       sequelize,
       timestamps: true,
+      updatedAt: false,
       modelName: 'Promoting',
     }
   );

@@ -15,11 +15,10 @@ module.exports = {
       userId: DataTypes.UUID,
       promoterId: DataTypes.UUID,
       createdAt: Sequelize.DATE,
-      updatedAt: Sequelize.DATE,
     });
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable('UserWallet');
+    await queryInterface.dropTable('Promoting');
   },
 };
