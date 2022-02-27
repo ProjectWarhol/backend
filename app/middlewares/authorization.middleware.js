@@ -13,11 +13,11 @@ exports.isLoggedIn = (req, res, next) => {
 };
 
 exports.checkLoginInput = async (req, res, next) => {
-  const { errors } = await body('name').isEmail().run(req);
+  const { errors } = await body('userCredential').isEmail().run(req);
 
   if (!errors.length) {
     req.body.type = 'email';
-  } else if (usernameRegExp.test(req.body.name)) {
+  } else if (usernameRegExp.test(req.body.userCredential)) {
     req.body.type = 'userName';
   } else {
     const error = new Error('Invalid username or email');

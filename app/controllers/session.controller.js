@@ -6,13 +6,13 @@ const { User } = db;
 
 // login user and return sessionToken as cookie
 exports.login = (req, res, next) => {
-  const { name, password, type } = req.body;
+  const { userCredential, password, type } = req.body;
 
   const defaulLoginError = new Error('Wrong email or password');
   defaulLoginError.status = 401;
 
   User.findOne({
-    where: {[type]: name},
+    where: {[type]: userCredential},
   })
     .then((data) => {
       bcrypt.compare(password, data.passwordHash).then((doMatch) => {
