@@ -6,7 +6,7 @@
 
 ### Documentation Link
 
-- [Ticket URL](url)
+- [Docs URL](url)
 
 ### Checklists
 
