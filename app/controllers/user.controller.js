@@ -125,25 +125,25 @@ exports.patchPassword = async (req, res, next) => {
     body: { oldPassword, newPassword },
   } = req;
 
-  User.findByPk(req.session.user.id)
-    .then((data) => {
-      if (data) {
-        bcrypt.compare(oldPassword, data.passwordHash)
-          .then(async (doMatch) => {
-            if (doMatch === true) {
-              const newPasswordHash = await bcrypt.hash(newPassword, 12);
+  if (oldPassword && newPassword) {
+    User.findByPk(req.session.user.id)
+      .then((data) => {
+        if (data) {
+          bcrypt.compare(oldPassword, data.passwordHash)
+            .then(async (doMatch) => {
+              if (doMatch === true) {
+                const newPasswordHash = await bcrypt.hash(newPassword, 12);
               
-              // eslint-disable-next-line no-param-reassign
-              data.passwordHash = newPasswordHash;
+                // eslint-disable-next-line no-param-reassign
+                data.passwordHash = newPasswordHash;
 
-              data
-                .save()
-                .then(() => {
-                  res.status(200).send({
-                    message: 'Password successfully updated',
-                  });
-                })
-
+                data
+                  .save()
+                  .then(() => {
+                    res.status(200).send({
+                      message: 'Password successfully updated',
+                    });
+                  })
             } else {
               const error = new Error('Password doesn\'t match');
               error.status = 401;
@@ -154,9 +154,14 @@ exports.patchPassword = async (req, res, next) => {
         next(errHandler.noPathErrorHandler);
       }
     })
-    .catch((err) => {
-      next(errHandler.defaultErrorHandler(err));
-    })
+      .catch((err) => {
+        next(errHandler.defaultErrorHandler(err));
+      })
+  } else {
+    const error = new Error('Malformed request body');
+    error.status = 400;
+    next(error);
+  }
 };
 
 // Get User object from the username in the request
