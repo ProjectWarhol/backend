@@ -22,6 +22,9 @@ router.get('/:userName', isLoggedIn, user.retrieveOne);
 // Create User
 router.post('/createUser', user.createOne);
 
+// patch User Password
+router.patch('/patchPassword', isLoggedIn, user.patchPassword);
+
 // Update a User with id
 router.patch('/:id', isLoggedIn, user.updateOne);
 
