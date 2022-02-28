@@ -135,7 +135,7 @@ exports.patchPassword = async (req, res, next) => {
               
               // eslint-disable-next-line no-param-reassign
               data.passwordHash = newPasswordHash;
-              
+
               data
                 .save()
                 .then(() => {
@@ -154,8 +154,8 @@ exports.patchPassword = async (req, res, next) => {
         next(errHandler.noPathErrorHandler);
       }
     })
-    .catch(() => {
-      next(errHandler.defaultErrorHandler);
+    .catch((err) => {
+      next(errHandler.defaultErrorHandler(err));
     })
 };
 
@@ -176,8 +176,8 @@ exports.retrieveOne = async (req, res, next) => {
         next(errHandler.noPathErrorHandler);
       }
     })
-    .catch(() => {
-      next(errHandler.defaultErrorHandler);
+    .catch((err) => {
+      next(errHandler.defaultErrorHandler(err));
     });
 };
 
@@ -214,8 +214,8 @@ exports.createOne = async (req, res, next) => {
               message: 'User registered succesfully',
             });
           })
-          .catch(() => {
-            next(errHandler.defaultErrorHandler);
+          .catch((err) => {
+            next(errHandler.defaultErrorHandler(err));
           });
       } else {
         res.status(409).send({
@@ -223,7 +223,7 @@ exports.createOne = async (req, res, next) => {
         });
       }
     })
-    .catch(() => {
-      next(errHandler.defaultErrorHandler);
+    .catch((err) => {
+      next(errHandler.defaultErrorHandler(err));
     });
 };
