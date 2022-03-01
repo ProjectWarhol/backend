@@ -1,3 +1,7 @@
+const { body } = require('express-validator');
+
+const usernameRegExp = new RegExp('^[a-zA-Z0-9-_.]{4,20}$');
+
 // checks if user is logged in
 exports.isLoggedIn = (req, res, next) => {
   if (!req.session.user) {
@@ -7,3 +11,18 @@ exports.isLoggedIn = (req, res, next) => {
   }
   return next();
 };
+
+exports.checkLoginInput = async (req, res, next) => {
+  const { errors } = await body('userCredential').isEmail().run(req);
+
+  if (!errors.length) {
+    req.body.type = 'email';
+  } else if (usernameRegExp.test(req.body.userCredential)) {
+    req.body.type = 'userName';
+  } else {
+    const error = new Error('Invalid username or email');
+    error.status = 422;
+    return next(error);
+  }
+  return next();
+}
