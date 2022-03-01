@@ -120,48 +120,38 @@ exports.updatePassword = async (req, res, next) => {
 };
 
 // Patch User password
-exports.patchPassword = async (req, res, next) => {
+exports.changePassword = async (req, res, next) => {
   const {
-    body: { oldPassword, newPassword },
+    body: { id, oldPassword, newPassword },
   } = req;
 
-  if (oldPassword && newPassword) {
-    User.findByPk(req.session.user.id)
-      .then((data) => {
-        if (data) {
-          bcrypt.compare(oldPassword, data.passwordHash)
-            .then(async (doMatch) => {
-              if (doMatch === true) {
-                const newPasswordHash = await bcrypt.hash(newPassword, 12);
-              
-                // eslint-disable-next-line no-param-reassign
-                data.passwordHash = newPasswordHash;
+  User.findByPk(id)
+    .then((data) => {
+      bcrypt.compare(oldPassword, data.passwordHash)
+        .then(async (doMatch) => {
+          if (doMatch === true) {
+            const newPasswordHash = await bcrypt.hash(newPassword, 12);
+          
+            // eslint-disable-next-line no-param-reassign
+            data.passwordHash = newPasswordHash;
 
-                data
-                  .save()
-                  .then(() => {
-                    res.status(200).send({
-                      message: 'Password successfully updated',
-                    });
-                  })
-            } else {
-              const error = new Error('Password doesn\'t match');
-              error.status = 401;
-              next(error);
-            }
-          })
-      } else {
-        next(errHandler.noPathErrorHandler);
-      }
-    })
-      .catch((err) => {
-        next(errHandler.defaultErrorHandler(err));
+            data
+              .save()
+              .then(() => {
+                res.status(200).send({
+                  message: 'Password successfully updated',
+                });
+              })
+        } else {
+          const error = new Error('Password doesn\'t match');
+          error.status = 401;
+          next(error);
+        }
       })
-  } else {
-    const error = new Error('Malformed request body');
-    error.status = 400;
-    next(error);
-  }
+    })
+    .catch((err) => {
+      next(errHandler.defaultErrorHandler(err));
+    });
 };
 
 // Get User object from the username in the request
