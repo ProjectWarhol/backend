@@ -4,7 +4,10 @@ const router = express.Router();
 const user = require('../controllers/user.controller');
 const session = require('../controllers/session.controller');
 const mailer = require('../controllers/mailer.controller');
-const { isLoggedIn, checkLoginInput } = require('../middlewares/authorization.middleware');
+const {
+  isLoggedIn,
+  checkLoginInput,
+} = require('../middlewares/authorization.middleware');
 
 // Post login request
 router.post('/login', checkLoginInput, session.login);
