@@ -12,7 +12,7 @@ exports.login = (req, res, next) => {
   defaulLoginError.status = 401;
 
   User.findOne({
-    where: {[type]: userCredential},
+    where: { [type]: userCredential },
   })
     .then((data) => {
       bcrypt.compare(password, data.passwordHash).then((doMatch) => {

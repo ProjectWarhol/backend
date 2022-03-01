@@ -10,7 +10,7 @@ module.exports = {
       },
       {
         id: Sequelize.literal('uuid_generate_v4()'),
-      
+
         createdAt: new Date(),
         updatedAt: new Date(),
       },
