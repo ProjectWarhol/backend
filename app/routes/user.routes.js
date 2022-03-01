@@ -1,14 +1,13 @@
 const express = require('express');
-const { check } = require('express-validator');
 
 const router = express.Router();
 const user = require('../controllers/user.controller');
 const session = require('../controllers/session.controller');
 const mailer = require('../controllers/mailer.controller');
-const { isLoggedIn } = require('../middlewares/authorization.middleware');
+const { isLoggedIn, checkLoginInput } = require('../middlewares/authorization.middleware');
 
 // Post login request
-router.post('/login', check('email').isEmail(), session.login);
+router.post('/login', checkLoginInput, session.login);
 
 // Post logout request
 router.post('/logout', isLoggedIn, session.logout);
