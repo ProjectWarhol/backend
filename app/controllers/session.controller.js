@@ -49,7 +49,6 @@ exports.logout = (req, res) => {
 exports.validateSession = (req, res, next) => {
   const currentUser = req.session.user;
   const currentCookie = req.session.cookie;
-
   const dateTime = new Date();
 
   // eslint-disable-next-line no-underscore-dangle
