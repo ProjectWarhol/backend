@@ -36,13 +36,14 @@ module.exports = {
         userId: userIds[0][0].id,
       },
       {
-        comment: '<script>alert(\'we better fix this boys\');</script>',
+        comment: "<script>alert('we better fix this boys');</script>",
         createdAt: new Date(),
         updatedAt: new Date(),
         userId: userIds[0][1].id,
       },
       {
-        comment: '<img src="nonexistentimg.jpg" onerror="alert(\'i mean, this shouldn\'t even be in the db in the first place, but let\'s think about this too)">',
+        comment:
+          '<img src="nonexistentimg.jpg" onerror="alert(\'i mean, this shouldn\'t even be in the db in the first place, but let\'s think about this too)">',
         createdAt: new Date(),
         updatedAt: new Date(),
         userId: userIds[0][2].id,
