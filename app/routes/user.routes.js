@@ -23,7 +23,7 @@ router.get('/:userName', isLoggedIn, user.retrieveOne);
 router.post('/createUser', user.createOne);
 
 // patch User Password
-router.patch('/updatePassword', isLoggedIn, user.changePassword);
+router.patch('/updatePassword', isLoggedIn, user.updatePassword);
 
 // Update a User with id
 router.patch('/:id', isLoggedIn, user.updateOne);
@@ -36,6 +36,6 @@ router.post(
 );
 
 // update User password & login
-router.post('/updatePassword/:token', user.updatePassword);
+router.post('/updatePassword/:token', user.replacePassword);
 
 module.exports = router;

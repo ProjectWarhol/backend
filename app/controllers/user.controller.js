@@ -67,7 +67,7 @@ exports.setResetToken = async (req, res, next) => {
 };
 
 // update User password
-exports.updatePassword = async (req, res, next) => {
+exports.replacePassword = async (req, res, next) => {
   const {
     body: { password },
     params: { token },
@@ -120,7 +120,7 @@ exports.updatePassword = async (req, res, next) => {
 };
 
 // Patch User password
-exports.changePassword = async (req, res, next) => {
+exports.updatePassword = async (req, res, next) => {
   const {
     body: { id, oldPassword, newPassword },
   } = req;
