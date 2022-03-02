@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const bcrypt = require('bcrypt');
 const db = require('../models');
 const { sessionObject } = require('../util/sessionObject');
@@ -48,17 +49,16 @@ exports.logout = (req, res) => {
 // validate existing session from client
 exports.validateSession = (req, res, next) => {
   const currentUser = req.session.user;
-  const currentCookie = req.session.cookie;
+  const currentCookieDate = req.session.cookie._expires;
   const dateTime = new Date();
 
-  // eslint-disable-next-line no-underscore-dangle
-  if (currentCookie._expires >= dateTime.getDate() && dateTime.getMonth()) {
+  if (currentUser && currentCookieDate >= dateTime.now()) {
     return res.status(200).send({
       message: 'Valid session',
       user: currentUser,
     });
   }
-  const error = new Error('Unauthorized');
+  const error = new Error('Unauthorized please Login');
   error.status = 401;
   return next(error);
 };
