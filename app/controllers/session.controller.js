@@ -58,9 +58,8 @@ exports.validateSession = (req, res, next) => {
       user: currentUser,
     });
   }
-  res.status(200).clearCookie('my.sid', { path: '/' });
+  res.status(401).clearCookie('my.sid', { path: '/' });
   req.session.destroy();
   const error = new Error('Unauthorized please Login');
-  error.status = 401;
   return next(error);
 };
