@@ -58,6 +58,7 @@ exports.validateSession = (req, res, next) => {
       user: currentUser,
     });
   }
+  req.session.destroy();
   const error = new Error('Unauthorized please Login');
   error.status = 401;
   return next(error);
