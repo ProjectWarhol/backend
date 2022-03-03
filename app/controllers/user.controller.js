@@ -127,27 +127,24 @@ exports.updatePassword = async (req, res, next) => {
 
   User.findByPk(id)
     .then((data) => {
-      bcrypt.compare(oldPassword, data.passwordHash)
-        .then(async (doMatch) => {
-          if (doMatch === true) {
-            const newPasswordHash = await bcrypt.hash(newPassword, 12);
-          
-            // eslint-disable-next-line no-param-reassign
-            data.passwordHash = newPasswordHash;
+      bcrypt.compare(oldPassword, data.passwordHash).then(async (doMatch) => {
+        if (doMatch === true) {
+          const newPasswordHash = await bcrypt.hash(newPassword, 12);
 
-            data
-              .save()
-              .then(() => {
-                res.status(200).send({
-                  message: 'Password successfully updated',
-                });
-              })
+          // eslint-disable-next-line no-param-reassign
+          data.passwordHash = newPasswordHash;
+
+          data.save().then(() => {
+            res.status(200).send({
+              message: 'Password successfully updated',
+            });
+          });
         } else {
-          const error = new Error('Password doesn\'t match');
+          const error = new Error("Password doesn't match");
           error.status = 401;
           next(error);
         }
-      })
+      });
     })
     .catch((err) => {
       next(errHandler.defaultErrorHandler(err));
@@ -207,6 +204,7 @@ exports.createOne = async (req, res, next) => {
           .then(() => {
             res.status(200).send({
               message: 'User registered succesfully',
+              userId: newUser.id,
             });
           })
           .catch((err) => {
