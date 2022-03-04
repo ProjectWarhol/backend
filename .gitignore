@@ -129,3 +129,6 @@ dist
 ### SolidityTruffle ###
 # production
 build
+
+# vscode
+.vscode
