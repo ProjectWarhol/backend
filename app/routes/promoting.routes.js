@@ -8,7 +8,9 @@ const { isLoggedIn } = require('../middlewares/authorization.middleware');
 router.get('/promotes', isLoggedIn, promoting.userPromotes);
 
 // Post user promotes
-router.post('/promotes', isLoggedIn, promoting.createOne);
+router.post('/promotes', isLoggedIn, promoting.createUserPromotes);
 
 // Delete user promotes
-router.delete('/promotes', isLoggedIn, promoting.deleteOne);
+router.delete('/promotes', isLoggedIn, promoting.destroyUserPromotes);
+
+module.exports = router;
