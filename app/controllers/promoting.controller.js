@@ -80,3 +80,46 @@ exports.createUserPromotes = (req, res, next) => {
       next(err);
     });
 };
+
+exports.destroyUserPromotes = (req, res, next) => {
+  const {
+    body: { promoterId, userId },
+  } = req;
+
+  Promoting.destroy({
+    where: {
+      [Op.and]: [
+        { promoterId }, 
+        { userId }
+      ],
+    },
+  })
+    .then((destroyed) => {
+      if (destroyed) {
+        User.decrement('promoting', {
+          where: {
+            id: promoterId,
+          },
+        })
+          .then(() => {
+            User.decrement('promoters', {
+              where: {
+                id: userId,
+              },
+            });
+          })
+            .then(() => {
+              res.status(200).send({
+                message: 'Promotion deleted successfully',
+              });
+            });
+      } else {
+        res.status(409).send({
+          message: 'Promotion not found',
+        });
+      }
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
