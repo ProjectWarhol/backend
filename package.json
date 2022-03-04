@@ -26,6 +26,7 @@
   "author": "Warhol team",
   "license": "ISC",
   "dependencies": {
+    "@truffle/hdwallet-provider": "^2.0.3",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
     "connect-session-sequelize": "^7.1.2",
