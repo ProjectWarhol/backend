@@ -1,5 +1,5 @@
+const { Sequelize } = require('../models');
 const db = require('../models');
-const errHandler = require('../middlewares/error_handlers.middleware');
 const { sessionObject } = require('../util/sessionObject');
 
 const {
@@ -29,7 +29,35 @@ exports.userPromotes = (req, res, next) => {
       });
     })
     .catch((err) => {
-      next(errHandler.defaultErrorHandler(err));
+      next(err);
+    });
+};
+
+// Get all users that promote a user with userId
+exports.userIsPromoted = (req, res, next) => {
+  const {
+    body: { userId },
+  } = req;
+
+  User.findAll({
+    include: {
+      model: Promoting,
+      attributes: [],
+      required: true,
+      on: {
+        'promoterId': { [Op.eq]: Sequelize.col('User.id') },
+      },
+      where: { userId },
+    }
+  })
+    .then((userData) => {
+      res.status(200).send({
+        message: 'Promoting data sent successfully',
+        data: userData.map(data => sessionObject(data)),
+      });
+    })
+    .catch((err) => {
+      next(err);
     });
 };
 
