@@ -4,6 +4,9 @@ const router = express.Router();
 const promoting = require('../controllers/promoting.controller');
 const { isLoggedIn } = require('../middlewares/authorization.middleware');
 
+// Get user promoters
+router.get('/isPromoted', isLoggedIn, promoting.userIsPromoted);
+
 // Get users promoted by user
 router.get('/promotes', isLoggedIn, promoting.userPromotes);
 
