@@ -33,6 +33,7 @@ exports.userPromotes = (req, res, next) => {
     });
 };
 
+// Create entry in Promoting
 exports.createUserPromotes = (req, res, next) => {
   const {
     body: { promoterId, userId },
@@ -81,6 +82,7 @@ exports.createUserPromotes = (req, res, next) => {
     });
 };
 
+// Delete entry in Promoting
 exports.destroyUserPromotes = (req, res, next) => {
   const {
     body: { promoterId, userId },
