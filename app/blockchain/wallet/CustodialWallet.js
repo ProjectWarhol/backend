@@ -21,8 +21,7 @@ exports.createCustodialWallet = () => {
 exports.storeCustodialWallet = (ourWalletData, password) => {
   const wallet = ourWalletData.wallet[0];
   const { seedPhrase } = ourWalletData;
-  const { address } = wallet;
-  const { privateKey } = wallet;
+  const { address, privateKey } = wallet;
   const encryptedPrivateKey = web3.eth.accounts.encrypt(privateKey, password);
   const data = {
     address,
