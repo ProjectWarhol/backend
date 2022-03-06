@@ -11,7 +11,6 @@ router.get('/', (req, res) => {
 });
 
 router.use('/users', userRoutes);
-
 router.use('/promoting', promotingRoutes);
 
 module.exports = router;

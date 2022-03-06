@@ -8,8 +8,42 @@ const {
   Sequelize: { Op },
 } = db;
 
+const defaultPromotingError = new Error('Something went wrong');
+defaultPromotingError.status = 500;
+
+// eslint complains if i wrap a single return statement in curly braces
+// will delete comment if pr is approved
+// dont hurt me habibi
+const incrementPromoting = (promoterId, userId) =>
+  User.increment('promoting', {
+      where: {
+        id: promoterId,
+      },
+    })
+      .then(() => {
+        User.increment('promoters', {
+          where: {
+            id: userId,
+          },
+        });
+      });
+
+const decrementPromoting = (promoterId, userId) =>
+  User.decrement('promoting', {
+    where: {
+      id: promoterId,
+    },
+  })
+    .then(() => {
+      User.decrement('promoters', {
+        where: {
+          id: userId,
+        },
+      });
+    });
+
 // Get all users that a user with promoterId promotes
-exports.userPromotes = (req, res, next) => {
+exports.userPromoting = (req, res, next) => {
   const {
     body: { promoterId },
   } = req;
@@ -29,7 +63,8 @@ exports.userPromotes = (req, res, next) => {
       });
     })
     .catch((err) => {
-      next(err);
+      defaultPromotingError.err = err;
+      next(defaultPromotingError);
     });
 };
 
@@ -51,18 +86,20 @@ exports.userIsPromoted = (req, res, next) => {
     }
   })
     .then((userData) => {
+      const userObjects = userData.map(data => sessionObject(data));
       res.status(200).send({
-        message: 'Promoting data sent successfully',
-        data: userData.map(data => sessionObject(data)),
+        message: 'Promoting data sent',
+        data: userObjects,
       });
     })
     .catch((err) => {
-      next(err);
+      defaultPromotingError.err = err;
+      next(defaultPromotingError);
     });
 };
 
 // Create entry in Promoting
-exports.createUserPromotes = (req, res, next) => {
+exports.promotingOneUser = (req, res, next) => {
   const {
     body: { promoterId, userId },
   } = req;
@@ -82,36 +119,26 @@ exports.createUserPromotes = (req, res, next) => {
     // eslint-disable-next-line no-unused-vars
     .then(([newPromoting, created]) => {
       if (created) {
-        User.increment('promoting', {
-          where: {
-            id: promoterId,
-          },
-        })
+        incrementPromoting(promoterId, userId)
           .then(() => {
-            User.increment('promoters', {
-              where: {
-                id: userId,
-              },
+            res.status(200).send({
+              message: 'Promotion added successfully',
             });
-          })
-            .then(() => {
-              res.status(200).send({
-                message: 'Promotion added successfully',
-              });
-            });
+          });
       } else {
         res.status(409).send({
-          message: 'Already promoting',
+          message: 'Already promoting user',
         });
       }
     })
     .catch((err) => {
-      next(err);
+      defaultPromotingError.err = err;
+      next(defaultPromotingError);
     });
 };
 
 // Delete entry in Promoting
-exports.destroyUserPromotes = (req, res, next) => {
+exports.unpromotingOneUser = (req, res, next) => {
   const {
     body: { promoterId, userId },
   } = req;
@@ -126,23 +153,12 @@ exports.destroyUserPromotes = (req, res, next) => {
   })
     .then((destroyed) => {
       if (destroyed) {
-        User.decrement('promoting', {
-          where: {
-            id: promoterId,
-          },
-        })
+        decrementPromoting(promoterId, userId)
           .then(() => {
-            User.decrement('promoters', {
-              where: {
-                id: userId,
-              },
+            res.status(200).send({
+              message: 'Promotion deleted successfully',
             });
-          })
-            .then(() => {
-              res.status(200).send({
-                message: 'Promotion deleted successfully',
-              });
-            });
+          });
       } else {
         res.status(409).send({
           message: 'Promotion not found',
@@ -150,6 +166,7 @@ exports.destroyUserPromotes = (req, res, next) => {
       }
     })
     .catch((err) => {
-      next(err);
+      defaultPromotingError.err = err;
+      next(defaultPromotingError);
     });
 };

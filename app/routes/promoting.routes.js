@@ -8,12 +8,12 @@ const { isLoggedIn } = require('../middlewares/authorization.middleware');
 router.get('/isPromoted', isLoggedIn, promoting.userIsPromoted);
 
 // Get users promoted by user
-router.get('/promotes', isLoggedIn, promoting.userPromotes);
+router.get('/promoting', isLoggedIn, promoting.userPromoting);
 
 // Post user promotes
-router.post('/promotes', isLoggedIn, promoting.createUserPromotes);
+router.post('/promoting', isLoggedIn, promoting.promotingOneUser);
 
 // Delete user promotes
-router.delete('/promotes', isLoggedIn, promoting.destroyUserPromotes);
+router.delete('/promoting', isLoggedIn, promoting.unpromotingOneUser);
 
 module.exports = router;
