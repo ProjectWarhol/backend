@@ -28,7 +28,9 @@ You need to install the following things to be able to run this project on your 
 
 ## Documentation
 
-A documentation of this project can be found in the `/documentation` folder. It contains several sub-folders for the individual parts of the backend (i.e. a ER Diagram for the database, and a documentation of the API endpoints).
+A documentation of this project can be found in the `https://www.notion.so/Backend-104f26d1a13b4f44ae26f7226cbc1e05` for the backend. It contains several sub-folders for the individual parts of the backend (i.e. a ER Diagram for the database, and a documentation of the API endpoints).
+
+In addition the documentation for the Block Chain aspect can be found in `https://www.notion.so/Blockchain-64a5a7bc341445aeac85e62e6fd60679`. It contains several sub-folders for the individual functions and they're expect inputs and outputs and where to find them.
 
 ## Settings
 
