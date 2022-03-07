@@ -71,3 +71,12 @@ describe('storeCustodialWallet', () => {
     assert.equal(actual.seedPhrase, expected);
   });
 });
+// Failure case
+describe('Failure case: storeCustodialWallet', () => {
+  const custodialWalletData = 'wallet';
+  const password = 'test';
+  const actual = storeCustodialWallet(custodialWalletData, password);
+  it('should return undefined', () => {
+    assert.equal(actual, undefined);
+  });
+});
