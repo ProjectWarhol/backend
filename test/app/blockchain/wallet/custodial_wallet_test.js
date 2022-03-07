@@ -1,12 +1,13 @@
 /* eslint-disable no-undef */
 // third-party
 const { assert } = require('chai');
+
 // local
 const {
   generateSeedPhrase,
   createCustodialWallet,
   storeCustodialWallet,
-} = require('../../wallet/custodial.wallet');
+} = require('../../../../app/blockchain/wallet/custodial_wallet');
 
 describe('generateSeedPhrase', () => {
   it('should return 12 words', () => {
