@@ -14,8 +14,10 @@ You need to install the following things to be able to run this project on your 
 3. Duplicate `.env.example` and rename it to `.env`
 4. Add enviroment variables to `.env`
 5. Setup testing and development database
-   1. Run `npm run setup:db` to drop & create a new database, and automatically add the fixtures
+   1. Run `npm run setup:db` to drop & create a new database, and automatically add the fixtures[]
    2. Run `npm run setup:testing` to setup the testing database
+
+Note: if any issues show up during the database setup please refer to the README file located in the database folder ./db/README.md
 
 ## Run
 
