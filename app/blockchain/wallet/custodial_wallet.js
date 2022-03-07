@@ -19,14 +19,20 @@ exports.createCustodialWallet = () => {
 };
 
 exports.storeCustodialWallet = (custodialWalletData, password) => {
-  const wallet = custodialWalletData.wallet[0];
-  const { seedPhrase } = custodialWalletData;
-  const { address, privateKey } = wallet;
-  const encryptedPrivateKey = web3.eth.accounts.encrypt(privateKey, password);
-  const data = {
-    address,
-    encryptedPrivateKey,
-    seedPhrase,
-  };
-  return data;
+  try {
+    const wallet = custodialWalletData.wallet[0];
+    const { seedPhrase } = custodialWalletData;
+    const { address, privateKey } = wallet;
+    const encryptedPrivateKey = web3.eth.accounts.encrypt(privateKey, password);
+    const data = {
+      address,
+      encryptedPrivateKey,
+      seedPhrase,
+    };
+    return data;
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.log('Error has occurred:Being passed wrong args');
+  }
+  return undefined;
 };
