@@ -13,7 +13,7 @@
     "prepare": "husky install",
     "setup:db": "sequelize db:drop && sequelize db:create && sequelize db:migrate && sequelize db:seed:all",
     "setup:testing": "NODE_ENV=test npm run setup:db",
-    "lint:sol": "solhint './app/contracts/**/*.sol'",
+    "lint:sol": "solhint './app/blockchain/contracts/**/*.sol'",
     "compile": "npm run lint:sol && truffle compile",
     "test:sol": "npm run lint:sol && truffle test ./test/blockchain/**/*",
     "mDev": "npm run lint:sol && truffle migrate --network development",

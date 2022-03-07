@@ -6,7 +6,7 @@ const {
   generateSeedPhrase,
   createCustodialWallet,
   storeCustodialWallet,
-} = require('../../wallet/custodial.wallet');
+} = require('../../app/blockchain/wallet/CustodialWallet');
 
 describe('generateSeedPhrase', () => {
   it('should return 12 words', () => {
