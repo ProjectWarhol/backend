@@ -12,7 +12,13 @@
     "format": "prettier . --write",
     "prepare": "husky install",
     "setup:db": "sequelize db:drop && sequelize db:create && sequelize db:migrate && sequelize db:seed:all",
-    "setup:testing": "NODE_ENV=test npm run setup:db"
+    "setup:testing": "NODE_ENV=test npm run setup:db",
+    "lint:sol": "solhint './app/blockchain/contracts/**/*.sol'",
+    "compile": "npm run lint:sol && truffle compile",
+    "test:sol": "npm run lint:sol && truffle test ./test/blockchain/**/*",
+    "mDev": "npm run lint:sol && truffle migrate --network development",
+    "mOnDev": "npm run lint:sol && truffle migrate --network onlineDevelopment",
+    "mStaging": "npm run lint:sol && truffle migrate --network staging"
   },
   "lint-staged": {
     "**/*.js": [
@@ -49,6 +55,7 @@
     "web3": "^1.7.1"
   },
   "devDependencies": {
+    "@openzeppelin/contracts": "^4.5.0",
     "chai": "^4.3.4",
     "chai-http": "^4.3.0",
     "chai-json-schema": "^1.5.1",
@@ -67,6 +74,7 @@
     "prettier": "^2.3.2",
     "sequelize-cli": "^6.2.0",
     "sinon": "^11.1.2",
+    "solhint": "^3.3.7",
     "supertest": "^6.1.6"
   },
   "repository": {
