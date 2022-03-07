@@ -8,8 +8,10 @@ const {
   Sequelize: { Op },
 } = db;
 
-exports.CreateWallet = async (req, res, next) => {
+exports.createWallet = async (req, res, next) => {
   const { id } = req.body;
 
-  const hasWallet = await checkIfUserHasWallet(id, next);
+  const hasWallet = await checkIfUserHasWallet(id, next); // this should be handled by auth middleware
+
+  next();
 };
