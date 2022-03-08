@@ -8,39 +8,56 @@ const {
   Sequelize: { Op },
 } = db;
 
-const defaultPromotingError = new Error('Something went wrong');
-defaultPromotingError.status = 500;
+const defaultPromotingError = (err) => {
+  const error = new Error('Something went wrong');
+  error.status = 500;
+  error.err = err;
+  return error;
+};
 
-// eslint complains if i wrap a single return statement in curly braces
-// will delete comment if pr is approved
-// dont hurt me habibi
-const incrementPromoting = (promoterId, userId) =>
-  User.increment('promoting', {
+const incrementPromoting = async (promoterId, userId) => {
+  const updatedUsers = {};
+
+  updatedUsers.promoter = await
+    User.increment('promoting', {
       where: {
         id: promoterId,
       },
-    })
-      .then(() => {
-        User.increment('promoters', {
-          where: {
-            id: userId,
-          },
-        });
-      });
-
-const decrementPromoting = (promoterId, userId) =>
-  User.decrement('promoting', {
-    where: {
-      id: promoterId,
-    },
-  })
-    .then(() => {
-      User.decrement('promoters', {
-        where: {
-          id: userId,
-        },
-      });
     });
+
+  updatedUsers.promoted = await
+    User.increment('promoters', {
+      where: {
+        id: userId,
+      },
+    });
+    
+  updatedUsers.promoter = sessionObject(updatedUsers.promoter[0][0][0]);
+  updatedUsers.promoted = sessionObject(updatedUsers.promoted[0][0][0]);
+  return updatedUsers;
+};
+
+const decrementPromoting = async (promoterId, userId) => {
+  const updatedUsers = {};
+
+  updatedUsers.promoter = await
+    User.decrement('promoting', {
+      where: {
+        id: promoterId,
+      },
+    });
+
+  updatedUsers.promoted = await
+    User.decrement('promoters', {
+      where: {
+        id: userId,
+      },
+    });
+
+  updatedUsers.promoter = sessionObject(updatedUsers.promoter[0][0][0]);
+  updatedUsers.promoted = sessionObject(updatedUsers.promoted[0][0][0]);
+  return updatedUsers;
+};
 
 // Get all users that a user with promoterId promotes
 exports.userPromoting = (req, res, next) => {
@@ -63,8 +80,7 @@ exports.userPromoting = (req, res, next) => {
       });
     })
     .catch((err) => {
-      defaultPromotingError.err = err;
-      next(defaultPromotingError);
+      next(defaultPromotingError(err));
     });
 };
 
@@ -93,15 +109,15 @@ exports.userIsPromoted = (req, res, next) => {
       });
     })
     .catch((err) => {
-      defaultPromotingError.err = err;
-      next(defaultPromotingError);
+      next(defaultPromotingError(err));
     });
 };
 
 // Create entry in Promoting
 exports.promotingOneUser = (req, res, next) => {
   const {
-    body: { promoterId, userId },
+    body: { promoterId },
+    params: { userId },
   } = req;
 
   Promoting.findOrCreate({
@@ -117,14 +133,20 @@ exports.promotingOneUser = (req, res, next) => {
     },
   })
     // eslint-disable-next-line no-unused-vars
-    .then(([newPromoting, created]) => {
+    .then(async ([newPromoting, created]) => {
       if (created) {
-        incrementPromoting(promoterId, userId)
-          .then(() => {
-            res.status(200).send({
-              message: 'Promotion added successfully',
-            });
-          });
+        let updatedUsers;
+        try {
+          updatedUsers = await incrementPromoting(promoterId, userId);
+        } 
+        catch (err) {
+          next(defaultPromotingError(err));
+        }
+
+        res.status(200).send({
+          message: 'Promotion added successfully',
+          ...updatedUsers,
+        });
       } else {
         res.status(409).send({
           message: 'Already promoting user',
@@ -132,15 +154,15 @@ exports.promotingOneUser = (req, res, next) => {
       }
     })
     .catch((err) => {
-      defaultPromotingError.err = err;
-      next(defaultPromotingError);
+      next(defaultPromotingError(err));
     });
 };
 
 // Delete entry in Promoting
 exports.unpromotingOneUser = (req, res, next) => {
   const {
-    body: { promoterId, userId },
+    body: { promoterId },
+    params: { userId },
   } = req;
 
   Promoting.destroy({
@@ -151,14 +173,20 @@ exports.unpromotingOneUser = (req, res, next) => {
       ],
     },
   })
-    .then((destroyed) => {
+    .then(async (destroyed) => {
       if (destroyed) {
-        decrementPromoting(promoterId, userId)
-          .then(() => {
-            res.status(200).send({
-              message: 'Promotion deleted successfully',
-            });
-          });
+        let updatedUsers;
+        try {
+          updatedUsers = await decrementPromoting(promoterId, userId);
+        } 
+        catch (err) {
+          next(defaultPromotingError(err));
+        }
+        
+        res.status(200).send({
+          message: 'Promotion deleted successfully',
+          ...updatedUsers,
+        });
       } else {
         res.status(409).send({
           message: 'Promotion not found',
@@ -166,7 +194,6 @@ exports.unpromotingOneUser = (req, res, next) => {
       }
     })
     .catch((err) => {
-      defaultPromotingError.err = err;
-      next(defaultPromotingError);
+      next(defaultPromotingError(err));
     });
 };
