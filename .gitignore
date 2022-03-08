@@ -125,3 +125,10 @@ dist
 
 # package-lock.json
 /package-lock.json
+
+### SolidityTruffle ###
+# production
+build
+
+# vscode
+.vscode
