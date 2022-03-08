@@ -4,7 +4,10 @@ const router = express.Router();
 const user = require('../controllers/user.controller');
 const session = require('../controllers/session.controller');
 const mailer = require('../controllers/mailer.controller');
-const { isLoggedIn, checkLoginInput } = require('../middlewares/authorization.middleware');
+const {
+  isLoggedIn,
+  checkLoginInput,
+} = require('../middlewares/authorization.middleware');
 
 // Post login request
 router.post('/login', checkLoginInput, session.login);
@@ -21,6 +24,9 @@ router.get('/:userName', isLoggedIn, user.retrieveOne);
 // Create User
 router.post('/createUser', user.createOne);
 
+// patch User Password
+router.patch('/updatePassword', isLoggedIn, user.updatePassword);
+
 // Update a User with id
 router.patch('/:id', isLoggedIn, user.updateOne);
 
@@ -32,6 +38,8 @@ router.post(
 );
 
 // update User password & login
-router.post('/updatePassword/:token', user.updatePassword);
+router.post('/updatePassword/:token', user.replacePassword);
+
+router.post('/express');
 
 module.exports = router;

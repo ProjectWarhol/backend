@@ -25,4 +25,4 @@ exports.checkLoginInput = async (req, res, next) => {
     return next(error);
   }
   return next();
-}
+};

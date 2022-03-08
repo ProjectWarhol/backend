@@ -67,7 +67,7 @@ exports.setResetToken = async (req, res, next) => {
 };
 
 // update User password
-exports.updatePassword = async (req, res, next) => {
+exports.replacePassword = async (req, res, next) => {
   const {
     body: { password },
     params: { token },
@@ -119,6 +119,38 @@ exports.updatePassword = async (req, res, next) => {
     });
 };
 
+// Patch User password
+exports.updatePassword = async (req, res, next) => {
+  const {
+    body: { id, oldPassword, newPassword },
+  } = req;
+
+  User.findByPk(id)
+    .then((data) => {
+      bcrypt.compare(oldPassword, data.passwordHash).then(async (doMatch) => {
+        if (doMatch === true) {
+          const newPasswordHash = await bcrypt.hash(newPassword, 12);
+
+          // eslint-disable-next-line no-param-reassign
+          data.passwordHash = newPasswordHash;
+
+          data.save().then(() => {
+            res.status(200).send({
+              message: 'Password successfully updated',
+            });
+          });
+        } else {
+          const error = new Error("Password doesn't match");
+          error.status = 401;
+          next(error);
+        }
+      });
+    })
+    .catch((err) => {
+      next(errHandler.defaultErrorHandler(err));
+    });
+};
+
 // Get User object from the username in the request
 exports.retrieveOne = async (req, res, next) => {
   const {
@@ -136,8 +168,8 @@ exports.retrieveOne = async (req, res, next) => {
         next(errHandler.noPathErrorHandler);
       }
     })
-    .catch(() => {
-      next(errHandler.defaultErrorHandler);
+    .catch((err) => {
+      next(errHandler.defaultErrorHandler(err));
     });
 };
 
@@ -172,10 +204,11 @@ exports.createOne = async (req, res, next) => {
           .then(() => {
             res.status(200).send({
               message: 'User registered succesfully',
+              userId: newUser.id,
             });
           })
-          .catch(() => {
-            next(errHandler.defaultErrorHandler);
+          .catch((err) => {
+            next(errHandler.defaultErrorHandler(err));
           });
       } else {
         res.status(409).send({
@@ -183,7 +216,7 @@ exports.createOne = async (req, res, next) => {
         });
       }
     })
-    .catch(() => {
-      next(errHandler.defaultErrorHandler);
+    .catch((err) => {
+      next(errHandler.defaultErrorHandler(err));
     });
 };
