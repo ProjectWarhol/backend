@@ -11,7 +11,9 @@ const {
 const defaultPromotingError = (err) => {
   const error = new Error('Something went wrong');
   error.status = 500;
-  error.err = err;
+  if (err.name !== 'SequelizeDatabaseError') {
+    error.err = err;
+  }
   return error;
 };
 
