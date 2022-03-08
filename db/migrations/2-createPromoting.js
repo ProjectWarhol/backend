@@ -16,6 +16,15 @@ module.exports = {
       promoterId: DataTypes.UUID,
       createdAt: Sequelize.DATE,
     });
+    await queryInterface.addConstraint('Promoting', {
+      fields: ['promoterId'],
+      type: 'check',
+      where: {
+        promoterId: {
+          [Sequelize.Op.ne]: { [Sequelize.Op.col]: 'Promoting.userId' },
+        },
+      },
+    });
   },
 
   down: async (queryInterface) => {
