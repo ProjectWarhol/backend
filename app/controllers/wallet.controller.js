@@ -1,14 +1,9 @@
-/* eslint-disable no-unused-vars */
 const db = require('../models');
 const {
   createCustodialWallet,
 } = require('../blockchain/wallet/custodial_wallet');
 
-const {
-  User,
-  UserAccount,
-  Sequelize: { Op },
-} = db;
+const { User, UserAccount } = db;
 
 exports.createWallet = async (req, res, next) => {
   const { id } = req.body;
