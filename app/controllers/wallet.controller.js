@@ -1,7 +1,6 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-unused-vars */
 const db = require('../models');
-const { checkIfUserHasWallet } = require('../util/accessRight');
 const {
   createCustodialWallet,
 } = require('../blockchain/wallet/custodial_wallet');
@@ -12,20 +11,8 @@ const {
   Sequelize: { Op },
 } = db;
 
-const validateWalletPosession = async (res, id, next) => {
-  const hasWallet = await checkIfUserHasWallet(id, res); // this should be handled by auth middleware
-
-  if (hasWallet !== false) {
-    const error = new Error('Forbidden');
-    error.status = 403;
-    return next(error);
-  }
-};
-
 exports.createWallet = async (req, res, next) => {
   const { id } = req.body;
-  validateWalletPosession(res, id, next);
-
   const wallet = await createCustodialWallet();
   const wallletPublicKey = { publicKey: wallet.wallet[0].address };
   const walletInformation = wallet.wallet[0];
