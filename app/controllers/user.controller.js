@@ -205,6 +205,10 @@ exports.createOne = async (req, res, next) => {
         newUser
           .save()
           .then(() => {
+            res.status(200).send({
+              message: 'User registered succesfully',
+              userId: newUser.id,
+            });
             next();
           })
           .catch((err) => {
