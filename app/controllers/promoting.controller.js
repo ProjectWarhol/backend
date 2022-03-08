@@ -74,9 +74,10 @@ exports.userPromoting = (req, res, next) => {
     }
   })
     .then((userData) => {
+      const userObjects = userData.map(data => sessionObject(data));
       res.status(200).send({
         message: 'Promoting data sent successfully',
-        data: userData.map(data => sessionObject(data)),
+        data: userObjects,
       });
     })
     .catch((err) => {
