@@ -9,9 +9,9 @@ exports.checkIfUserHasWallet = (id, next) => {
   User.findByPk(id)
     .then((user) => {
       if (!user.walletId) {
-        result = true;
+        result = false;
       }
-      result = false;
+      result = true;
     })
     .catch((err) => {
       next(errHandler.defaultErrorHandler(err));
