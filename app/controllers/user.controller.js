@@ -199,13 +199,13 @@ exports.createOne = async (req, res, next) => {
         // eslint-disable-next-line no-param-reassign
         newUser.passwordHash = newPasswordHash;
 
+        req.body.userCredential = email;
+        req.body.username = password;
+
         newUser
           .save()
           .then(() => {
-            res.status(200).send({
-              message: 'User registered succesfully',
-              userId: newUser.id,
-            });
+            next();
           })
           .catch((err) => {
             next(errHandler.defaultErrorHandler(err));
