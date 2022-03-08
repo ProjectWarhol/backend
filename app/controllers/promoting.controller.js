@@ -18,20 +18,18 @@ const defaultPromotingError = (err) => {
 const incrementPromoting = async (promoterId, userId) => {
   const updatedUsers = {};
 
-  updatedUsers.promoter = await
-    User.increment('promoting', {
-      where: {
-        id: promoterId,
-      },
-    });
+  updatedUsers.promoter = await User.increment('promoting', {
+    where: {
+      id: promoterId,
+    },
+  });
 
-  updatedUsers.promoted = await
-    User.increment('promoters', {
-      where: {
-        id: userId,
-      },
-    });
-    
+  updatedUsers.promoted = await User.increment('promoters', {
+    where: {
+      id: userId,
+    },
+  });
+
   updatedUsers.promoter = sessionObject(updatedUsers.promoter[0][0][0]);
   updatedUsers.promoted = sessionObject(updatedUsers.promoted[0][0][0]);
   return updatedUsers;
@@ -40,19 +38,17 @@ const incrementPromoting = async (promoterId, userId) => {
 const decrementPromoting = async (promoterId, userId) => {
   const updatedUsers = {};
 
-  updatedUsers.promoter = await
-    User.decrement('promoting', {
-      where: {
-        id: promoterId,
-      },
-    });
+  updatedUsers.promoter = await User.decrement('promoting', {
+    where: {
+      id: promoterId,
+    },
+  });
 
-  updatedUsers.promoted = await
-    User.decrement('promoters', {
-      where: {
-        id: userId,
-      },
-    });
+  updatedUsers.promoted = await User.decrement('promoters', {
+    where: {
+      id: userId,
+    },
+  });
 
   updatedUsers.promoter = sessionObject(updatedUsers.promoter[0][0][0]);
   updatedUsers.promoted = sessionObject(updatedUsers.promoted[0][0][0]);
@@ -71,10 +67,10 @@ exports.userPromoting = (req, res, next) => {
       attributes: [],
       required: true,
       where: { promoterId },
-    }
+    },
   })
     .then((userData) => {
-      const userObjects = userData.map(data => sessionObject(data));
+      const userObjects = userData.map((data) => sessionObject(data));
       res.status(200).send({
         message: 'Promoting data sent successfully',
         data: userObjects,
@@ -97,13 +93,13 @@ exports.userIsPromoted = (req, res, next) => {
       attributes: [],
       required: true,
       on: {
-        'promoterId': { [Op.eq]: Sequelize.col('User.id') },
+        promoterId: { [Op.eq]: Sequelize.col('User.id') },
       },
       where: { userId },
-    }
+    },
   })
     .then((userData) => {
-      const userObjects = userData.map(data => sessionObject(data));
+      const userObjects = userData.map((data) => sessionObject(data));
       res.status(200).send({
         message: 'Promoting data sent',
         data: userObjects,
@@ -123,10 +119,7 @@ exports.promotingOneUser = (req, res, next) => {
 
   Promoting.findOrCreate({
     where: {
-      [Op.and]: [
-        { promoterId }, 
-        { userId }
-      ],
+      [Op.and]: [{ promoterId }, { userId }],
     },
     defaults: {
       ...{ promoterId },
@@ -139,8 +132,7 @@ exports.promotingOneUser = (req, res, next) => {
         let updatedUsers;
         try {
           updatedUsers = await incrementPromoting(promoterId, userId);
-        } 
-        catch (err) {
+        } catch (err) {
           next(defaultPromotingError(err));
         }
 
@@ -168,10 +160,7 @@ exports.unpromotingOneUser = (req, res, next) => {
 
   Promoting.destroy({
     where: {
-      [Op.and]: [
-        { promoterId }, 
-        { userId }
-      ],
+      [Op.and]: [{ promoterId }, { userId }],
     },
   })
     .then(async (destroyed) => {
@@ -179,11 +168,10 @@ exports.unpromotingOneUser = (req, res, next) => {
         let updatedUsers;
         try {
           updatedUsers = await decrementPromoting(promoterId, userId);
-        } 
-        catch (err) {
+        } catch (err) {
           next(defaultPromotingError(err));
         }
-        
+
         res.status(200).send({
           message: 'Promotion deleted successfully',
           ...updatedUsers,
