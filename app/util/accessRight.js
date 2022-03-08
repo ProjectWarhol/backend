@@ -10,8 +10,10 @@ exports.checkIfUserHasWallet = async (id, res) => {
       }
       return false;
     })
-    .catch((error) => {
-      res.send(error.message);
+    .catch(() => {
+      res.status(500).send({
+        message: 'Something went wrong while checking user',
+      });
     });
   return result;
 };
