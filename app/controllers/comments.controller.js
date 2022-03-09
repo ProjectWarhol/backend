@@ -66,10 +66,9 @@ exports.createComment = (req, res, next) => {
         ...{ comment },
         ...{ userId },
       })
-        .then((newComment) => {
+        .then(() => {
           res.status(200).send({
             message: 'Comment created successfully',
-            data: newComment,
           });
         });
     })
