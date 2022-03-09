@@ -2,8 +2,9 @@ const db = require('../models');
 const {
   createCustodialWallet,
 } = require('../blockchain/wallet/custodial_wallet');
+const { updateUserWalletId } = require('../service/update.user');
 
-const { User, UserAccount } = db;
+const { UserAccount } = db;
 
 exports.createWallet = async (req, res, next) => {
   const { id } = req.body;
@@ -19,31 +20,16 @@ exports.createWallet = async (req, res, next) => {
     }
   );
 
-  User.update(
-    {
-      walletId: storedWallet.dataValues.id,
-    },
-    {
-      where: { id },
-      returning: true,
-    }
-  )
-    .then(([rowsUpdated, [updatedUser]]) => {
-      if (rowsUpdated) {
-        res.status(200).send({
-          message: 'Wallet successfully created',
-          walletId: updatedUser.walletId,
-          wallet: walletInformation,
-        });
-      } else {
-        const error = new Error('User not found');
-        error.status = 404;
-        next(error);
-      }
-    })
-    .catch((err) => {
-      const error = new Error('Something went wrong while updating user');
-      error.err = err;
-      next(error);
+  const userObject = await updateUserWalletId(next, storedWallet, id);
+
+  if (userObject === false) {
+    res.status(404).send({
+      message: 'User not found',
     });
+  }
+  res.status(200).send({
+    message: 'Wallet successfully created',
+    walletId: userObject.walletId,
+    wallet: walletInformation,
+  });
 };
