@@ -154,10 +154,12 @@ exports.updatePassword = async (req, res, next) => {
 // Get User object from the username in the request
 exports.retrieveOne = async (req, res, next) => {
   const {
-    body: { id },
+    params: { userName },
   } = req;
 
-  User.findByPk(id)
+  User.findOne({
+    where: { userName },
+  })
     .then((data) => {
       if (data) {
         res.status(200).send({
@@ -165,7 +167,9 @@ exports.retrieveOne = async (req, res, next) => {
           user: sessionObject(data),
         });
       } else {
-        next(errHandler.noPathErrorHandler);
+        const error = new Error('User not found');
+        error.status = 404;
+        next(error);
       }
     })
     .catch((err) => {
