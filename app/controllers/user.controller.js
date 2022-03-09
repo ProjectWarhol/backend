@@ -209,7 +209,6 @@ exports.createOne = async (req, res, next) => {
               message: 'User registered succesfully',
               userId: newUser.id,
             });
-            next();
           })
           .catch((err) => {
             next(errHandler.defaultErrorHandler(err));
