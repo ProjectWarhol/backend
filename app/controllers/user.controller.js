@@ -199,9 +199,6 @@ exports.createOne = async (req, res, next) => {
         // eslint-disable-next-line no-param-reassign
         newUser.passwordHash = newPasswordHash;
 
-        req.body.userCredential = email;
-        req.body.username = password;
-
         newUser
           .save()
           .then(() => {
