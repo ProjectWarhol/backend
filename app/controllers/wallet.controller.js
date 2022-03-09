@@ -8,10 +8,10 @@ const { User, UserAccount } = db;
 exports.createWallet = async (req, res, next) => {
   const { id } = req.body;
   const wallet = await createCustodialWallet();
-  const wallletPublicKey = { publicKey: wallet.wallet[0].address };
+  const walletPublicKey = { publicKey: wallet.wallet[0].address };
   const walletInformation = wallet.wallet[0];
 
-  const storedWallet = await UserAccount.create(wallletPublicKey).catch(
+  const storedWallet = await UserAccount.create(walletPublicKey).catch(
     (err) => {
       const error = new Error('Something went wrong while creating wallet');
       error.err = err;
