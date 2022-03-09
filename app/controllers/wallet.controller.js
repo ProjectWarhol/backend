@@ -3,6 +3,8 @@ const {
   createCustodialWallet,
 } = require('../blockchain/wallet/custodial_wallet');
 const { updateUserWalletId } = require('../service/update.user');
+const { decryptPrivateKey } = require('../blockchain/wallet/custodial_wallet');
+const { walletObject } = require('../util/walletObject');
 
 const { UserAccount } = db;
 
@@ -32,4 +34,29 @@ exports.createWallet = async (req, res, next) => {
     walletId: userObject.walletId,
     wallet: walletInformation,
   });
+};
+
+exports.retrieveWallet = async (req, res, next) => {
+  const { id } = req.params;
+  const { password } = req.body;
+
+  UserAccount.findOne({
+    where: { id },
+  })
+    .then(async (account) => {
+      const encryptedKey = walletObject(account);
+      const privateKey = await decryptPrivateKey(encryptedKey, password);
+
+      res.status(200).send({
+        message: 'wallet successfully sent',
+        walletId: account.id,
+        publicKey: account.publicKey,
+        Key: privateKey,
+      });
+    })
+    .catch((err) => {
+      const error = new Error('Something went wrong while retrieving wallet');
+      error.err = err;
+      next(error);
+    });
 };
