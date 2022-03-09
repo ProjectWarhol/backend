@@ -9,4 +9,7 @@ const {
 // Post Wallet request
 router.post('/createWallet', validateWalletPosession, wallet.createWallet);
 
+// Get wallet request
+router.get('/:id');
+
 module.exports = router;
