@@ -40,7 +40,7 @@ exports.retrieveComments = (req, res, next) => {
           id: { [Op.eq]: Sequelize.col('Comments.userId') },
         },
       },
-    ]
+    ],
   })
     .then((data) => {
       const commentObjects = data.map(comment => commentObject(comment));
@@ -57,7 +57,23 @@ exports.retrieveComments = (req, res, next) => {
 // Post a comment on a picture
 exports.createComment = (req, res, next) => {
   const {
-    body: { id },
+    body: { id, comment, userId },
   } = req;
 
+  NftContent.findByPk(id)
+    .then((picture) => {
+      picture.createComment({
+        ...{ comment },
+        ...{ userId },
+      })
+        .then((newComment) => {
+          res.status(200).send({
+            message: 'Comment created successfully',
+            data: newComment,
+          });
+        });
+    })
+    .catch((err) => {
+      next(defaultCommentsError(err));
+    });
 };
