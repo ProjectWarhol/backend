@@ -51,7 +51,7 @@ exports.retrieveWallet = async (req, res, next) => {
         message: 'wallet successfully sent',
         walletId: account.id,
         publicKey: account.publicKey,
-        Key: privateKey,
+        privateKey,
       });
     })
     .catch((err) => {
