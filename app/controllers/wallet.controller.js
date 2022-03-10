@@ -6,6 +6,7 @@ const { updateUserWalletId } = require('../service/user');
 const { changeObjectToData } = require('../util/privateKeyObject');
 const { createWallet, updateWallet } = require('../service/user.account');
 
+// create a wallet with private/public keys
 exports.createWallet = async (req, res, next) => {
   const { id } = req.body;
   const wallet = await createCustodialWallet();
@@ -22,6 +23,7 @@ exports.createWallet = async (req, res, next) => {
   });
 };
 
+// store and encrypt privateKey with private/public key and password
 exports.storePrivateKey = async (req, res, next) => {
   const { id } = req.params;
   const { password } = req.body;
