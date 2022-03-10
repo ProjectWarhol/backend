@@ -36,7 +36,7 @@ exports.createWallet = async (req, res, next) => {
   });
 };
 
-exports.storePrivateKey = (req, res, next) => {
+exports.storePrivateKey = async (req, res, next) => {
   const { id } = req.params;
   const wallet = {
     address: req.body.address,
@@ -45,7 +45,7 @@ exports.storePrivateKey = (req, res, next) => {
   };
   const { password } = req.body;
 
-  const encrypted = storeCustodialWallet(wallet, password);
+  const encrypted = await storeCustodialWallet(wallet, password);
   const encryptedObject = privateKeyObject(encrypted);
 
   UserAccount.update(encryptedObject, {
