@@ -2,18 +2,15 @@
 pragma solidity ^0.8.12;
 
 import "../../../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "../../../node_modules/@openzeppelin/contracts/access/AccessControl.sol";
 
-contract NftMinting is ERC721 {
-  uint256 public tokenCounter;
-  constructor() ERC721 ("WarholToken","WT") {
-    tokenCounter = 0;
+contract NftMinting is ERC721, AccessControl {
+  
+  bytes32 public constant MINTER = keccak256("MINTER");
+  constructor() ERC721 ("WarholToken","WT")  {
+    _setupRole(MINTER, msg.sender);
   }
 
-  // function safeMint(string memory tokenURI) public returns (uint256) {
-  //   uint256 newTokenId = tokenCounter;
-  //   _safeMint(msg.sender, tokenURI);
-  //   _setTokenURI(newTokenId, tokenURI);
-  //   tokenCounter += 1;
-  //   return newTokenId;
-  // }
+  function mint(string memory _tokenURI) public onlyRole(MINTER){
+  }
 }
