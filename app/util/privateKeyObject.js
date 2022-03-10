@@ -1,0 +1,15 @@
+exports.privateKeyObject = (encrypted) => ({
+  publicKey: encrypted.address,
+  version: encrypted.encryptedPrivateKey.version,
+  address: encrypted.encryptedPrivateKey.address,
+  ciphertext: encrypted.encryptedPrivateKey.crypto.ciphertext,
+  iv: encrypted.encryptedPrivateKey.crypto.cipherparams.iv,
+  cipher: encrypted.encryptedPrivateKey.crypto.cipher,
+  kdf: encrypted.encryptedPrivateKey.crypto.kdf,
+  mac: encrypted.encryptedPrivateKey.crypto.mac,
+  dklen: encrypted.encryptedPrivateKey.crypto.kdfparams.dklen,
+  salt: encrypted.encryptedPrivateKey.crypto.kdfparams.salt,
+  n: encrypted.encryptedPrivateKey.crypto.kdfparams.n,
+  r: encrypted.encryptedPrivateKey.crypto.kdfparams.r,
+  p: encrypted.encryptedPrivateKey.crypto.kdfparams.p,
+});

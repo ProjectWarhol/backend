@@ -1,8 +1,10 @@
 const db = require('../models');
 const {
   createCustodialWallet,
+  storeCustodialWallet,
 } = require('../blockchain/wallet/custodial_wallet');
 const { updateUserWalletId } = require('../service/update.user');
+const { privateKeyObject } = require('../util/privateKeyObject');
 
 const { UserAccount } = db;
 
@@ -32,4 +34,38 @@ exports.createWallet = async (req, res, next) => {
     walletId: userObject.walletId,
     wallet: walletInformation,
   });
+};
+
+exports.storePrivateKey = (req, res, next) => {
+  const { id } = req.params;
+  const wallet = {
+    address: req.body.address,
+    privateKey: req.body.privateKey,
+    index: req.body.index,
+  };
+  const { password } = req.body;
+
+  const encrypted = storeCustodialWallet(wallet, password);
+  const encryptedObject = privateKeyObject(encrypted);
+
+  UserAccount.update(encryptedObject, {
+    where: { id },
+    returning: true,
+  })
+    .then(([rowsUpdated]) => {
+      if (rowsUpdated) {
+        res.status(200).send({
+          message: 'Private key successfully stored',
+        });
+      } else {
+        const error = new Error('wallet not found');
+        error.status = 404;
+        next(error);
+      }
+    })
+    .catch((err) => {
+      const error = new Error('Something went wrong while updating wallet');
+      error.err = err;
+      next(error);
+    });
 };
