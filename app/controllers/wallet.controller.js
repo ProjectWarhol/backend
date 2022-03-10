@@ -45,10 +45,10 @@ exports.storePrivateKey = async (req, res, next) => {
   };
   const { password } = req.body;
 
-  const encrypted = await storeCustodialWallet(wallet, password);
-  const encryptedObject = privateKeyObject(encrypted);
+  const encryptedObject = await storeCustodialWallet(wallet, password);
+  const encrypteddata = privateKeyObject(encryptedObject);
 
-  UserAccount.update(encryptedObject, {
+  UserAccount.update(encrypteddata, {
     where: { id },
     returning: true,
   })
