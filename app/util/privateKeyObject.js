@@ -1,4 +1,4 @@
-exports.privateKeyObject = (encrypted) => ({
+exports.changeObjectToData = (encrypted) => ({
   publicKey: encrypted.address,
   version: encrypted.encryptedPrivateKey.version,
   address: encrypted.encryptedPrivateKey.address,
