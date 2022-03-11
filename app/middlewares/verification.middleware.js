@@ -1,7 +1,7 @@
 const { checkIfUserHasWallet } = require('../util/accessRight');
 
 exports.userHasNotWallet = async (req, res, next) => {
-  const { id } = req.session.user;
+  const { id } = req.body;
   const hasWallet = await checkIfUserHasWallet(id, res);
 
   if (hasWallet === true) {
@@ -13,7 +13,7 @@ exports.userHasNotWallet = async (req, res, next) => {
 };
 
 exports.userHasWallet = async (req, res, next) => {
-  const { id } = req.session.user;
+  const { id } = req.body;
   const hasWallet = await checkIfUserHasWallet(id, res);
 
   if (hasWallet === false) {
