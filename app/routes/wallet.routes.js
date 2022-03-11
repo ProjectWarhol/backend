@@ -10,7 +10,7 @@ const {
 } = require('../middlewares/verification.middleware');
 
 // Post Wallet request
-router.post('/createWallet', userHasNotWallet, wallet.createWallet);
+router.post('/createWallet', userHasNotWallet, createWallet);
 
 // Post PrivateKey
 router.post('/:id', storePrivateKey);
