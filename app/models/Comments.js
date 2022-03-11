@@ -11,6 +11,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         allowNull: false,
       });
+
+      this.belongsToMany(models.NftContent, {
+        through: models.PictureComments,
+        foreignKey: 'commentId',
+      });
     }
   }
 

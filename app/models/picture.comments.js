@@ -2,25 +2,7 @@ const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class PictureComments extends Model {
-    static associate(models) {
-      this.belongsTo(models.Comments, {
-        foreignKey: {
-          name: 'commentId',
-          type: DataTypes.UUID,
-        },
-        allowNull: false,
-      });
-
-      this.belongsTo(models.NftContent, {
-        foreignKey: {
-          name: 'pictureId',
-          type: DataTypes.UUID,
-        },
-        allowNull: true,
-      });
-    }
-  }
+  class PictureComments extends Model {}
 
   PictureComments.init(
     {
