@@ -11,15 +11,19 @@ contract PostNftMinting is ERC721, ERC721URIStorage {
 
 	constructor() ERC721("PostNftMint", "SFT") {}
 
-	function safeMint(address to, string memory uri) public {
+	function safeMint(address to, string memory uri) external {
 		uint256 tokenId = _tokenIdCounter.current();
 		_tokenIdCounter.increment();
 		_safeMint(to, tokenId);
 		_setTokenURI(tokenId, uri);
 	}
 
+	function transferTo(address to, uint256 tokenId) external {
+		safeTransferFrom(msg.sender, to, tokenId);
+	}
+
 	// The following functions are overrides required by Solidity.
-  function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+	function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
     super._burn(tokenId);
   }
 
