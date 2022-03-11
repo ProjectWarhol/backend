@@ -4,7 +4,10 @@ const {
 } = require('../blockchain/wallet/custodial_wallet');
 const { updateUserWalletId } = require('../service/user');
 const { changeObjectToData } = require('../util/privateKeyObject');
-const { createWallet, updateWallet } = require('../service/user.account');
+const {
+  addWalletToDatabase,
+  updateWallet,
+} = require('../service/user.account');
 
 // create a wallet with private/public keys
 exports.createWallet = async (req, res, next) => {
@@ -14,7 +17,7 @@ exports.createWallet = async (req, res, next) => {
   const walletPublicKey = { publicKey: wallet.wallet[0].address };
   const walletInformation = wallet.wallet[0];
 
-  const storedWallet = await createWallet(walletPublicKey, next);
+  const storedWallet = await addWalletToDatabase(walletPublicKey, next);
   const userObject = await updateUserWalletId(next, storedWallet, id);
 
   res.status(200).send({
