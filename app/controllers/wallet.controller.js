@@ -55,6 +55,7 @@ exports.storePrivateKey = async (req, res, next) => {
   }
 };
 
+// get a wallet using walletId and password
 exports.retrieveWallet = async (req, res, next) => {
   const { id } = req.params;
   const { password } = req.body;
