@@ -29,6 +29,6 @@ module.exports = {
     before: 'readonly',
     beforeEach: 'readonly',
     it: 'readonly',
-    assert: 'readonly'
+    assert: 'readonly',
   },
 };
