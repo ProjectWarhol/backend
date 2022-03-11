@@ -11,6 +11,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         allowNull: false,
       });
+
+      this.belongsToMany(models.Comments, {
+        through: models.PictureComments,
+        foreignKey: 'pictureId',
+      });
     }
   }
 

@@ -11,8 +11,8 @@ exports.checkIfUserHasWallet = async (id, res) => {
       return false;
     })
     .catch(() => {
-      res.status(500).send({
-        message: 'Something went wrong while checking user',
+      res.status(404).send({
+        message: 'user not found',
       });
     });
   return result;
