@@ -9,6 +9,7 @@ const { createWallet, updateWallet } = require('../service/user.account');
 // create a wallet with private/public keys
 exports.createWallet = async (req, res, next) => {
   const { id } = req.body;
+
   const wallet = await createCustodialWallet();
   const walletPublicKey = { publicKey: wallet.wallet[0].address };
   const walletInformation = wallet.wallet[0];
