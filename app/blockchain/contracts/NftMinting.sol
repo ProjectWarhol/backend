@@ -12,14 +12,14 @@ contract NftMinting is ERC721, AccessControl, ERC721URIStorage {
     _setupRole(MINTER, msg.sender);
   }
 
-  function mint(string memory _tokenURI) public onlyRole(MINTER){
+  function safeMint(string memory _tokenURI) public onlyRole(MINTER){
     uint256 _id = tokenCounter;
     _safeMint(msg.sender, _id);
     // _setTokenURI is removed from prigma 0.8.0
     _setTokenURI(_id, _tokenURI);
     tokenCounter = tokenCounter + 1;
   }
-  
+
   // The following functions are overrides required by Solidity.
     function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
         super._burn(tokenId);
