@@ -26,25 +26,25 @@ contract NftMinting is ERC721, AccessControl, ERC721URIStorage {
   }
 
   // The following functions are overrides required by Solidity.
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
-        super._burn(tokenId);
+    function _burn(uint256 _tokenId) internal override(ERC721, ERC721URIStorage) {
+        super._burn(_tokenId);
     }
 
-    function tokenURI(uint256 tokenId)
+    function tokenURI(uint256 _tokenId)
         public
         view
         override(ERC721, ERC721URIStorage)
         returns (string memory)
     {
-        return super.tokenURI(tokenId);
+        return super.tokenURI(_tokenId);
     }
 
-    function supportsInterface(bytes4 interfaceId)
+    function supportsInterface(bytes4 _interfaceId)
         public
         view
         override(ERC721, AccessControl)
         returns (bool)
     {
-        return super.supportsInterface(interfaceId);
+        return super.supportsInterface(_interfaceId);
     }
 }
