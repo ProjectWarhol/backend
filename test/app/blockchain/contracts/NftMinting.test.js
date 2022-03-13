@@ -28,6 +28,11 @@ contract('NftMinting', ()=> {
     it('has a symbol', async()=> {
       const symbol = await contract.symbol()
       assert.equal(symbol, 'WT')
-    })
+    }) 
+    it('safe minting', async()=> {
+      await contract.safeMint('https://storage.googleapis.com/opensea-prod.appspot.com/creature/1.png')
+      const tokenCounter = await contract.tokenCounter()
+      assert.equal(tokenCounter, 1)
+    }) 
   })
 })
