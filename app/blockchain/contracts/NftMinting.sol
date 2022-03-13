@@ -8,16 +8,21 @@ import "../../../node_modules/@openzeppelin/contracts/token/ERC721/extensions/ER
 contract NftMinting is ERC721, AccessControl, ERC721URIStorage {
   bytes32 public constant MINTER = keccak256("MINTER");
   uint public tokenCounter;
+  mapping(string=> bool) _tokenExists;
+
   constructor() ERC721 ("WarholToken","WT")  {
     _setupRole(MINTER, msg.sender);
   }
 
-  function safeMint(string memory _tokenURI) public onlyRole(MINTER){
+  function safeMint(address _to, string memory _tokenURI) public onlyRole(MINTER){
+    // check tokenURI doesn't exist
+    require(!_tokenExists[_tokenURI]);
     uint256 _id = tokenCounter;
-    _safeMint(msg.sender, _id);
+    _safeMint(_to, _id);
     // _setTokenURI is removed from prigma 0.8.0
     _setTokenURI(_id, _tokenURI);
     tokenCounter = tokenCounter + 1;
+    _tokenExists[_tokenURI] = true;
   }
 
   // The following functions are overrides required by Solidity.

@@ -29,6 +29,7 @@ contract('NftMinting', () => {
     });
     it('safe minting', async () => {
       const result = await contract.safeMint(
+        '0x461900a55740465030A64E0dCd47D9d650295400',
         'https://storage.googleapis.com/opensea-prod.appspot.com/creature/1.png'
       );
       const tokenCounter = await contract.tokenCounter();
@@ -40,6 +41,11 @@ contract('NftMinting', () => {
         event.from,
         '0x0000000000000000000000000000000000000000',
         'from is correct'
+      );
+      assert.equal(
+        event.to,
+        '0x461900a55740465030A64E0dCd47D9d650295400',
+        'to is correct'
       );
     });
   });
