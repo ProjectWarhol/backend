@@ -54,4 +54,36 @@ contract('NftMinting', () => {
       ).should.be.rejected;
     });
   });
+  describe('indexing', async () => {
+    it('lists tokenURIs', async () => {
+      // Mint three more tokens
+      await contract.safeMint(
+        '0x0a0afafbf2bfdc841b545e6ec0370c487c4ba5a9',
+        'https://1'
+      );
+      await contract.safeMint(
+        '0x0a0afafbf2bfdc841b545e6ec0370c487c4ba5a9',
+        'https://2'
+      );
+      await contract.safeMint(
+        '0x0a0afafbf2bfdc841b545e6ec0370c487c4ba5a9',
+        'https://3'
+      );
+      const result = [];
+      // eslint-disable-next-line
+      for (let i = 0; i < 4; i++) {
+        // eslint-disable-next-line
+        token = await contract.tokenURI(i);
+        result.push(token);
+      }
+      const expected = [
+        'https://storage.googleapis.com/opensea-prod.appspot.com/creature/1.png',
+        'https://1',
+        'https://2',
+        'https://3',
+      ];
+      // compare as strings
+      assert.equal(result.join(','), expected.join(','));
+    });
+  });
 });
