@@ -47,6 +47,11 @@ contract('NftMinting', () => {
         '0x461900a55740465030A64E0dCd47D9d650295400',
         'to is correct'
       );
+      // FAILURE
+      await contract.safeMint(
+        '0x461900a55740465030A64E0dCd47D9d650295400',
+        'https://storage.googleapis.com/opensea-prod.appspot.com/creature/1.png'
+      ).should.be.rejected;
     });
   });
 });
