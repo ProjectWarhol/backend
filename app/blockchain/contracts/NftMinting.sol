@@ -14,7 +14,7 @@ contract NftMinting is ERC721, AccessControl, ERC721URIStorage {
     _setupRole(MINTER, msg.sender);
   }
 
-  function safeMint(address _to, string memory _tokenURI) public onlyRole(MINTER){
+  function safeMint(address _to, string memory _tokenURI) external onlyRole(MINTER){
     // check tokenURI doesn't exist
     require(!tokenExists[_tokenURI]);
     uint256 _id = tokenCounter;
