@@ -7,11 +7,11 @@ const {
   createWallet,
 } = require('../controllers/wallet.controller');
 const {
-  validateWalletPosession,
+  userHasNotWallet,
 } = require('../middlewares/verification.middleware');
 
 // Post Wallet request
-router.post('/createWallet', validateWalletPosession, createWallet);
+router.post('/createWallet', userHasNotWallet, createWallet);
 
 // Get wallet request
 router.get('/:id', retrieveWallet);
