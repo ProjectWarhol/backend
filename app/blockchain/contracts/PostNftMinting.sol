@@ -4,8 +4,9 @@ pragma solidity ^0.8.12;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/security/PullPayment.sol";
 
-contract PostNftMinting is ERC721, ERC721URIStorage {
+contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 	using Counters for Counters.Counter;
 	Counters.Counter private _tokenIdCounter;
 
@@ -18,11 +19,17 @@ contract PostNftMinting is ERC721, ERC721URIStorage {
 		_setTokenURI(tokenId, uri);
 	}
 
-	function transferTo(address to, uint256 tokenId) external {
+	function tokenTransferTo(address to, uint256 tokenId) external {
 		safeTransferFrom(msg.sender, to, tokenId);
 	}
 
-	// The following functions are overrides required by Solidity.
+	function transferTo(address to, uint256 price) external payable {
+		// price is and must be in Wei
+		// 
+		require(msg.value == price, "Sent value and price are NOT the same.");
+		_asyncTransfer(to, price);
+	}
+
 	function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
     super._burn(tokenId);
   }
