@@ -1,25 +1,44 @@
 const { assert } = require('chai');
+const Web3 = require('web3');
+const fs = require('fs');
 
 /* eslint-disable prefer-destructuring */
 const PostNftMinting = artifacts.require('PostNftMinting');
+const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
+const abi = JSON.parse(
+  fs
+    .readFileSync('app/blockchain/build/contracts/PostNftMinting.json')
+    .toString()
+).abi;
 
 contract('PostNftMinting', (accounts) => {
   const URI =
     'https://gist.githubusercontent.com/mrcgrhrdt/05dbcb0feaa64ba287977b9065395a52/raw/7b6e63d6fb5444902ac7710f8df16355066a62da/example-metadata.json';
   const ETH_DIVIDER = 1000000000000000000;
   let instance;
+  let web3Instance;
   let acc0;
   let acc1;
   let tokenCounter = -1;
 
-  beforeEach(async () => {
+  before(async () => {
     instance = await PostNftMinting.deployed();
+    web3Instance = new web3.eth.Contract(abi, instance.address);
+  });
+
+  beforeEach(async () => {
     acc0 = accounts[0];
     acc1 = accounts[1];
   });
 
   it('Minting should create token on chain', async () => {
-    assert.isOk(await instance.safeMint(acc0, URI), 'Token should be created');
+    const tx = await instance.safeMint(acc0, URI)
+
+    assert.isTrue(
+      tx.receipt.status,
+      'Token should be created'
+    );
+    
     tokenCounter += 1;
   });
 
@@ -104,7 +123,7 @@ contract('PostNftMinting', (accounts) => {
     tokenCounter += 1;
     const prevOwner = await instance.ownerOf(tokenCounter);
 
-    await instance.transferTo(acc1, tokenCounter);
+    await instance.tokenTransferTo(acc1, tokenCounter);
     const newOwner = await instance.ownerOf(tokenCounter);
 
     assert.notStrictEqual(prevOwner, newOwner, 'The owner should be different');
@@ -115,7 +134,7 @@ contract('PostNftMinting', (accounts) => {
     tokenCounter += 1;
 
     try {
-      await instance.transferTo(acc0, tokenCounter);
+      await instance.tokenTransferTo(acc0, tokenCounter);
     } catch (e) {
       assert.strictEqual(
         e.reason,
@@ -130,7 +149,7 @@ contract('PostNftMinting', (accounts) => {
     tokenCounter += 1;
 
     try {
-      await instance.transferTo(acc0, tokenCounter + 1);
+      await instance.tokenTransferTo(acc0, tokenCounter + 1);
     } catch (e) {
       assert.strictEqual(
         e.reason,
@@ -145,7 +164,7 @@ contract('PostNftMinting', (accounts) => {
     tokenCounter += 1;
 
     try {
-      await instance.transferTo('0xlsdhkshhgjk', tokenCounter);
+      await instance.tokenTransferTo('0xlsdhkshhgjk', tokenCounter);
     } catch (e) {
       assert.strictEqual(
         e.code,
@@ -153,5 +172,60 @@ contract('PostNftMinting', (accounts) => {
         'Receover address is not valid'
       );
     }
+  });
+
+  it('Deposit of Wei should be successful', async () => {
+    const tx = await web3Instance.methods
+      .transferTo(acc1, 500000000000000000n)
+      .send({
+        from: acc0,
+        value: 500000000000000000,
+      });
+
+    assert.isTrue(tx.status, 'Transaction is successful');
+  });
+
+  it('Wei is deposited in smart contract', async () => {
+    const depositedPayments = await instance.payments(acc1);
+
+    assert.equal(
+      depositedPayments,
+      500000000000000000,
+      'Amount is not correct'
+    );
+  });
+
+  it('Deposit of Wei should fails due to different values', async () => {
+    try {
+      await web3Instance.methods.transferTo(acc1, 500000000000000000n).send({
+        from: acc0,
+        value: 600000000000000000,
+      });
+    } catch (e) {
+      assert.equal(
+        Object.values(e.data)[0].reason,
+        'Sent value and price are NOT the same.',
+        'Sent value and price should be the same.'
+      );
+    }
+  });
+
+  it('Wei is withdrawn from smart contract', async () => {
+    const tx = await instance.withdrawPayments(acc1);
+
+    assert.isTrue(
+      tx.receipt.status,
+      'Amount is not correct'
+    );
+  });
+
+  it('No more Wei is deposited in smart contract', async () => {
+    const depositedPayments = await instance.payments(acc1);
+
+    assert.equal(
+      depositedPayments,
+      0,
+      'Amount is not correct'
+    );
   });
 });
