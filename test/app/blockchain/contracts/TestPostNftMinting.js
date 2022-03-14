@@ -32,13 +32,10 @@ contract('PostNftMinting', (accounts) => {
   });
 
   it('Minting should create token on chain', async () => {
-    const tx = await instance.safeMint(acc0, URI)
+    const tx = await instance.safeMint(acc0, URI);
 
-    assert.isTrue(
-      tx.receipt.status,
-      'Token should be created'
-    );
-    
+    assert.isTrue(tx.receipt.status, 'Token should be created');
+
     tokenCounter += 1;
   });
 
@@ -213,19 +210,12 @@ contract('PostNftMinting', (accounts) => {
   it('Wei is withdrawn from smart contract', async () => {
     const tx = await instance.withdrawPayments(acc1);
 
-    assert.isTrue(
-      tx.receipt.status,
-      'Amount is not correct'
-    );
+    assert.isTrue(tx.receipt.status, 'Amount is not correct');
   });
 
   it('No more Wei is deposited in smart contract', async () => {
     const depositedPayments = await instance.payments(acc1);
 
-    assert.equal(
-      depositedPayments,
-      0,
-      'Amount is not correct'
-    );
+    assert.equal(depositedPayments, 0, 'Amount is not correct');
   });
 });
