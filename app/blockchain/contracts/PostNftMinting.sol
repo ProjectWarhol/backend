@@ -8,33 +8,33 @@ import "@openzeppelin/contracts/security/PullPayment.sol";
 
 contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 	using Counters for Counters.Counter;
-	Counters.Counter private _tokenIdCounter;
+	Counters.Counter private tokenIdCounter;
 
 	constructor() ERC721("PostNftMint", "SFT") {}
 
-	function safeMint(address to, string memory uri) external {
-		uint256 tokenId = _tokenIdCounter.current();
-		_tokenIdCounter.increment();
-		_safeMint(to, tokenId);
-		_setTokenURI(tokenId, uri);
+	function safeMint(address _to, string memory _uri) external {
+		uint256 tokenId = tokenIdCounter.current();
+		tokenIdCounter.increment();
+		_safeMint(_to, tokenId);
+		_setTokenURI(tokenId, _uri);
 	}
 
-	function tokenTransferTo(address to, uint256 tokenId) external {
-		safeTransferFrom(msg.sender, to, tokenId);
+	function tokenTransferTo(address _to, uint256 _tokenId) external {
+		safeTransferFrom(msg.sender, _to, _tokenId);
 	}
 
-	function transferTo(address to, uint256 price) external payable {
+	function transferTo(address _to, uint256 _price) external payable {
 		// price is and must be in Wei
 		// 
-		require(msg.value == price, "Sent value and price are NOT the same.");
-		_asyncTransfer(to, price);
+		require(msg.value == _price, "Sent value and price are NOT the same.");
+		_asyncTransfer(_to, _price);
 	}
 
-	function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
-    super._burn(tokenId);
+	function _burn(uint256 _tokenId) internal override(ERC721, ERC721URIStorage) {
+    super._burn(_tokenId);
   }
 
-  function tokenURI(uint256 tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
-    return super.tokenURI(tokenId);
+  function tokenURI(uint256 _tokenId) public view override(ERC721, ERC721URIStorage) returns (string memory) {
+    return super.tokenURI(_tokenId);
   }
 }
