@@ -31,22 +31,22 @@ contract('PostNftMinting', (accounts) => {
   });
 
   it('Minting should create token on chain', async () => {
-    const URI =
+    const uri =
       'https://gist.githubusercontent.com/mrcgrhrdt/05dbcb0feaa64ba287977b9065395a52/raw/7b6e63d6fb5444902ac7710f8df16355066a62da/example-metadata.json';
-    const tx = await instance.safeMint(acc0, URI);
+    const tx = await instance.safeMint(acc0, uri);
 
     assert.isTrue(tx.receipt.status, 'Token should be created');
     tokenCounter += 1;
 
     // FAILURE the same uri should not be minted
-    await instance.safeMint(acc0, URI).should.be.rejected;
-    await instance.safeMint(acc1, URI).should.be.rejected;
+    await instance.safeMint(acc0, uri).should.be.rejected;
+    await instance.safeMint(acc1, uri).should.be.rejected;
   });
 
   it('Minting should fail due to invalid address', async () => {
     try {
-      const URI = 'https://1';
-      await instance.safeMint('0xlakj678sfg', URI);
+      const uri = 'https://1';
+      await instance.safeMint('0xlakj678sfg', uri);
     } catch (e) {
       assert.strictEqual(
         e.code,
@@ -57,19 +57,19 @@ contract('PostNftMinting', (accounts) => {
   });
 
   it('URI of token is correct', async () => {
-    const URI = 'https://2';
-    await instance.safeMint(acc0, URI);
+    const uri = 'https://2';
+    await instance.safeMint(acc0, uri);
     tokenCounter += 1;
     assert.strictEqual(
       await instance.tokenURI(tokenCounter),
-      URI,
+      uri,
       'The URI should be correct'
     );
   });
 
   it('Owner of token should be receiver', async () => {
-    const URI = 'https://3';
-    await instance.safeMint(acc1, URI);
+    const uri = 'https://3';
+    await instance.safeMint(acc1, uri);
     tokenCounter += 1;
     assert.strictEqual(
       await instance.ownerOf(tokenCounter),
@@ -81,8 +81,8 @@ contract('PostNftMinting', (accounts) => {
   it('Token should be in receivers wallet', async () => {
     const balance = await instance.balanceOf(acc0);
     const amountTokensBefore = balance.words[0];
-    const URI = 'https://4';
-    await instance.safeMint(acc0, URI);
+    const uri = 'https://4';
+    await instance.safeMint(acc0, uri);
     tokenCounter += 1;
 
     const newBalance = await instance.balanceOf(acc0);
@@ -96,8 +96,8 @@ contract('PostNftMinting', (accounts) => {
 
   it('ETH should be deducted from senders wallet', async () => {
     const senderBalance = (await web3.eth.getBalance(acc0)) / ETH_DIVIDER;
-    const URI = 'https://5';
-    await instance.safeMint(acc1, URI);
+    const uri = 'https://5';
+    await instance.safeMint(acc1, uri);
     tokenCounter += 1;
 
     const newSenderBalance = (await web3.eth.getBalance(acc0)) / ETH_DIVIDER;
@@ -110,8 +110,8 @@ contract('PostNftMinting', (accounts) => {
 
   it('If sender and receiver are different wallets, receivers ETH should be untouched', async () => {
     const receiverBalance = (await web3.eth.getBalance(acc1)) / ETH_DIVIDER;
-    const URI = 'https://6';
-    await instance.safeMint(acc1, URI);
+    const uri = 'https://6';
+    await instance.safeMint(acc1, uri);
     tokenCounter += 1;
 
     const newReceiverBalance = (await web3.eth.getBalance(acc1)) / ETH_DIVIDER;
@@ -123,8 +123,8 @@ contract('PostNftMinting', (accounts) => {
   });
 
   it('Transfer of token should be successful', async () => {
-    const URI = 'https://7';
-    await instance.safeMint(acc0, URI);
+    const uri = 'https://7';
+    await instance.safeMint(acc0, uri);
     tokenCounter += 1;
     const prevOwner = await instance.ownerOf(tokenCounter);
 
@@ -135,8 +135,8 @@ contract('PostNftMinting', (accounts) => {
   });
 
   it('Transfer of token should fail due to wrong ownership', async () => {
-    const URI = 'https://8';
-    await instance.safeMint(acc1, URI);
+    const uri = 'https://8';
+    await instance.safeMint(acc1, uri);
     tokenCounter += 1;
 
     try {
@@ -151,8 +151,8 @@ contract('PostNftMinting', (accounts) => {
   });
 
   it('Transfer of token should fail due to non-existient token', async () => {
-    const URI = 'https://9';
-    await instance.safeMint(acc1, URI);
+    const uri = 'https://9';
+    await instance.safeMint(acc1, uri);
     tokenCounter += 1;
 
     try {
@@ -167,8 +167,8 @@ contract('PostNftMinting', (accounts) => {
   });
 
   it('Transfer of token should fail due to receiver address is not valid', async () => {
-    const URI = 'https://10';
-    await instance.safeMint(acc1, URI);
+    const uri = 'https://10';
+    await instance.safeMint(acc1, uri);
     tokenCounter += 1;
 
     try {
