@@ -34,11 +34,15 @@ contract('PostNftMinting', (accounts) => {
     const uri =
       'https://gist.githubusercontent.com/mrcgrhrdt/05dbcb0feaa64ba287977b9065395a52/raw/7b6e63d6fb5444902ac7710f8df16355066a62da/example-metadata.json';
     const tx = await instance.safeMint(acc0, uri);
-
+    const event = tx.logs[0].args;
+    // SUCCESS
     assert.isTrue(tx.receipt.status, 'Token should be created');
+    assert.equal(event.to, acc0, 'to should be acc0');
+    assert.notEqual(event.from, acc1, 'to should not be acc1');
+
     tokenCounter += 1;
 
-    // FAILURE the same uri should not be minted
+    // FAILURE 'the same uri should not be minted again'
     await instance.safeMint(acc0, uri).should.be.rejected;
     await instance.safeMint(acc1, uri).should.be.rejected;
   });
