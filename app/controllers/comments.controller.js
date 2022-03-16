@@ -86,8 +86,6 @@ exports.deleteComment = (req, res, next) => {
     body: { id },
   } = req;
 
-  console.log(id, 'Mara');
-
   Comments.destroy({
     where: { id },
   })
