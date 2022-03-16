@@ -79,3 +79,55 @@ exports.createComment = (req, res, next) => {
       next(defaultCommentsError(err));
     });
 };
+
+// Delete a comment on a picture
+exports.deleteComment = (req, res, next) => {
+  const {
+    body: { id },
+  } = req;
+
+  console.log(id, 'Mara');
+
+  Comments.destroy({
+    where: { id },
+  })
+    .then(() => {
+      res.status(200).send({
+        message: 'Comment deleted successfully',
+      });
+    })
+    .catch((err) => {
+      next(defaultCommentsError(err));
+    });
+};
+
+// Patch Comment
+exports.updateComment = async (req, res, next) => {
+  const {
+    params: { id },
+  } = req;
+
+  Comments.update(req.body, {
+    where: { id },
+    returning: true,
+  })
+    .then(([rowsUpdated, [updatedComment]]) => {
+      if (rowsUpdated) {
+        res.status(200).send({
+          message: 'Comment was updated successfully',
+          comment: updatedComment,
+        });
+      } else {
+        const error = new Error('Comment not found');
+        error.status = 404;
+        next(error);
+      }
+    })
+    .catch((err) => {
+      const error = new Error(
+        'Something went wrong while updating the comment'
+      );
+      error.err = err;
+      next(error);
+    });
+};

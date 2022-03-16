@@ -13,4 +13,10 @@ router.get('/:id', isLoggedIn, comments.retrieveComments);
 // Create comment on a picture
 router.post('/:id', isLoggedIn, checkUserIdentity, comments.createComment);
 
+// Delete Comment
+router.delete('/', comments.deleteComment);
+
+// Patch Comment
+router.patch('/:id', comments.updateComment);
+
 module.exports = router;
