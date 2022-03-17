@@ -13,14 +13,14 @@ module.exports = {
         defaultValue: Sequelize.literal('uuid_generate_v4()'),
       },
       userId: DataTypes.UUID,
-      promoterId: DataTypes.UUID,
+      promotedId: DataTypes.UUID,
       createdAt: Sequelize.DATE,
     });
     await queryInterface.addConstraint('Promoting', {
-      fields: ['promoterId'],
+      fields: ['promotedId'],
       type: 'check',
       where: {
-        promoterId: {
+        promotedId: {
           [Sequelize.Op.ne]: { [Sequelize.Op.col]: 'Promoting.userId' },
         },
       },
