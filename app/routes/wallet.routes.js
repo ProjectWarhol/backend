@@ -14,6 +14,6 @@ router.post('/createWallet', userHasNotWallet, createWallet);
 // Post PrivateKey
 router.post('/:id', storePrivateKey);
 
-router.delete('/id', deleteWallet);
+router.delete('/:id', deleteWallet);
 
 module.exports = router;

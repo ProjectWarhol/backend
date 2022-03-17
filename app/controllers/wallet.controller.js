@@ -7,6 +7,7 @@ const { changeObjectToData } = require('../util/privateKeyObject');
 const {
   addWalletToDatabase,
   updateWallet,
+  deleteWallet,
 } = require('../service/user.account');
 
 // create a wallet with private/public keys
@@ -50,4 +51,17 @@ exports.storePrivateKey = async (req, res, next) => {
     error.status = 404;
     next(error);
   }
+};
+
+exports.deleteWallet = async (req, res, next) => {
+  const walletId = req.params.id;
+  const { id } = req.body;
+  const deleteObject = { dataValues: '' };
+
+  await deleteWallet(walletId, res, next);
+  await updateUserWalletId(next, deleteObject, id);
+
+  res.status(200).send({
+    message: 'wallet successfully deleted',
+  });
 };
