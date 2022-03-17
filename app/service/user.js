@@ -2,7 +2,11 @@ const db = require('../models');
 
 const { User } = db;
 
-exports.updateUserWalletId = async (next, storedWallet, id) => {
+const {
+  defaultErrorHandler,
+} = require('../middlewares/error_handlers.middleware');
+
+exports.updateUserWalletId = async (storedWallet, id, res, next) => {
   const state = await User.update(
     {
       walletId: storedWallet.dataValues.id,
@@ -20,9 +24,13 @@ exports.updateUserWalletId = async (next, storedWallet, id) => {
       return false;
     })
     .catch((err) => {
-      const error = new Error('Something went wrong while updating user');
-      error.err = err;
-      next(error);
+      next(
+        defaultErrorHandler(
+          err,
+          res,
+          'Something went wrong while updating user'
+        )
+      );
     });
   return state;
 };

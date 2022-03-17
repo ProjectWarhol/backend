@@ -9,6 +9,9 @@ const {
   updateWallet,
   deleteWallet,
 } = require('../service/user.account');
+const {
+  noPathErrorHandler,
+} = require('../middlewares/error_handlers.middleware');
 
 // create a wallet with private/public keys
 exports.createWallet = async (req, res, next) => {
@@ -18,8 +21,8 @@ exports.createWallet = async (req, res, next) => {
   const walletPublicKey = { publicKey: wallet.wallet[0].address };
   const walletInformation = wallet.wallet[0];
 
-  const storedWallet = await addWalletToDatabase(walletPublicKey, next);
-  const userObject = await updateUserWalletId(next, storedWallet, id);
+  const storedWallet = await addWalletToDatabase(walletPublicKey, res, next);
+  const userObject = await updateUserWalletId(storedWallet, id, res, next);
 
   res.status(200).send({
     message: 'Wallet successfully created',
@@ -40,16 +43,14 @@ exports.storePrivateKey = async (req, res, next) => {
 
   const encryptedPrivateKey = await storeCustodialWallet(wallet, password);
   const encryptedData = changeObjectToData(encryptedPrivateKey);
-  const rowsUpdated = await updateWallet(encryptedData, next, id);
+  const rowsUpdated = await updateWallet(encryptedData, id, res, next);
 
   if (rowsUpdated) {
     res.status(200).send({
       message: 'Private key successfully stored',
     });
   } else {
-    const error = new Error('wallet not found');
-    error.status = 404;
-    next(error);
+    next(noPathErrorHandler(res, 'wallet'));
   }
 };
 
@@ -59,7 +60,7 @@ exports.deleteWallet = async (req, res, next) => {
   const deleteObject = { dataValues: '' };
 
   await deleteWallet(walletId, res, next);
-  await updateUserWalletId(next, deleteObject, id);
+  await updateUserWalletId(deleteObject, id, res, next);
 
   res.status(200).send({
     message: 'wallet successfully deleted',
