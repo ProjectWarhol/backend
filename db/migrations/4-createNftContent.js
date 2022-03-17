@@ -46,7 +46,7 @@ module.exports = {
       },
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE,
-      ownerId: {
+      userId: {
         type: DataTypes.UUID,
         references: {
           model: {
