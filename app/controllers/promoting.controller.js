@@ -60,7 +60,7 @@ const decrementPromoting = async (userId, promotedId) => {
 // Get all users that a user with userId promotes
 exports.userPromoting = (req, res, next) => {
   const {
-    body: { userId },
+    params: { userId },
   } = req;
 
   User.findAll({
@@ -86,7 +86,7 @@ exports.userPromoting = (req, res, next) => {
 // Get all users that promote a user with promotedId
 exports.userIsPromoted = (req, res, next) => {
   const {
-    body: { promotedId },
+    params: { promotedId },
   } = req;
 
   User.findAll({
