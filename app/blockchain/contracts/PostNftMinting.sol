@@ -9,13 +9,13 @@ import "@openzeppelin/contracts/security/PullPayment.sol";
 contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 	using Counters for Counters.Counter;
 	Counters.Counter private tokenIdCounter;
-	mapping(string=> bool) tokenExists;
+	mapping(string=> bool) private tokenExists;
 
 	constructor() ERC721("PostNftMint", "SFT") {}
 
 	function safeMint(address _to, string memory _uri) external {
 		// check if _uri doesn't exist
-    require(!tokenExists[_uri]);
+    require(!tokenExists[_uri], "The uri already exists");
 		uint256 tokenId = tokenIdCounter.current();
 		tokenIdCounter.increment();
 		_safeMint(_to, tokenId);
@@ -29,8 +29,7 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 
 	function transferTo(address _to, uint256 _price) external payable {
 		// price is and must be in Wei
-		// 
-		require(msg.value == _price, "Sent value and price are NOT the same.");
+		require(msg.value == _price, "Sent value and price NOT equal");
 		_asyncTransfer(_to, _price);
 	}
 

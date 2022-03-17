@@ -216,7 +216,7 @@ contract('PostNftMinting', (accounts) => {
     } catch (e) {
       assert.equal(
         Object.values(e.data)[0].reason,
-        'Sent value and price are NOT the same.',
+        'Sent value and price NOT equal',
         'Sent value and price should be the same.'
       );
     }
