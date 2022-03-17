@@ -7,17 +7,8 @@ const {
   generateSeedPhrase,
   createCustodialWallet,
   storeCustodialWallet,
+  decryptPrivateKey,
 } = require('../../../../app/blockchain/wallet/custodial_wallet');
-
-// Global
-let custodialWalletData = {
-  address: '0x0d2995d304fe3E28E12827001E3fE7c916343221',
-  privateKey:
-    '0x1940082155f05c0e5bfe0d6fdc2fe28d9a2b4f94101d5fc83f2b03e8b77dae7b',
-  seedPhrase:
-    'blouse diet retreat cry sun badge return decide ski stick glory lazy',
-};
-let password = 'test';
 
 describe('generateSeedPhrase', () => {
   it('should return 12 words', () => {
@@ -52,6 +43,15 @@ describe('createCustodialWallet', () => {
 });
 
 describe('storeCustodialWallet', () => {
+  // Global
+  let custodialWalletData = {
+    address: '0x0d2995d304fe3E28E12827001E3fE7c916343221',
+    privateKey:
+      '0x1940082155f05c0e5bfe0d6fdc2fe28d9a2b4f94101d5fc83f2b03e8b77dae7b',
+    seedPhrase:
+      'blouse diet retreat cry sun badge return decide ski stick glory lazy',
+  };
+  let password = 'test';
   let actual = storeCustodialWallet(custodialWalletData, password);
 
   it('should return three keys', () => {
@@ -83,3 +83,34 @@ describe('storeCustodialWallet', () => {
   });
 });
 
+describe('decryptPrivateKey', () => {
+  const custodialWalletData = {
+    address: '0x0d2995d304fe3E28E12827001E3fE7c916343221',
+    privateKey:
+      '0x1940082155f05c0e5bfe0d6fdc2fe28d9a2b4f94101d5fc83f2b03e8b77dae7b',
+    seedPhrase:
+      'blouse diet retreat cry sun badge return decide ski stick glory lazy',
+  };
+  const password = 'test';
+  const { encryptedPrivateKey } = storeCustodialWallet(
+    custodialWalletData,
+    password
+  );
+  // SUCCESS
+  it('should decrypt the address', () => {
+    const { address: actual } = decryptPrivateKey(
+      encryptedPrivateKey,
+      password
+    );
+    const { address: expected } = custodialWalletData;
+    assert.equal(actual, expected);
+  });
+  it('should decrypt the privateKey', () => {
+    const { privateKey: actual } = decryptPrivateKey(
+      encryptedPrivateKey,
+      password
+    );
+    const { privateKey: expected } = custodialWalletData;
+    assert.equal(actual, expected);
+  });
+});
