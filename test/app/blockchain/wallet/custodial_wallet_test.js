@@ -9,6 +9,16 @@ const {
   storeCustodialWallet,
 } = require('../../../../app/blockchain/wallet/custodial_wallet');
 
+// Global
+let custodialWalletData = {
+  address: '0x0d2995d304fe3E28E12827001E3fE7c916343221',
+  privateKey:
+    '0x1940082155f05c0e5bfe0d6fdc2fe28d9a2b4f94101d5fc83f2b03e8b77dae7b',
+  seedPhrase:
+    'blouse diet retreat cry sun badge return decide ski stick glory lazy',
+};
+let password = 'test';
+
 describe('generateSeedPhrase', () => {
   it('should return 12 words', () => {
     const phrases = generateSeedPhrase();
@@ -42,15 +52,7 @@ describe('createCustodialWallet', () => {
 });
 
 describe('storeCustodialWallet', () => {
-  const custodialWalletData = {
-    address: '0x0d2995d304fe3E28E12827001E3fE7c916343221',
-    privateKey:
-      '0x1940082155f05c0e5bfe0d6fdc2fe28d9a2b4f94101d5fc83f2b03e8b77dae7b',
-    seedPhrase:
-      'blouse diet retreat cry sun badge return decide ski stick glory lazy',
-  };
-  const password = 'test';
-  const actual = storeCustodialWallet(custodialWalletData, password);
+  let actual = storeCustodialWallet(custodialWalletData, password);
 
   it('should return three keys', () => {
     const expected = {
@@ -72,13 +74,12 @@ describe('storeCustodialWallet', () => {
     const expected = custodialWalletData.seedPhrase;
     assert.equal(actual.seedPhrase, expected);
   });
-});
-// Failure case
-describe('Failure case: storeCustodialWallet', () => {
-  const custodialWalletData = 'wallet';
-  const password = 'test';
-  const actual = storeCustodialWallet(custodialWalletData, password);
+  // Failure case
   it('should return undefined', () => {
+    custodialWalletData = 'wallet';
+    password = 'test';
+    actual = storeCustodialWallet(custodialWalletData, password);
     assert.equal(actual, undefined);
   });
 });
+
