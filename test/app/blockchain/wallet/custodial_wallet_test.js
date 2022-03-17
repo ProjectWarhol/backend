@@ -33,6 +33,11 @@ describe('createCustodialWallet', () => {
     };
     assert.doesNotHaveAnyKeys(actual, notExpected);
   });
+  it('should generate different addresses', () => {
+    const { wallet: walletOne } = createCustodialWallet();
+    const { wallet: walletTwo } = createCustodialWallet();
+    assert.notEqual(walletOne.address, walletTwo.address);
+  });
 });
 
 describe('storeCustodialWallet', () => {
