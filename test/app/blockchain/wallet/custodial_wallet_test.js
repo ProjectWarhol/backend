@@ -113,4 +113,16 @@ describe('decryptPrivateKey', () => {
     const { privateKey: expected } = custodialWalletData;
     assert.equal(actual, expected);
   });
+  // Failure case
+  it('should return undefined', () => {
+    const { privateKey: actual } = decryptPrivateKey('fake-key', password);
+    assert.equal(actual, undefined);
+  });
+  it('should return undefined', () => {
+    const { privateKey: actual } = decryptPrivateKey(
+      encryptedPrivateKey,
+      'fake-password'
+    );
+    assert.equal(actual, undefined);
+  });
 });
