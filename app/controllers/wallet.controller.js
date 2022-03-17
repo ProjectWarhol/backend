@@ -4,7 +4,7 @@ const {
 } = require('../blockchain/wallet/custodial_wallet');
 const { updateUserWalletId } = require('../service/user');
 const { decryptPrivateKey } = require('../blockchain/wallet/custodial_wallet');
-const { changeToWalletObject } = require('../util/walletObject');
+const { walletObject } = require('../util/walletObject');
 const { changeObjectToData } = require('../util/privateKeyObject');
 const {
   addWalletToDatabase,
@@ -61,8 +61,8 @@ exports.retrieveWallet = async (req, res, next) => {
   const { password } = req.body;
 
   const userAccount = await findWalletById(id, next);
-  const encryptedKey = changeToWalletObject(userAccount);
-  const privateKey = await decryptPrivateKey(encryptedKey, password);
+  const encryptedAccount = walletObject(userAccount);
+  const privateKey = await decryptPrivateKey(encryptedAccount, password);
 
   res.status(200).send({
     message: 'wallet successfully sent',

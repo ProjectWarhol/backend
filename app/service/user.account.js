@@ -25,7 +25,7 @@ exports.updateWallet = async (encryptedData, next, id) => {
 };
 
 exports.findWalletById = async (id, next) => {
-  const userAccount = await UserAccount.findOne({ where: { id } }).catch(
+  const userAccount = await UserAccount.findByPk({ where: { id } }).catch(
     (err) => {
       const error = new Error('Something went wrong while retrieving wallet');
       error.err = err;

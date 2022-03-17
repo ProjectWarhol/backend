@@ -1,4 +1,4 @@
-exports.changeToWalletObject = (account) => ({
+exports.walletObject = (account) => ({
   version: account.version,
   id: account.id,
   address: account.address,
