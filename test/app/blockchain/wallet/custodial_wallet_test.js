@@ -33,6 +33,7 @@ describe('createCustodialWallet', () => {
     };
     assert.doesNotHaveAnyKeys(actual, notExpected);
   });
+  // create multiple accounts
   it('should generate different addresses', () => {
     const { wallet: walletOne } = createCustodialWallet();
     const { wallet: walletTwo } = createCustodialWallet();
@@ -42,13 +43,9 @@ describe('createCustodialWallet', () => {
 
 describe('storeCustodialWallet', () => {
   const custodialWalletData = {
-    wallet: {
-      0: {
-        address: '0x0d2995d304fe3E28E12827001E3fE7c916343221',
-        privateKey:
-          '0x1940082155f05c0e5bfe0d6fdc2fe28d9a2b4f94101d5fc83f2b03e8b77dae7b',
-      },
-    },
+    address: '0x0d2995d304fe3E28E12827001E3fE7c916343221',
+    privateKey:
+      '0x1940082155f05c0e5bfe0d6fdc2fe28d9a2b4f94101d5fc83f2b03e8b77dae7b',
     seedPhrase:
       'blouse diet retreat cry sun badge return decide ski stick glory lazy',
   };
@@ -64,11 +61,11 @@ describe('storeCustodialWallet', () => {
     assert.hasAllKeys(actual, expected);
   });
   it('should return the correct address', () => {
-    const expected = custodialWalletData.wallet[0].address;
+    const expected = custodialWalletData.address;
     assert.equal(actual.address, expected);
   });
   it('should encrypt the private key', () => {
-    const notExpected = custodialWalletData.wallet[0].privateKey;
+    const notExpected = custodialWalletData.privateKey;
     assert.notEqual(actual.encryptedPrivateKey, notExpected);
   });
   it('should return the correct seedPhrase', () => {
