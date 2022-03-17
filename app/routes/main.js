@@ -4,6 +4,7 @@ const router = express.Router();
 
 const userRoutes = require('./user.routes');
 const promotingRoutes = require('./promoting.routes');
+const promotedRoutes = require('./promoted.routes');
 const walletRoutes = require('./wallet.routes');
 const commentsRoutes = require('./comments.routes');
 
@@ -14,6 +15,7 @@ router.get('/', (req, res) => {
 
 router.use('/users', userRoutes);
 router.use('/promoting', promotingRoutes);
+router.use('/promoted', promotedRoutes);
 router.use('/wallet', walletRoutes);
 router.use('/comments', commentsRoutes);
 
