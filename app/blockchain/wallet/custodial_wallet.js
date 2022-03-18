@@ -30,10 +30,8 @@ exports.storeCustodialWallet = (custodialWalletData, password) => {
     };
     return data;
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log('Error has occurred:Being passed wrong args');
+    return err;
   }
-  return undefined;
 };
 
 exports.decryptPrivateKey = (custodialWalletData, password) => {
