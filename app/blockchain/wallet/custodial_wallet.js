@@ -30,7 +30,7 @@ exports.storeCustodialWallet = (custodialWalletData, password) => {
     };
     return data;
   } catch (err) {
-    return err;
+    return false;
   }
 };
 

@@ -18,3 +18,13 @@ exports.defaultErrorHandler = (err, res, message) => {
     },
   });
 };
+
+// eslint-disable-next-line no-unused-vars
+exports.defaultWrongInputHandler = (res, message) => {
+  res.status(422).send({
+    error: {
+      status: 422,
+      message: `Unprocessable Entity: ${message}`,
+    },
+  });
+};

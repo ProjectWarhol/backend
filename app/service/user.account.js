@@ -30,19 +30,24 @@ exports.addWalletToDatabase = async (walletPublicKey, res, next) => {
 };
 
 exports.updateWallet = async (encryptedData, id, res, next) => {
+  let error;
+
   const updateData = await UserAccount.update(encryptedData, {
     where: { id },
     returning: true,
   }).catch((err) => {
+    error = err;
+  });
+
+  if (updateData[0] === 0) {
     next(
       defaultErrorHandler(
-        err,
+        error,
         res,
         'Something went wrong while updating wallet'
       )
     );
-  });
-
+  }
   return updateData;
 };
 

@@ -10,7 +10,7 @@ const {
   deleteWallet,
 } = require('../service/user.account');
 const {
-  noPathErrorHandler,
+  defaultWrongInputHandler,
 } = require('../middlewares/error_handlers.middleware');
 
 // create a wallet with private/public keys
@@ -42,16 +42,16 @@ exports.storePrivateKey = async (req, res, next) => {
   };
 
   const encryptedPrivateKey = await storeCustodialWallet(wallet, password);
-  const encryptedData = changeObjectToData(encryptedPrivateKey);
-  const rowsUpdated = await updateWallet(encryptedData, id, res, next);
-
-  if (rowsUpdated) {
-    res.status(200).send({
-      message: 'Private key successfully stored',
-    });
-  } else {
-    next(noPathErrorHandler(res, 'wallet'));
+  if (!encryptedPrivateKey) {
+    next(defaultWrongInputHandler(res, 'wallet input'));
   }
+
+  const encryptedData = changeObjectToData(encryptedPrivateKey);
+  await updateWallet(encryptedData, id, res, next);
+
+  res.status(200).send({
+    message: 'Private key successfully stored',
+  });
 };
 
 exports.deleteWallet = async (req, res, next) => {
