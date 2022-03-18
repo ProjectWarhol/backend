@@ -14,7 +14,7 @@ exports.defaultErrorHandler = (err, res, message) => {
   res.status(err.status || 500).send({
     error: {
       status: err.status || 500,
-      message: err.message || `Internal Server Error ${message}`,
+      message: `Internal Server Error: ${message}`,
       err: err.err,
     },
   });
