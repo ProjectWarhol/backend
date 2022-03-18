@@ -8,16 +8,25 @@ const {
 const { UserAccount } = db;
 
 exports.addWalletToDatabase = async (walletPublicKey, res, next) => {
+  let error;
+
   const account = await UserAccount.create(walletPublicKey).catch((err) => {
-    next(
-      defaultErrorHandler(
-        err,
-        res,
-        'Something went wrong while creating wallet'
-      )
-    );
+    error = err;
   });
-  return account;
+
+  if (
+    typeof account.dataValues.publicKey !== 'undefined' &&
+    account.dataValues.publicKey !== null
+  ) {
+    return account;
+  }
+  next(
+    defaultErrorHandler(
+      error,
+      res,
+      'Something went wrong while creating wallet'
+    )
+  );
 };
 
 exports.updateWallet = async (encryptedData, id, res, next) => {
