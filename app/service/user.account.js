@@ -51,6 +51,18 @@ exports.updateWallet = async (encryptedData, id, res, next) => {
   return updateData;
 };
 
+exports.findWalletById = async (id, next) => {
+  const userAccount = await UserAccount.findByPk({ where: { id } }).catch(
+    (err) => {
+      const error = new Error('Something went wrong while retrieving wallet');
+      error.err = err;
+      next(error);
+    }
+  );
+
+  return userAccount;
+};
+
 exports.deleteWallet = async (id, res, next) => {
   const deletedData = await UserAccount.destroy({
     where: { id },
@@ -72,4 +84,5 @@ exports.deleteWallet = async (id, res, next) => {
     });
 
   return deletedData;
+
 };

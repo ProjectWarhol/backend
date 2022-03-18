@@ -11,9 +11,9 @@ router.get('/isPromoted', isLoggedIn, promoting.userIsPromoted);
 router.get('/', isLoggedIn, promoting.userPromoting);
 
 // Post user promotes
-router.post('/:userId', isLoggedIn, promoting.promotingOneUser);
+router.post('/:promotedId', isLoggedIn, promoting.promotingOneUser);
 
 // Delete user promotes
-router.delete('/:userId', isLoggedIn, promoting.unpromotingOneUser);
+router.delete('/:promotedId', isLoggedIn, promoting.unpromotingOneUser);
 
 module.exports = router;
