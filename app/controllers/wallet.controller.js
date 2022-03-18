@@ -62,7 +62,7 @@ exports.retrieveWallet = async (req, res, next) => {
   const { id } = req.params;
   const { password } = req.body;
 
-  const userAccount = await findWalletById(id, next);
+  const userAccount = await findWalletById(id, res, next);
   const encryptedAccount = walletObject(userAccount);
   const privateKey = await decryptPrivateKey(encryptedAccount, password);
 
@@ -74,7 +74,7 @@ exports.retrieveWallet = async (req, res, next) => {
   });
 };
 
-
+// delete wallet by id
 exports.deleteWallet = async (req, res, next) => {
   const walletId = req.params.id;
   const { id } = req.body;
