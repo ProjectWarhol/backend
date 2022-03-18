@@ -1,9 +1,11 @@
+/* eslint-disable consistent-return */
 const db = require('../models');
 
 const { User } = db;
 
 const {
   defaultErrorHandler,
+  noPathErrorHandler,
 } = require('../middlewares/error_handlers.middleware');
 
 exports.updateUserWalletId = async (storedWallet, id, res, next) => {
@@ -21,7 +23,7 @@ exports.updateUserWalletId = async (storedWallet, id, res, next) => {
         const object = updatedUser;
         return object;
       }
-      return false;
+      next(noPathErrorHandler(res, 'User'));
     })
     .catch((err) => {
       next(
