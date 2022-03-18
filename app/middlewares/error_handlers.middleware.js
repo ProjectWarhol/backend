@@ -1,6 +1,6 @@
 // for not found paths
 // eslint-disable-next-line no-unused-vars
-exports.noPathErrorHandler = (req, res, next) => {
+exports.noPathErrorHandler = (res) => {
   res.status(404).send({
     error: {
       status: 404,

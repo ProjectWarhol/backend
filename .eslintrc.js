@@ -22,4 +22,13 @@ module.exports = {
     'prefer-arrow-callback': ['error', { allowNamedFunctions: false }],
     'func-style': ['error', 'expression', { allowArrowFunctions: true }],
   },
+  globals: {
+    web3: 'readonly',
+    artifacts: 'readonly',
+    contract: 'readonly',
+    before: 'readonly',
+    beforeEach: 'readonly',
+    it: 'readonly',
+    assert: 'readonly',
+  },
 };

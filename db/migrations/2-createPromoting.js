@@ -12,15 +12,33 @@ module.exports = {
         type: DataTypes.UUID,
         defaultValue: Sequelize.literal('uuid_generate_v4()'),
       },
-      userId: DataTypes.UUID,
-      promoterId: DataTypes.UUID,
+      userId: {
+        type: DataTypes.UUID,
+        references: {
+          model: {
+            tableName: 'User',
+          },
+          key: 'id',
+        },
+        allowNull: false,
+      },
+      promotedId: {
+        type: DataTypes.UUID,
+        references: {
+          model: {
+            tableName: 'User',
+          },
+          key: 'id',
+        },
+        allowNull: false,
+      },
       createdAt: Sequelize.DATE,
     });
     await queryInterface.addConstraint('Promoting', {
-      fields: ['promoterId'],
+      fields: ['promotedId'],
       type: 'check',
       where: {
-        promoterId: {
+        promotedId: {
           [Sequelize.Op.ne]: { [Sequelize.Op.col]: 'Promoting.userId' },
         },
       },

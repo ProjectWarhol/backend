@@ -17,18 +17,18 @@ const defaultPromotingError = (err) => {
   return error;
 };
 
-const incrementPromoting = async (promoterId, userId) => {
+const incrementPromoting = async (userId, promotedId) => {
   const updatedUsers = {};
 
   updatedUsers.promoter = await User.increment('promoting', {
     where: {
-      id: promoterId,
+      id: userId,
     },
   });
 
   updatedUsers.promoted = await User.increment('promoters', {
     where: {
-      id: userId,
+      id: promotedId,
     },
   });
 
@@ -37,18 +37,18 @@ const incrementPromoting = async (promoterId, userId) => {
   return updatedUsers;
 };
 
-const decrementPromoting = async (promoterId, userId) => {
+const decrementPromoting = async (userId, promotedId) => {
   const updatedUsers = {};
 
   updatedUsers.promoter = await User.decrement('promoting', {
     where: {
-      id: promoterId,
+      id: userId,
     },
   });
 
   updatedUsers.promoted = await User.decrement('promoters', {
     where: {
-      id: userId,
+      id: promotedId,
     },
   });
 
@@ -57,10 +57,10 @@ const decrementPromoting = async (promoterId, userId) => {
   return updatedUsers;
 };
 
-// Get all users that a user with promoterId promotes
+// Get all users that a user with userId promotes
 exports.userPromoting = (req, res, next) => {
   const {
-    body: { promoterId },
+    body: { userId },
   } = req;
 
   User.findAll({
@@ -68,7 +68,7 @@ exports.userPromoting = (req, res, next) => {
       model: Promoting,
       attributes: [],
       required: true,
-      where: { promoterId },
+      where: { userId },
     },
   })
     .then((userData) => {
@@ -83,10 +83,10 @@ exports.userPromoting = (req, res, next) => {
     });
 };
 
-// Get all users that promote a user with userId
+// Get all users that promote a user with promotedId
 exports.userIsPromoted = (req, res, next) => {
   const {
-    body: { userId },
+    body: { promotedId },
   } = req;
 
   User.findAll({
@@ -95,9 +95,9 @@ exports.userIsPromoted = (req, res, next) => {
       attributes: [],
       required: true,
       on: {
-        promoterId: { [Op.eq]: Sequelize.col('User.id') },
+        userId: { [Op.eq]: Sequelize.col('User.id') },
       },
-      where: { userId },
+      where: { promotedId },
     },
   })
     .then((userData) => {
@@ -115,17 +115,17 @@ exports.userIsPromoted = (req, res, next) => {
 // Create entry in Promoting
 exports.promotingOneUser = (req, res, next) => {
   const {
-    body: { promoterId },
-    params: { userId },
+    body: { userId },
+    params: { promotedId },
   } = req;
 
   Promoting.findOrCreate({
     where: {
-      [Op.and]: [{ promoterId }, { userId }],
+      [Op.and]: [{ userId }, { promotedId }],
     },
     defaults: {
-      ...{ promoterId },
       ...{ userId },
+      ...{ promotedId },
     },
   })
     // eslint-disable-next-line no-unused-vars
@@ -133,7 +133,7 @@ exports.promotingOneUser = (req, res, next) => {
       if (created) {
         let updatedUsers;
         try {
-          updatedUsers = await incrementPromoting(promoterId, userId);
+          updatedUsers = await incrementPromoting(userId, promotedId);
         } catch (err) {
           next(defaultPromotingError(err));
         }
@@ -156,20 +156,20 @@ exports.promotingOneUser = (req, res, next) => {
 // Delete entry in Promoting
 exports.unpromotingOneUser = (req, res, next) => {
   const {
-    body: { promoterId },
-    params: { userId },
+    body: { userId },
+    params: { promotedId },
   } = req;
 
   Promoting.destroy({
     where: {
-      [Op.and]: [{ promoterId }, { userId }],
+      [Op.and]: [{ userId }, { promotedId }],
     },
   })
     .then(async (destroyed) => {
       if (destroyed) {
         let updatedUsers;
         try {
-          updatedUsers = await decrementPromoting(promoterId, userId);
+          updatedUsers = await decrementPromoting(userId, promotedId);
         } catch (err) {
           next(defaultPromotingError(err));
         }

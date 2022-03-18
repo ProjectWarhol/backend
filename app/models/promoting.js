@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
 
       this.belongsTo(models.User, {
         foreignKey: {
-          name: 'promoterId',
+          name: 'promotedId',
           type: DataTypes.UUID,
         },
         allowNull: false,
