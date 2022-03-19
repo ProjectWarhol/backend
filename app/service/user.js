@@ -64,7 +64,7 @@ exports.createUser = async (req, res, next) => {
 
         newUser.save();
 
-        return newUser.id;
+        return newUser;
       }
       res.status(409).send({
         message: 'Email or username already in use',

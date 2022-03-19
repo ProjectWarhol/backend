@@ -4,6 +4,16 @@ const errHandler = require('../middlewares/error_handlers.middleware');
 const { sessionObject } = require('../util/sessionObject');
 const { generateToken } = require('../util/tokenGenerator');
 const { createUser } = require('../service/user');
+const {
+  createCustodialWallet,
+  storeCustodialWallet,
+} = require('../blockchain/wallet/custodial_wallet');
+const { addWalletToDatabase } = require('../service/user.account');
+const {
+  defaultWrongInputHandler,
+} = require('../middlewares/error_handlers.middleware');
+const { changeObjectToData } = require('../util/privateKeyObject');
+const { updateUserWalletId } = require('../service/user');
 
 const {
   User,
@@ -228,6 +238,38 @@ exports.createOne = async (req, res, next) => {
 
 // set updatePassword attributes
 exports.expressSignup = async (req, res, next) => {
-  // eslint-disable-next-line no-unused-vars
-  const id = await createUser(req, res, next);
+  const user = await createUser(req, res, next);
+
+  const wallet = await createCustodialWallet();
+  const walletInfo = {
+    address: wallet.wallet.address,
+    privateKey: wallet.wallet.privateKey,
+    index: wallet.wallet.index,
+  };
+
+  const encryptedwallet = await storeCustodialWallet(
+    walletInfo,
+    req.body.password
+  );
+  if (!encryptedwallet) {
+    next(defaultWrongInputHandler(res, 'wallet input'));
+  }
+
+  const encryptedData = changeObjectToData(encryptedwallet);
+  const storedWallet = await addWalletToDatabase(encryptedData, res, next);
+  const newUser = await updateUserWalletId(
+    storedWallet,
+    user.dataValues.id,
+    res,
+    next
+  );
+
+  res.status(200).send({
+    message: 'signup successful',
+    wallet: {
+      address: wallet.wallet.address,
+      privateKey: wallet.wallet.privateKey,
+    },
+    user: sessionObject(newUser),
+  });
 };
