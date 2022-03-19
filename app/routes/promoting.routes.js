@@ -7,11 +7,8 @@ const {
 } = require('../middlewares/authentication.middleware');
 const { isLoggedIn } = require('../middlewares/authorization.middleware');
 
-// Get user promoters
-router.get('/isPromoted', isLoggedIn, promoting.userIsPromoted);
-
 // Get users promoted by user
-router.get('/', isLoggedIn, promoting.userPromoting);
+router.get('/:userId', isLoggedIn, promoting.userPromoting);
 
 // Post user promotes
 router.post(

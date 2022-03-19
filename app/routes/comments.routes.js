@@ -8,9 +8,13 @@ const {
 const { isLoggedIn } = require('../middlewares/authorization.middleware');
 
 // Fetch comments on a picture
-router.get('/', isLoggedIn, comments.retrieveComments);
+router.get('/:id', isLoggedIn, comments.retrieveComments);
 
 // Create comment on a picture
+<<<<<<< HEAD
 router.post('/', isLoggedIn, checkUserIdentity, comments.createComment);
+=======
+router.post('/:id', isLoggedIn, comments.createComment);
+>>>>>>> main
 
 module.exports = router;
