@@ -73,7 +73,6 @@ exports.retrieveWallet = async (req, res, next) => {
   });
 };
 
-
 exports.deleteWallet = async (req, res, next) => {
   const walletId = req.params.id;
   const { id } = req.body;

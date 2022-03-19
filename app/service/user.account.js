@@ -57,5 +57,4 @@ exports.deleteWallet = async (id, res, next) => {
     });
 
   return deletedData;
-
 };
