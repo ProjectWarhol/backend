@@ -2,38 +2,50 @@
 const db = require('../models');
 const {
   noPathErrorHandler,
+  defaultErrorHandler,
 } = require('../middlewares/error_handlers.middleware');
 
 const { UserAccount } = db;
 
-exports.addWalletToDatabase = async (walletPublicKey, next) => {
+exports.addWalletToDatabase = async (walletPublicKey, res, next) => {
   const account = await UserAccount.create(walletPublicKey).catch((err) => {
-    const error = new Error('Something went wrong while creating wallet');
-    error.err = err;
-    next(error);
+    console.log(err);
   });
-  return account;
+
+  if (
+    typeof account.dataValues.publicKey !== 'undefined' &&
+    account.dataValues.publicKey !== null
+  ) {
+    return account;
+  }
+  next(defaultErrorHandler(res, 'Something went wrong while creating wallet'));
 };
 
-exports.updateWallet = async (encryptedData, next, id) => {
+exports.updateWallet = async (encryptedData, id, res, next) => {
   const updateData = await UserAccount.update(encryptedData, {
     where: { id },
     returning: true,
   }).catch((err) => {
-    const error = new Error('Something went wrong while updating wallet');
-    error.err = err;
-    next(error);
+    console.log(err);
   });
 
+  if (updateData[0] === 0) {
+    next(
+      defaultErrorHandler(res, 'Something went wrong while updating wallet')
+    );
+  }
   return updateData;
 };
 
-exports.findWalletById = async (id, next) => {
+exports.findWalletById = async (id, res, next) => {
   const userAccount = await UserAccount.findByPk({ where: { id } }).catch(
-    (err) => {
-      const error = new Error('Something went wrong while retrieving wallet');
-      error.err = err;
-      next(error);
+    () => {
+      next(
+        defaultErrorHandler(
+          res,
+          'something went wrong while retrieving the wallet'
+        )
+      );
     }
   );
 
@@ -50,10 +62,10 @@ exports.deleteWallet = async (id, res, next) => {
       }
       next(noPathErrorHandler(res));
     })
-    .catch((err) => {
-      const error = new Error('something went wrong while deleting wallet');
-      error.err = err;
-      next(error);
+    .catch(() => {
+      next(
+        defaultErrorHandler(res, 'something went wrong while deleting wallet')
+      );
     });
 
   return deletedData;
