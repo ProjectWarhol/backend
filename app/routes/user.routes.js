@@ -40,6 +40,7 @@ router.post(
 // update User password & login
 router.post('/updatePassword/:token', user.replacePassword);
 
-router.post('/express');
+// express signup
+router.post('/express', user.expressSignup);
 
 module.exports = router;

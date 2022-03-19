@@ -3,6 +3,7 @@ const db = require('../models');
 const errHandler = require('../middlewares/error_handlers.middleware');
 const { sessionObject } = require('../util/sessionObject');
 const { generateToken } = require('../util/tokenGenerator');
+const { createUser } = require('../service/user');
 
 const {
   User,
@@ -223,4 +224,10 @@ exports.createOne = async (req, res, next) => {
     .catch((err) => {
       next(errHandler.defaultErrorHandler(err));
     });
+};
+
+// set updatePassword attributes
+exports.expressSignup = async (req, res, next) => {
+  // eslint-disable-next-line no-unused-vars
+  const id = await createUser(req, res, next);
 };
