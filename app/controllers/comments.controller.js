@@ -1,4 +1,3 @@
-const { Sequelize } = require('../models');
 const db = require('../models');
 const { commentObject } = require('../util/commentObject');
 const {
@@ -6,21 +5,7 @@ const {
   defaultErrorHandler,
 } = require('../middlewares/error_handlers.middleware');
 
-const {
-  Sequelize: { Op },
-  NftContent,
-  Comments,
-  User,
-} = db;
-
-const defaultCommentsError = (err) => {
-  const error = new Error('Something went wrong');
-  error.status = 500;
-  if (err.name !== 'SequelizeDatabaseError') {
-    error.err = err;
-  }
-  return error;
-};
+const { NftContent, User } = db;
 
 // Retrieve comments on picture
 exports.retrieveComments = (req, res, next) => {
