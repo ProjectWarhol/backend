@@ -21,7 +21,8 @@ const defaultCommentsError = (err) => {
 // Retrieve comments on picture
 exports.retrieveComments = (req, res, next) => {
   const {
-    body: { id, offset },
+    body: { offset },
+    params: { id },
   } = req;
 
   Comments.findAll({
@@ -43,7 +44,7 @@ exports.retrieveComments = (req, res, next) => {
     ],
   })
     .then((data) => {
-      const commentObjects = data.map(comment => commentObject(comment));
+      const commentObjects = data.map((comment) => commentObject(comment));
       res.status(200).send({
         message: 'Comments sent successfully',
         data: commentObjects,
@@ -57,15 +58,17 @@ exports.retrieveComments = (req, res, next) => {
 // Post a comment on a picture
 exports.createComment = (req, res, next) => {
   const {
-    body: { id, comment, userId },
+    body: { comment, userId },
+    params: { id },
   } = req;
 
   NftContent.findByPk(id)
     .then((picture) => {
-      picture.createComment({
-        ...{ comment },
-        ...{ userId },
-      })
+      picture
+        .createComment({
+          ...{ comment },
+          ...{ userId },
+        })
         .then(() => {
           res.status(200).send({
             message: 'Comment created successfully',

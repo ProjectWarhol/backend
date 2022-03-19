@@ -3,10 +3,14 @@ const {
   storeCustodialWallet,
 } = require('../blockchain/wallet/custodial_wallet');
 const { updateUserWalletId } = require('../service/user');
+const { decryptPrivateKey } = require('../blockchain/wallet/custodial_wallet');
+const { walletObject } = require('../util/walletObject');
 const { changeObjectToData } = require('../util/privateKeyObject');
 const {
   addWalletToDatabase,
   updateWallet,
+  findWalletById,
+  deleteWallet,
 } = require('../service/user.account');
 
 // create a wallet with private/public keys
@@ -50,4 +54,35 @@ exports.storePrivateKey = async (req, res, next) => {
     error.status = 404;
     next(error);
   }
+};
+
+// get a wallet using walletId and password
+exports.retrieveWallet = async (req, res, next) => {
+  const { id } = req.params;
+  const { password } = req.body;
+
+  const userAccount = await findWalletById(id, next);
+  const encryptedAccount = walletObject(userAccount);
+  const privateKey = await decryptPrivateKey(encryptedAccount, password);
+
+  res.status(200).send({
+    message: 'wallet successfully sent',
+    walletId: userAccount.id,
+    publicKey: userAccount.publicKey,
+    privateKey,
+  });
+};
+
+
+exports.deleteWallet = async (req, res, next) => {
+  const walletId = req.params.id;
+  const { id } = req.body;
+  const deleteObject = { dataValues: '' };
+
+  await deleteWallet(walletId, res, next);
+  await updateUserWalletId(deleteObject, id, res, next);
+
+  res.status(200).send({
+    message: 'wallet successfully deleted',
+  });
 };

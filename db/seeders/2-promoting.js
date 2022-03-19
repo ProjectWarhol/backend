@@ -7,32 +7,32 @@ module.exports = {
     await queryInterface.bulkInsert('Promoting', [
       {
         userId: userIds[0][0].id,
-        promoterId: userIds[0][1].id,
+        promotedId: userIds[0][1].id,
         createdAt: new Date(),
       },
       {
         userId: userIds[0][0].id,
-        promoterId: userIds[0][2].id,
+        promotedId: userIds[0][2].id,
         createdAt: new Date(),
       },
       {
         userId: userIds[0][0].id,
-        promoterId: userIds[0][3].id,
+        promotedId: userIds[0][3].id,
         createdAt: new Date(),
       },
       {
         userId: userIds[0][1].id,
-        promoterId: userIds[0][0].id,
+        promotedId: userIds[0][0].id,
         createdAt: new Date(),
       },
       {
         userId: userIds[0][1].id,
-        promoterId: userIds[0][3].id,
+        promotedId: userIds[0][3].id,
         createdAt: new Date(),
       },
       {
         userId: userIds[0][3].id,
-        promoterId: userIds[0][2].id,
+        promotedId: userIds[0][2].id,
         createdAt: new Date(),
       },
     ]);

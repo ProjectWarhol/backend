@@ -1,4 +1,8 @@
+/* eslint-disable consistent-return */
 const db = require('../models');
+const {
+  noPathErrorHandler,
+} = require('../middlewares/error_handlers.middleware');
 
 const { UserAccount } = db;
 
@@ -22,4 +26,36 @@ exports.updateWallet = async (encryptedData, next, id) => {
   });
 
   return updateData;
+};
+
+exports.findWalletById = async (id, next) => {
+  const userAccount = await UserAccount.findByPk({ where: { id } }).catch(
+    (err) => {
+      const error = new Error('Something went wrong while retrieving wallet');
+      error.err = err;
+      next(error);
+    }
+  );
+
+  return userAccount;
+};
+
+exports.deleteWallet = async (id, res, next) => {
+  const deletedData = await UserAccount.destroy({
+    where: { id },
+  })
+    .then((rowsDeleted) => {
+      if (rowsDeleted === 1) {
+        return rowsDeleted;
+      }
+      next(noPathErrorHandler(res));
+    })
+    .catch((err) => {
+      const error = new Error('something went wrong while deleting wallet');
+      error.err = err;
+      next(error);
+    });
+
+  return deletedData;
+
 };
