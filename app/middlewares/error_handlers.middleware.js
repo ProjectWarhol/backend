@@ -1,5 +1,4 @@
 // for not found paths
-// eslint-disable-next-line no-unused-vars
 exports.noPathErrorHandler = (res, message) => {
   res.status(404).send({
     error: {
@@ -9,7 +8,6 @@ exports.noPathErrorHandler = (res, message) => {
   });
 };
 
-// eslint-disable-next-line no-unused-vars
 exports.defaultErrorHandler = (err, res, message) => {
   res.status(500).send({
     error: {
@@ -19,7 +17,6 @@ exports.defaultErrorHandler = (err, res, message) => {
   });
 };
 
-// eslint-disable-next-line no-unused-vars
 exports.defaultWrongInputHandler = (res, message) => {
   res.status(422).send({
     error: {
