@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         allowNull: false,
       });
-
+      
       this.hasMany(models.Promoting, {
         foreignKey: {
           name: 'promotedId',
@@ -20,6 +20,14 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       });
 
+      this.hasMany(models.NftContent, {
+        foreignKey: {
+          name: 'userId',
+          type: DataTypes.UUID,
+        },
+        allowNull: true,
+      });
+      
       this.belongsTo(models.UserAccount, {
         foreignKey: {
           name: 'walletId',
