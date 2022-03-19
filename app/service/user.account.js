@@ -8,10 +8,8 @@ const {
 const { UserAccount } = db;
 
 exports.addWalletToDatabase = async (walletPublicKey, res, next) => {
-  let error;
-
   const account = await UserAccount.create(walletPublicKey).catch((err) => {
-    error = err;
+    console.log(err);
   });
 
   if (
@@ -20,32 +18,20 @@ exports.addWalletToDatabase = async (walletPublicKey, res, next) => {
   ) {
     return account;
   }
-  next(
-    defaultErrorHandler(
-      error,
-      res,
-      'Something went wrong while creating wallet'
-    )
-  );
+  next(defaultErrorHandler(res, 'Something went wrong while creating wallet'));
 };
 
 exports.updateWallet = async (encryptedData, id, res, next) => {
-  let error;
-
   const updateData = await UserAccount.update(encryptedData, {
     where: { id },
     returning: true,
   }).catch((err) => {
-    error = err;
+    console.log(err);
   });
 
   if (updateData[0] === 0) {
     next(
-      defaultErrorHandler(
-        error,
-        res,
-        'Something went wrong while updating wallet'
-      )
+      defaultErrorHandler(res, 'Something went wrong while updating wallet')
     );
   }
   return updateData;
@@ -53,10 +39,9 @@ exports.updateWallet = async (encryptedData, id, res, next) => {
 
 exports.findWalletById = async (id, res, next) => {
   const userAccount = await UserAccount.findByPk({ where: { id } }).catch(
-    (err) => {
+    () => {
       next(
         defaultErrorHandler(
-          err,
           res,
           'something went wrong while retrieving the wallet'
         )
@@ -77,13 +62,9 @@ exports.deleteWallet = async (id, res, next) => {
       }
       next(noPathErrorHandler(res));
     })
-    .catch((err) => {
+    .catch(() => {
       next(
-        defaultErrorHandler(
-          err,
-          res,
-          'something went wrong while deleting wallet'
-        )
+        defaultErrorHandler(res, 'something went wrong while deleting wallet')
       );
     });
 

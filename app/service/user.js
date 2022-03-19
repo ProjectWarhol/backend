@@ -25,13 +25,9 @@ exports.updateUserWalletId = async (storedWallet, id, res, next) => {
       }
       next(noPathErrorHandler(res, 'User'));
     })
-    .catch((err) => {
+    .catch(() => {
       next(
-        defaultErrorHandler(
-          err,
-          res,
-          'Something went wrong while updating user'
-        )
+        defaultErrorHandler(res, 'Something went wrong while updating user')
       );
     });
   return state;

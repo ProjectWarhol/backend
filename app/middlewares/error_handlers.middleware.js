@@ -8,7 +8,7 @@ exports.noPathErrorHandler = (res, message) => {
   });
 };
 
-exports.defaultErrorHandler = (err, res, message) => {
+exports.defaultErrorHandler = (res, message) => {
   res.status(500).send({
     error: {
       status: 500,
