@@ -1,8 +1,14 @@
+/* eslint-disable consistent-return */
 const db = require('../models');
 
 const { User } = db;
 
-exports.updateUserWalletId = async (next, storedWallet, id) => {
+const {
+  defaultErrorHandler,
+  noPathErrorHandler,
+} = require('../middlewares/error_handlers.middleware');
+
+exports.updateUserWalletId = async (storedWallet, id, res, next) => {
   const state = await User.update(
     {
       walletId: storedWallet.dataValues.id,
@@ -17,12 +23,12 @@ exports.updateUserWalletId = async (next, storedWallet, id) => {
         const object = updatedUser;
         return object;
       }
-      return false;
+      next(noPathErrorHandler(res, 'User'));
     })
-    .catch((err) => {
-      const error = new Error('Something went wrong while updating user');
-      error.err = err;
-      next(error);
+    .catch(() => {
+      next(
+        defaultErrorHandler(res, 'Something went wrong while updating user')
+      );
     });
   return state;
 };

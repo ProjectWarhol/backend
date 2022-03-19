@@ -1,21 +1,27 @@
 // for not found paths
-// eslint-disable-next-line no-unused-vars
-exports.noPathErrorHandler = (res) => {
+exports.noPathErrorHandler = (res, message) => {
   res.status(404).send({
     error: {
       status: 404,
-      message: 'Not found',
+      message: `${message} Not found`,
     },
   });
 };
 
-// eslint-disable-next-line no-unused-vars
-exports.defaultErrorHandler = (err, req, res, next) => {
-  res.status(err.status || 500).send({
+exports.defaultErrorHandler = (res, message) => {
+  res.status(500).send({
     error: {
-      status: err.status || 500,
-      message: err.message || 'Internal Server Error',
-      err: err.err,
+      status: 500,
+      message: `Internal Server Error: ${message}`,
+    },
+  });
+};
+
+exports.defaultWrongInputHandler = (res, message) => {
+  res.status(422).send({
+    error: {
+      status: 422,
+      message: `Unprocessable Entity: ${message}`,
     },
   });
 };

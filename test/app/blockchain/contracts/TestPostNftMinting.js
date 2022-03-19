@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 const { assert } = require('chai');
 const Web3 = require('web3');
 const fs = require('fs');
