@@ -264,12 +264,15 @@ exports.expressSignup = async (req, res, next) => {
     next
   );
 
+  const newSessionUser = sessionObject(newUser);
+  req.session.user = newSessionUser;
+  req.session.save();
   res.status(200).send({
     message: 'signup successful',
     wallet: {
       address: wallet.wallet.address,
       privateKey: wallet.wallet.privateKey,
     },
-    user: sessionObject(newUser),
+    user: newSessionUser,
   });
 };
