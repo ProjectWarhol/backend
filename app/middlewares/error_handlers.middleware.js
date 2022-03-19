@@ -25,3 +25,12 @@ exports.defaultWrongInputHandler = (res, message) => {
     },
   });
 };
+
+exports.defaultConflictHandler = (res, message) => {
+  res.status(409).send({
+    error: {
+      status: 409,
+      message: `Conflict: ${message}`,
+    },
+  });
+};
