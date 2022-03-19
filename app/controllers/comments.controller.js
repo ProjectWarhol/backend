@@ -1,6 +1,10 @@
 const { Sequelize } = require('../models');
 const db = require('../models');
 const { commentObject } = require('../util/commentObject');
+const {
+  noPathErrorHandler,
+  defaultErrorHandler,
+} = require('../middlewares/error_handlers.middleware');
 
 const {
   Sequelize: { Op },
