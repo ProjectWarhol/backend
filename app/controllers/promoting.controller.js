@@ -68,37 +68,16 @@ exports.promotingOneUser = async (req, res) => {
 };
 
 // Delete entry in Promoting
-exports.unpromotingOneUser = (req, res, next) => {
+exports.unpromotingOneUser = async (req, res) => {
   const {
     body: { userId },
     params: { promotedId },
   } = req;
 
-  Promoting.destroy({
-    where: {
-      [Op.and]: [{ userId }, { promotedId }],
-    },
-  })
-    .then(async (destroyed) => {
-      if (destroyed) {
-        let updatedUsers;
-        try {
-          updatedUsers = await decrementPromoting(userId, promotedId);
-        } catch (err) {
-          next(defaultPromotingError(err));
-        }
+  const destroyed = await deletePromotion(userId, promotedId, res);
+  if (!destroyed) return;
 
-        res.status(200).send({
-          message: 'Promotion deleted successfully',
-          ...updatedUsers,
-        });
-      } else {
-        res.status(409).send({
-          message: 'Promotion not found',
-        });
-      }
-    })
-    .catch((err) => {
-      next(defaultPromotingError(err));
-    });
+  res.status(200).send({
+    message: 'Promotion deleted successfully',
+  });
 };
