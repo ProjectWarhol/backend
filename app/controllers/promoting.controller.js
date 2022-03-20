@@ -1,6 +1,11 @@
 const { Sequelize } = require('../models');
 const db = require('../models');
 const { sessionObject } = require('../util/sessionObject');
+const {
+  noPathErrorHandler,
+  defaultErrorHandler,
+  defaultConflictHandler,
+} = require('../middlewares/error_handlers.middleware');
 
 const {
   Promoting,
