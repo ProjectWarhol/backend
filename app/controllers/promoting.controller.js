@@ -11,20 +11,7 @@ const {
   decrementPromoting,
 } = require('../service/promoting');
 
-const {
-  Promoting,
-  User,
-  Sequelize: { Op },
-} = db;
-
-const defaultPromotingError = (err) => {
-  const error = new Error('Something went wrong');
-  error.status = 500;
-  if (err.name !== 'SequelizeDatabaseError') {
-    error.err = err;
-  }
-  return error;
-};
+const { Promoting, User } = db;
 
 // Get all users that a user with userId promotes
 exports.userPromoting = async (req, res) => {
