@@ -54,3 +54,19 @@ exports.decrementPromoting = async (userId, promotedId) => {
   updatedUsers.promoted = sessionObject(updatedUsers.promoted[0][0][0]);
   return updatedUsers;
 };
+
+exports.getPromotions = async (user, res) => {
+  const promotions = await user
+    .getUserPromotions({
+      attributes: [],
+      include: [User],
+    })
+    .catch(() => {
+      defaultErrorHandler(
+        res,
+        'Something went wrong while fetching promotions'
+      );
+    });
+
+  return promotions.map((promotion) => sessionObject(promotion.User));
+};
