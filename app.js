@@ -51,9 +51,11 @@ app.use(
   })
 );
 
-app.use(fileupload({
-  createParentPath: true
-}))
+app.use(
+  fileupload({
+    createParentPath: true,
+  })
+);
 
 app.use(require('sanitize').middleware);
 

@@ -9,40 +9,38 @@ const saveNftToStorage = async (name, description, filePath, mimeType) => {
   });
   const fileExtension = mimeType.split('/')[1];
   try {
-		const metadata = await client.store({
-			name,
-			description,
-			image: new File([fs.readFileSync(filePath)], `${name}.${fileExtension}`, {
-				type: mimeType,
-			}),
-		});
-		return { success: true, data: metadata.url };
-	} catch (error) {
-		console.error(error.message);
-		return {success: false, error: error.message };
-	}
+    const metadata = await client.store({
+      name,
+      description,
+      image: new File([fs.readFileSync(filePath)], `${name}.${fileExtension}`, {
+        type: mimeType,
+      }),
+    });
+    return { success: true, data: metadata.url };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
 };
 
 // Upload NFT to NftStorage
 exports.uploadNft = (req, res, next) => {
-  console.log('Run middleware uploadNft');
-	if (!req.files) {
-		return res.status(400).send({
-			message: 'No files were uploaded'
-		})
+  if (!req.files) {
+    return res.status(400).send({
+      message: 'No files were uploaded',
+    });
   }
 
-	if (!req.body.name) {
-		return res.status(400).send({
-			message: 'No name in body'
-		})
-	}
+  if (!req.body.name) {
+    return res.status(400).send({
+      message: 'No name in body',
+    });
+  }
 
-	if (!req.body.description) {
-		return res.status(400).send({
-			message: 'No description in body'
-		})
-	}
+  if (!req.body.description) {
+    return res.status(400).send({
+      message: 'No description in body',
+    });
+  }
 
   const file = req.files.image;
   const filePath = path.join(__dirname, '/tmp_nft_sources/', file.name);
@@ -59,14 +57,15 @@ exports.uploadNft = (req, res, next) => {
       req.files.image.mimetype
     );
 
-		if (!metaData.success) {
-			return res.status(500).send({
-				message: metaData.error
-			})
-		}
+    if (!metaData.success) {
+      return res.status(500).send({
+        message: metaData.error,
+      });
+    }
 
-		req.body.filePath = filePath
-		req.body.metadataUrl = metaData.data
-		return next();
+    req.body.filePath = filePath;
+    req.body.metadataUrl = metaData.data;
+    return next();
   });
+	return next();
 };

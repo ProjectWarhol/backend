@@ -6,16 +6,14 @@ const removeTemporaryFile = (filePath) => {
     fs.unlinkSync(filePath);
     return true;
   } catch (err) {
-    console.error(err);
     return false;
   }
 };
 
 // Mint NFT
 exports.mintNft = async (req, res) => {
-  console.log(req.body)
-	res.status(200).send({
-		message: 'Successfully minted NFT'
-	})
-	removeTemporaryFile(req.body.filePath);
+  res.status(200).send({
+    message: 'Successfully minted NFT',
+  });
+  removeTemporaryFile(req.body.filePath);
 };
