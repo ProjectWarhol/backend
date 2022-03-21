@@ -1,4 +1,5 @@
 const express = require('express');
+const fileupload = require('express-fileupload');
 const morgan = require('morgan');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
@@ -49,6 +50,10 @@ app.use(
     },
   })
 );
+
+app.use(fileupload({
+  createParentPath: true
+}))
 
 app.use(require('sanitize').middleware);
 
