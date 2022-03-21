@@ -27,29 +27,16 @@ const defaultPromotingError = (err) => {
 };
 
 // Get all users that a user with userId promotes
-exports.userPromoting = (req, res, next) => {
+exports.userPromoting = async (req, res) => {
   const {
     params: { userId },
   } = req;
 
-  User.findAll({
-    include: {
-      model: Promoting,
-      attributes: [],
-      required: true,
-      where: { userId },
-    },
-  })
-    .then((userData) => {
-      const userObjects = userData.map((data) => sessionObject(data));
-      res.status(200).send({
-        message: 'Promoting data sent successfully',
-        data: userObjects,
-      });
-    })
-    .catch((err) => {
-      next(defaultPromotingError(err));
-    });
+  const user = await findUserById(userId, res);
+  if (!user) return;
+
+  const promotions = await getPromotions(user, res);
+  res.status(200).send(promotions);
 };
 
 // Get all users that promote a user with promotedId
