@@ -50,6 +50,7 @@
     "faker": "^5.5.3",
     "helmet": "^4.6.0",
     "morgan": "^1.10.0",
+    "nft.storage": "^6.0.2",
     "nodemailer": "^6.6.3",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
