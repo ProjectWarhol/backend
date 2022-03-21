@@ -1,7 +1,13 @@
+const { Sequelize } = require('../models');
 const { sessionObject } = require('../util/sessionObject');
 const db = require('../models');
+const {
+  defaultErrorHandler,
+  defaultConflictHandler,
+  noPathErrorHandler,
+} = require('../middlewares/error_handlers.middleware');
 
-const { User } = db;
+const { User, Promoting } = db;
 
 exports.incrementPromoting = async (userId, promotedId, res) => {
   const updatedUsers = {};

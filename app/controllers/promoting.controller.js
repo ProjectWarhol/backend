@@ -1,17 +1,10 @@
-const { Sequelize } = require('../models');
-const db = require('../models');
-const { sessionObject } = require('../util/sessionObject');
 const {
-  noPathErrorHandler,
-  defaultErrorHandler,
-  defaultConflictHandler,
-} = require('../middlewares/error_handlers.middleware');
-const {
-  incrementPromoting,
-  decrementPromoting,
+  getPromotions,
+  getPromoters,
+  createPromotion,
+  deletePromotion,
 } = require('../service/promoting');
-
-const { Promoting, User } = db;
+const { findUserById } = require('../service/user');
 
 // Get all users that a user with userId promotes
 exports.userPromoting = async (req, res) => {
