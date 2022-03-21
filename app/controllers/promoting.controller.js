@@ -40,32 +40,16 @@ exports.userPromoting = async (req, res) => {
 };
 
 // Get all users that promote a user with promotedId
-exports.userIsPromoted = (req, res, next) => {
+exports.userIsPromoted = async (req, res) => {
   const {
     params: { promotedId },
   } = req;
 
-  User.findAll({
-    include: {
-      model: Promoting,
-      attributes: [],
-      required: true,
-      on: {
-        userId: { [Op.eq]: Sequelize.col('User.id') },
-      },
-      where: { promotedId },
-    },
-  })
-    .then((userData) => {
-      const userObjects = userData.map((data) => sessionObject(data));
-      res.status(200).send({
-        message: 'Promoting data sent',
-        data: userObjects,
-      });
-    })
-    .catch((err) => {
-      next(defaultPromotingError(err));
-    });
+  const user = await findUserById(promotedId, res);
+  if (!user) return;
+
+  const promoters = await getPromoters(user, res);
+  res.status(200).send(promoters);
 };
 
 // Create entry in Promoting
