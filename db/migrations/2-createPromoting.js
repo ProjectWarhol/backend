@@ -43,6 +43,10 @@ module.exports = {
         },
       },
     });
+    await queryInterface.addConstraint('Promoting', {
+      fields: ['userId', 'promotedId'],
+      type: 'unique',
+    });
   },
 
   down: async (queryInterface) => {
