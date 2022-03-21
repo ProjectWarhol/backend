@@ -3,23 +3,29 @@ const db = require('../models');
 
 const { User } = db;
 
-exports.incrementPromoting = async (userId, promotedId) => {
+exports.incrementPromoting = async (userId, promotedId, res) => {
   const updatedUsers = {};
 
-  updatedUsers.promoter = await User.increment('promoting', {
-    where: {
-      id: userId,
-    },
-  });
+  try {
+    updatedUsers.promoter = await User.increment('promoting', {
+      where: {
+        id: userId,
+      },
+    });
 
-  updatedUsers.promoted = await User.increment('promoters', {
-    where: {
-      id: promotedId,
-    },
-  });
+    updatedUsers.promoted = await User.increment('promoters', {
+      where: {
+        id: promotedId,
+      },
+    });
 
-  updatedUsers.promoter = sessionObject(updatedUsers.promoter[0][0][0]);
-  updatedUsers.promoted = sessionObject(updatedUsers.promoted[0][0][0]);
+    updatedUsers.promoter = sessionObject(updatedUsers.promoter[0][0][0]);
+    updatedUsers.promoted = sessionObject(updatedUsers.promoted[0][0][0]);
+  } catch (err) {
+    defaultErrorHandler(res, 'Something went wrong while updating the users');
+    return null;
+  }
+
   return updatedUsers;
 };
 
