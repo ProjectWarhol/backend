@@ -90,3 +90,23 @@ exports.getPromoters = async (user, res) => {
 
   return promoters.map((promoter) => sessionObject(promoter.User));
 };
+
+exports.createPromotion = async (userId, promotedId, res) => {
+  let created = true;
+
+  await Promoting.create({
+    ...{ userId },
+    ...{ promotedId },
+  }).catch((err) => {
+    if (err.name === 'SequelizeUniqueConstraintError') {
+      defaultConflictHandler(res, 'Promotion already exists');
+    } else if (err.parent.constraint === 'Promoting_promotedId_ck') {
+      defaultConflictHandler(res, 'Self-promotion');
+    } else {
+      defaultErrorHandler(res, 'Something went wrong while creating promotion');
+    }
+    created = false;
+  });
+
+  return created;
+};
