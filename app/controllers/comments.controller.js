@@ -1,6 +1,10 @@
 const { Sequelize } = require('../models');
 const db = require('../models');
 const { commentObject } = require('../util/commentObject');
+const {
+  noPathErrorHandler,
+  defaultErrorHandler,
+} = require('../middlewares/error_handlers.middleware');
 
 const {
   Sequelize: { Op },
@@ -45,6 +49,7 @@ exports.retrieveComments = (req, res, next) => {
   })
     .then((data) => {
       const commentObjects = data.map((comment) => commentObject(comment));
+
       res.status(200).send({
         message: 'Comments sent successfully',
         data: commentObjects,
@@ -83,7 +88,7 @@ exports.createComment = (req, res, next) => {
 // Delete a comment on a picture
 exports.deleteComment = (req, res, next) => {
   const {
-    body: { id },
+    params: { id },
   } = req;
 
   Comments.destroy({
@@ -95,7 +100,7 @@ exports.deleteComment = (req, res, next) => {
       });
     })
     .catch((err) => {
-      next(defaultCommentsError(err));
+      next(defaultErrorHandler(err, res, 'Something went wrong'));
     });
 };
 
@@ -112,20 +117,14 @@ exports.updateComment = async (req, res, next) => {
     .then(([rowsUpdated, [updatedComment]]) => {
       if (rowsUpdated) {
         res.status(200).send({
-          message: 'Comment was updated successfully',
+          message: 'Comment updated successfully',
           comment: updatedComment,
         });
       } else {
-        const error = new Error('Comment not found');
-        error.status = 404;
-        next(error);
+        noPathErrorHandler(res);
       }
     })
     .catch((err) => {
-      const error = new Error(
-        'Something went wrong while updating the comment'
-      );
-      error.err = err;
-      next(error);
+      next(defaultErrorHandler(err, res, 'Something went wrong'));
     });
 };
