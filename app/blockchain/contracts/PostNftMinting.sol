@@ -15,16 +15,12 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment,  PaymentSplitt
 	address public seller;
 	address public artist;
 	address public projectOwner; 
-	uint8 public royalities;
+	uint256 public royalties;
 
-	 constructor(address[] memory _payees, uint256[] memory _shares, uint8 _royalities) PaymentSplitter(_payees, _shares)  ERC721("PostNftMint", "SFT") {
-		 _payees[0] = seller;
-		 _payees[1] = artist;
-		 _payees[2] = projectOwner;
-		 royalities = _royalities;
-		 _shares[0] = 100 - 2 - royalities;
-		 _shares[1] = royalities;
-		 _shares[2] = 2;
+	 constructor(address[] memory _payees, uint256[] memory _shares) PaymentSplitter(_payees, _shares)  ERC721("PostNftMint", "SFT") {
+		 emit PayeeAdded(seller, 100 - 2 - royalties);
+		 emit PayeeAdded(artist, royalties);
+		 emit PayeeAdded(projectOwner, 2);
 	 }
 
 	function safeMint(address _to, string memory _uri) external {
@@ -39,6 +35,13 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment,  PaymentSplitt
 
 	function tokenTransferTo(address _to, uint256 _tokenId) external {
 		safeTransferFrom(msg.sender, _to, _tokenId);
+	}
+	// can be called only by buyer
+	function splitTransfer(uint256 _price) external payable{
+		// price is and must be in Wei
+		// msg.sender == buyer
+		require(msg.value == _price, "Sent value and price NOT equal");
+		emit PaymentReceived(msg.sender, msg.value);
 	}
 
 	function transferTo(address _to, uint256 _price) external payable {
