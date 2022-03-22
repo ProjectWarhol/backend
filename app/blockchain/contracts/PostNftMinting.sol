@@ -5,23 +5,13 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/PullPayment.sol";
-import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
 
-contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment,  PaymentSplitter {
+contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 	using Counters for Counters.Counter;
 	Counters.Counter private tokenIdCounter;
 	mapping(string=> bool) private tokenExists;
-	
-	address public seller;
-	address public artist;
-	address public projectOwner; 
-	uint256 public royalties;
 
-	 constructor(address[] memory _payees, uint256[] memory _shares) PaymentSplitter(_payees, _shares)  ERC721("PostNftMint", "SFT") {
-		 emit PayeeAdded(seller, 100 - 2 - royalties);
-		 emit PayeeAdded(artist, royalties);
-		 emit PayeeAdded(projectOwner, 2);
-	 }
+	constructor() ERC721("PostNftMint", "SFT") {}
 
 	function safeMint(address _to, string memory _uri) external {
 		// check if _uri doesn't exist
@@ -35,13 +25,6 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment,  PaymentSplitt
 
 	function tokenTransferTo(address _to, uint256 _tokenId) external {
 		safeTransferFrom(msg.sender, _to, _tokenId);
-	}
-	// can be called only by buyer
-	function splitTransfer(uint256 _price) external payable{
-		// price is and must be in Wei
-		// msg.sender == buyer
-		require(msg.value == _price, "Sent value and price NOT equal");
-		emit PaymentReceived(msg.sender, msg.value);
 	}
 
 	function transferTo(address _to, uint256 _price) external payable {
