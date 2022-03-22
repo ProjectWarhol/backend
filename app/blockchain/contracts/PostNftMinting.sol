@@ -5,13 +5,27 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/PullPayment.sol";
+import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
 
-contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
+contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment,  PaymentSplitter {
 	using Counters for Counters.Counter;
 	Counters.Counter private tokenIdCounter;
 	mapping(string=> bool) private tokenExists;
+	
+	address public seller;
+	address public artist;
+	address public projectOwner; 
+	uint8 public royalities;
 
-	constructor() ERC721("PostNftMint", "SFT") {}
+	 constructor(address[] memory _payees, uint256[] memory _shares, uint8 _royalities) PaymentSplitter(_payees, _shares)  ERC721("PostNftMint", "SFT") {
+		 _payees[0] = seller;
+		 _payees[1] = artist;
+		 _payees[2] = projectOwner;
+		 royalities = _royalities;
+		 _shares[0] = 100 - 2 - royalities;
+		 _shares[1] = royalities;
+		 _shares[2] = 2;
+	 }
 
 	function safeMint(address _to, string memory _uri) external {
 		// check if _uri doesn't exist
