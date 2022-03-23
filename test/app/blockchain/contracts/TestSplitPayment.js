@@ -35,6 +35,12 @@ contract('SplitPayment', (accounts) => {
       assert.notEqual(address, null);
       assert.notEqual(address, undefined);
     });
+
+    it('should not be called before setting royalties', async () => {
+      // FAILURE
+      await instance.setSellerShare(seller).should.be.rejected;
+    });
+
     it('set royalties', async () => {
       // SUCCESS
       const result = await instance.setRoyalties(artist, 10);
@@ -47,6 +53,7 @@ contract('SplitPayment', (accounts) => {
       await instance.setRoyalties(artist, -10).should.be.rejected;
       await instance.setRoyalties('', 10).should.be.rejected;
     });
+
     it("set seller's share", async () => {
       // SUCCESS
       const result = await instance.setSellerShare(seller);
