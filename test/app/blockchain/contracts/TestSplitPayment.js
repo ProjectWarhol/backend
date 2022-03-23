@@ -3,6 +3,7 @@
 const { assert } = require('chai');
 const Web3 = require('web3');
 const fs = require('fs');
+require('chai').use(require('chai-as-promised')).should();
 
 /* eslint-disable prefer-destructuring */
 const SplitPayment = artifacts.require('SplitPayment');
@@ -26,6 +27,24 @@ contract('SplitPayment', (accounts) => {
       assert.notEqual(address, '');
       assert.notEqual(address, null);
       assert.notEqual(address, undefined);
+    });
+    it('set royalties', async () => {
+      // SUCCESS
+      const result = await instance.setRoyalties(
+        '0xbB6a504db322427139722e68ae9b2F5fa2c36381',
+        10
+      );
+      const event = result.logs[0].args;
+      const { account } = event;
+      const { shares } = event;
+      assert.equal(account, '0xbB6a504db322427139722e68ae9b2F5fa2c36381');
+      assert.equal(shares, 10);
+      // FAILURE
+      await instance.setRoyalties(
+        '0xbB6a504db322427139722e68ae9b2F5fa2c36381',
+        -10
+      ).should.be.rejected;
+      await instance.setRoyalties('', 10).should.be.rejected;
     });
   });
 });

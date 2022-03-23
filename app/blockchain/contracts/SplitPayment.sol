@@ -4,6 +4,14 @@ pragma solidity ^0.8.12;
 import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
 
 contract SplitPayment is PaymentSplitter {
+  uint256 private royalties;
   constructor(address[] memory _payees, uint256[] memory _shares) PaymentSplitter(_payees, _shares) {
+  }
+
+  function setRoyalties(address payable _artistAddress, uint256 _royalties) external{
+    require(0<=_royalties && _royalties<=10, "should be between 0 and 10");
+    royalties = _royalties;
+    emit PayeeAdded(_artistAddress, royalties);
+    
   }
 }
