@@ -15,11 +15,16 @@ const abi = JSON.parse(
 contract('SplitPayment', (accounts) => {
   let instance;
   let web3Instance;
+  let projectOwner;
+  let artist;
 
   before(async () => {
-    instance = await SplitPayment.deployed();
+    projectOwner = accounts[0];
+    instance = await SplitPayment.deployed(projectOwner, 2);
     web3Instance = new web3.eth.Contract(abi, instance.address);
+    artist = accounts[1];
   });
+
   describe('deployment', async () => {
     it('deploys successfully', async () => {
       const { address } = instance;
@@ -30,20 +35,14 @@ contract('SplitPayment', (accounts) => {
     });
     it('set royalties', async () => {
       // SUCCESS
-      const result = await instance.setRoyalties(
-        '0xbB6a504db322427139722e68ae9b2F5fa2c36381',
-        10
-      );
+      const result = await instance.setRoyalties(artist, 10);
       const event = result.logs[0].args;
       const { account } = event;
       const { shares } = event;
-      assert.equal(account, '0xbB6a504db322427139722e68ae9b2F5fa2c36381');
+      assert.equal(account, artist);
       assert.equal(shares, 10);
       // FAILURE
-      await instance.setRoyalties(
-        '0xbB6a504db322427139722e68ae9b2F5fa2c36381',
-        -10
-      ).should.be.rejected;
+      await instance.setRoyalties(artist, -10).should.be.rejected;
       await instance.setRoyalties('', 10).should.be.rejected;
     });
   });
