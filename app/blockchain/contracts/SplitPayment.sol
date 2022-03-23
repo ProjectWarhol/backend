@@ -12,6 +12,10 @@ contract SplitPayment is PaymentSplitter {
     require(0<=_royalties && _royalties<=10, "should be between 0 and 10");
     royalties = _royalties;
     emit PayeeAdded(_artistAddress, royalties);
-    
+  }
+  
+  function setSellerShare(address payable _sellerAddress) external {
+    require(0<=royalties && royalties<=10, "should be between 0 and 10");
+    emit PayeeAdded(_sellerAddress, 100 -2 - royalties);
   }
 }
