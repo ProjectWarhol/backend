@@ -34,3 +34,12 @@ exports.defaultConflictHandler = (res, message) => {
     },
   });
 };
+
+exports.defaultPasswordMismatch = (res, message) => {
+  res.status(403).send({
+    error: {
+      status: 409,
+      message: `forbidden: ${message}`,
+    },
+  });
+};

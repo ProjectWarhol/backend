@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: Sequelize.UUIDV4,
       },
       publicKey: DataTypes.STRING,
+      mnumonicHash: DataTypes.STRING,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
       version: DataTypes.INTEGER,
