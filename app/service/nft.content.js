@@ -43,9 +43,5 @@ exports.createNftComment = async (nft, comment, userId, res) => {
       defaultErrorHandler(res, 'Something went wrong while creating comment');
     });
 
-<<<<<<< HEAD
-  return created;
-=======
   return newComment !== undefined;
->>>>>>> 3ff8eb2 (fixup defined service)
 };

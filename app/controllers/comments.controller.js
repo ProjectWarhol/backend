@@ -1,11 +1,8 @@
-const db = require('../models');
-const { commentObject } = require('../util/commentObject');
 const {
-  noPathErrorHandler,
-  defaultErrorHandler,
-} = require('../middlewares/error_handlers.middleware');
-
-const { NftContent, User } = db;
+  findNftById,
+  getNftComments,
+  createNftComment,
+} = require('../service/nft.content');
 
 // Retrieve comments on picture
 exports.retrieveComments = (req, res, next) => {
