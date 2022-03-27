@@ -5,40 +5,22 @@ const {
 } = require('../service/nft.content');
 
 // Retrieve comments on picture
-exports.retrieveComments = (req, res, next) => {
+exports.retrieveComments = async (req, res) => {
   const {
     body: { offset },
     params: { id },
   } = req;
 
-  Comments.findAll({
-    ...{ offset },
-    limit: 20,
-    include: [
-      {
-        model: NftContent,
-        attributes: [],
-        required: true,
-        where: { id },
-      },
-      {
-        model: User,
-        on: {
-          id: { [Op.eq]: Sequelize.col('Comments.userId') },
-        },
-      },
-    ],
-  })
-    .then((data) => {
-      const commentObjects = data.map((comment) => commentObject(comment));
-      res.status(200).send({
-        message: 'Comments sent successfully',
-        data: commentObjects,
-      });
-    })
-    .catch((err) => {
-      next(defaultCommentsError(err));
-    });
+  const nft = await findNftById(id, res);
+  if (!nft || res.headersSent) return;
+
+  const comments = await getNftComments(nft, offset, res);
+  if (!comments || res.headersSent) return;
+
+  res.status(200).send({
+    message: 'Comments sent successfully',
+    data: comments,
+  });
 };
 
 // Post a comment on a picture
