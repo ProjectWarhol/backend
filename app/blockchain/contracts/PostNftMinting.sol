@@ -10,8 +10,11 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 	using Counters for Counters.Counter;
 	Counters.Counter private tokenIdCounter;
 	mapping(string=> bool) private tokenExists;
+	address private splitPayment;
 
-	constructor() ERC721("PostNftMint", "SFT") {}
+	constructor(address payable _splitPayment) ERC721("PostNftMint", "SFT") {
+		splitPayment = _splitPayment;
+	}
 
 	function safeMint(address _to, string memory _uri) external {
 		// check if _uri doesn't exist
@@ -27,10 +30,10 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 		safeTransferFrom(msg.sender, _to, _tokenId);
 	}
 
-	function transferTo(address _to, uint256 _price) external payable {
+	function transferTo(uint256 _price) external payable {
 		// price is and must be in Wei
 		require(msg.value == _price, "Sent value and price NOT equal");
-		_asyncTransfer(_to, _price);
+		_asyncTransfer(splitPayment, _price);
 	}
 
 	function _burn(uint256 _tokenId) internal override(ERC721, ERC721URIStorage) {

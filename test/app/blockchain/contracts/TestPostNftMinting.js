@@ -5,6 +5,7 @@ require('chai').use(require('chai-as-promised')).should();
 
 /* eslint-disable prefer-destructuring */
 const PostNftMinting = artifacts.require('PostNftMinting');
+const SplitPayment = artifacts.require('SplitPayment');
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
 const abi = JSON.parse(
   fs
@@ -21,7 +22,8 @@ contract('PostNftMinting', (accounts) => {
   let tokenCounter = -1;
 
   before(async () => {
-    instance = await PostNftMinting.deployed();
+    const splitPayment = await SplitPayment.deployed(accounts[0], 2);
+    instance = await PostNftMinting.new(splitPayment.address);
     web3Instance = new web3.eth.Contract(abi, instance.address);
   });
 
