@@ -24,26 +24,19 @@ exports.retrieveComments = async (req, res) => {
 };
 
 // Post a comment on a picture
-exports.createComment = (req, res, next) => {
+exports.createComment = async (req, res) => {
   const {
     body: { comment, userId },
     params: { id },
   } = req;
 
-  NftContent.findByPk(id)
-    .then((picture) => {
-      picture
-        .createComment({
-          ...{ comment },
-          ...{ userId },
-        })
-        .then(() => {
-          res.status(200).send({
-            message: 'Comment created successfully',
-          });
-        });
-    })
-    .catch((err) => {
-      next(defaultCommentsError(err));
-    });
+  const nft = await findNftById(id, res);
+  if (!nft || res.headersSent) return;
+
+  const created = await createNftComment(nft, comment, userId, res);
+  if (!created || res.headersSent) return;
+
+  res.status(200).send({
+    message: 'Comment created successfully',
+  });
 };
