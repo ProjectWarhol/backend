@@ -19,8 +19,12 @@ contract SplitPayment is PaymentSplitter {
     emit PayeeAdded(_sellerAddress, 100 -2 - royalties);
   }
 
-  function payeeAddress(uint256 index) external view returns (address) {
-    return payee(index);
+  function payeeAddress(uint256 _index) external view returns (address) {
+    return payee(_index);
+  }
+
+  function getShares(address _account) external view returns (uint256) {
+    return shares(_account);
   }
   
   // function releasePayment(address payable _to) external {
