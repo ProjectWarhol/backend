@@ -1,61 +1,10 @@
-const { Sequelize } = require('../models');
-const db = require('../models');
-const { sessionObject } = require('../util/sessionObject');
-
 const {
-  Promoting,
-  User,
-  Sequelize: { Op },
-} = db;
-
-const defaultPromotingError = (err) => {
-  const error = new Error('Something went wrong');
-  error.status = 500;
-  if (err.name !== 'SequelizeDatabaseError') {
-    error.err = err;
-  }
-  return error;
-};
-
-const incrementPromoting = async (userId, promotedId) => {
-  const updatedUsers = {};
-
-  updatedUsers.promoter = await User.increment('promoting', {
-    where: {
-      id: userId,
-    },
-  });
-
-  updatedUsers.promoted = await User.increment('promoters', {
-    where: {
-      id: promotedId,
-    },
-  });
-
-  updatedUsers.promoter = sessionObject(updatedUsers.promoter[0][0][0]);
-  updatedUsers.promoted = sessionObject(updatedUsers.promoted[0][0][0]);
-  return updatedUsers;
-};
-
-const decrementPromoting = async (userId, promotedId) => {
-  const updatedUsers = {};
-
-  updatedUsers.promoter = await User.decrement('promoting', {
-    where: {
-      id: userId,
-    },
-  });
-
-  updatedUsers.promoted = await User.decrement('promoters', {
-    where: {
-      id: promotedId,
-    },
-  });
-
-  updatedUsers.promoter = sessionObject(updatedUsers.promoter[0][0][0]);
-  updatedUsers.promoted = sessionObject(updatedUsers.promoted[0][0][0]);
-  return updatedUsers;
-};
+  getPromotions,
+  getPromoters,
+  createPromotion,
+  deletePromotion,
+} = require('../service/promoting');
+const { findUserById } = require('../service/user');
 
 // Get all users that a user with userId promotes
 exports.userPromoting = (req, res, next) => {
