@@ -14,7 +14,7 @@ router.get('/:id', isLoggedIn, comments.retrieveComments);
 router.post('/:id', isLoggedIn, checkUserIdentity, comments.createComment);
 
 // Delete Comment
-router.delete('/', isLoggedIn, checkUserIdentity, comments.deleteComment);
+router.delete('/:id', isLoggedIn, checkUserIdentity, comments.deleteComment);
 
 // Patch Comment
 router.patch('/:id', isLoggedIn, checkUserIdentity, comments.updateComment);
