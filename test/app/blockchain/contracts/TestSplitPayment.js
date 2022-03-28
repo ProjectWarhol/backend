@@ -56,13 +56,15 @@ contract('SplitPayment', (accounts) => {
       const { shares } = event;
       assert.equal(account, seller);
       assert.equal(shares, 88); // 100 -2 -10
+      // for some reasons , it shows an error
+      console.log(await instance.payeeAddress(1));
     });
     it("returns project owner's address", async () => {
       const actual = await instance.payeeAddress(0);
       const expected = projectOwner;
       assert.equal(actual, expected);
     });
-    it('returns shares', async () => {
+    it("returns project owner's share", async () => {
       const actual = await instance.getShares(projectOwner);
       assert.equal(actual, 2);
     });
