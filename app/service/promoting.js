@@ -63,3 +63,19 @@ exports.createPromotion = async (userId, promotedId, res) => {
 
   return newPromotion !== undefined;
 };
+
+exports.deletePromotion = async (userId, promotedId, res) => {
+  const destroyed = await Promoting.destroy({
+    where: {
+      ...{ userId },
+      ...{ promotedId },
+    },
+  }).catch(() => {
+    defaultErrorHandler(res, 'Something went wrong while deleting promotion');
+  });
+
+  if (!destroyed) {
+    noPathErrorHandler(res, 'Promotion');
+  }
+  return destroyed;
+};
