@@ -25,3 +25,24 @@ exports.getPromotions = async (user, res) => {
 
   return promotions;
 };
+
+exports.getPromoters = async (user, res) => {
+  const promoters = await user
+    .getUserPromoters({
+      attributes: [],
+      include: [
+        {
+          model: User,
+          on: {
+            id: { [Sequelize.Op.eq]: Sequelize.col('Promoting.userId') },
+          },
+        },
+      ],
+    })
+    .then((data) => data.map((promoter) => sessionObject(promoter.User)))
+    .catch(() => {
+      defaultErrorHandler(res, 'Something went wrong while fetching promoters');
+    });
+
+  return promoters;
+};
