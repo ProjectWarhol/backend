@@ -14,9 +14,9 @@ router.get('/:id', isLoggedIn, comments.retrieveComments);
 router.post('/:id', isLoggedIn, checkUserIdentity, comments.createComment);
 
 // Delete Comment
-router.delete('/', comments.deleteComment);
+router.delete('/', isLoggedIn, checkUserIdentity, comments.deleteComment);
 
 // Patch Comment
-router.patch('/:id', comments.updateComment);
+router.patch('/:id', isLoggedIn, checkUserIdentity, comments.updateComment);
 
 module.exports = router;
