@@ -32,7 +32,7 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 
 	function transferTo(uint256 _price) external payable {
 		// price is and must be in Wei
-		require(msg.value == _price, "Sent value and price NOT equal");
+		// require(msg.value == _price, "Sent value and price NOT equal");
 		_asyncTransfer(splitPayment, _price);
 	}
 

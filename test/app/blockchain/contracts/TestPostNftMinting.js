@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-underscore-dangle */
 const { assert } = require('chai');
 const Web3 = require('web3');
 const fs = require('fs');
@@ -13,6 +15,8 @@ const abi = JSON.parse(
     .toString()
 ).abi;
 
+const tokens = (n) => web3.utils.toWei(n, 'ether');
+
 contract('PostNftMinting', (accounts) => {
   const ETH_DIVIDER = 1000000000000000000;
   let instance;
@@ -22,7 +26,7 @@ contract('PostNftMinting', (accounts) => {
   let tokenCounter = -1;
 
   before(async () => {
-    const splitPayment = await SplitPayment.deployed(accounts[0], 2);
+    splitPayment = await SplitPayment.deployed();
     instance = await PostNftMinting.new(splitPayment.address);
     web3Instance = new web3.eth.Contract(abi, instance.address);
   });
@@ -188,41 +192,41 @@ contract('PostNftMinting', (accounts) => {
     }
   });
 
-  it('Deposit of Wei should be successful', async () => {
-    const tx = await web3Instance.methods
-      .transferTo(acc1, 500000000000000000n)
-      .send({
-        from: acc0,
-        value: 500000000000000000,
-      });
+  // it('Deposit of Wei should be successful', async () => {
+  //   const tx = await web3Instance.methods
+  //     .transferTo(acc1, 500000000000000000n)
+  //     .send({
+  //       from: acc0,
+  //       value: 500000000000000000,
+  //     });
 
-    assert.isTrue(tx.status, 'Transaction is successful');
-  });
+  //   assert.isTrue(tx.status, 'Transaction is successful');
+  // });
 
-  it('Wei is deposited in smart contract', async () => {
-    const depositedPayments = await instance.payments(acc1);
+  // it('Wei is deposited in smart contract', async () => {
+  //   const depositedPayments = await instance.payments(acc1);
 
-    assert.equal(
-      depositedPayments,
-      500000000000000000,
-      'Amount is not correct'
-    );
-  });
+  //   assert.equal(
+  //     depositedPayments,
+  //     500000000000000000,
+  //     'Amount is not correct'
+  //   );
+  // });
 
-  it('Deposit of Wei should fails due to different values', async () => {
-    try {
-      await web3Instance.methods.transferTo(acc1, 500000000000000000n).send({
-        from: acc0,
-        value: 600000000000000000,
-      });
-    } catch (e) {
-      assert.equal(
-        Object.values(e.data)[0].reason,
-        'Sent value and price NOT equal',
-        'Sent value and price should be the same.'
-      );
-    }
-  });
+  // it('Deposit of Wei should fails due to different values', async () => {
+  //   try {
+  //     await web3Instance.methods.transferTo(acc1, 500000000000000000n).send({
+  //       from: acc0,
+  //       value: 600000000000000000,
+  //     });
+  //   } catch (e) {
+  //     assert.equal(
+  //       Object.values(e.data)[0].reason,
+  //       'Sent value and price NOT equal',
+  //       'Sent value and price should be the same.'
+  //     );
+  //   }
+  // });
 
   it('Wei is withdrawn from smart contract', async () => {
     const tx = await instance.withdrawPayments(acc1);
@@ -234,5 +238,12 @@ contract('PostNftMinting', (accounts) => {
     const depositedPayments = await instance.payments(acc1);
 
     assert.equal(depositedPayments, 0, 'Amount is not correct');
+  });
+  it('Transfer', async () => {
+    const result = await web3Instance.methods.transferTo(tokens('5'));
+    const total = result.arguments;
+    assert.equal(total, 5000000000000000000);
+    // const res = await splitPayment.releasePayment(acc1)
+    // console.log(res)
   });
 });
