@@ -7,6 +7,7 @@ require('chai').use(require('chai-as-promised')).should();
 
 /* eslint-disable prefer-destructuring */
 const SplitPayment = artifacts.require('SplitPayment');
+const PostNftMinting = artifacts.require('PostNftMinting');
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
 const abi = JSON.parse(
   fs.readFileSync('app/blockchain/build/contracts/SplitPayment.json').toString()
@@ -14,14 +15,12 @@ const abi = JSON.parse(
 
 contract('SplitPayment', (accounts) => {
   let instance;
-  let web3Instance;
-  let projectOwner;
   let artist;
   let seller;
 
   before(async () => {
-    projectOwner = accounts[0];
-    instance = await SplitPayment.deployed(projectOwner, 2);
+    instance = await SplitPayment.deployed();
+    postNftMinting = await PostNftMinting.deployed();
     web3Instance = new web3.eth.Contract(abi, instance.address);
     artist = accounts[1];
     seller = accounts[2];
@@ -57,6 +56,11 @@ contract('SplitPayment', (accounts) => {
       const { shares } = event;
       assert.equal(account, seller);
       assert.equal(shares, 88); // 100 -2 -10
+    });
+    it("returns project owner's address", async () => {
+      const actual = await instance.payeeAddress(0);
+      const expected = await postNftMinting.splitPayment;
+      assert(actual, expected);
     });
   });
 });

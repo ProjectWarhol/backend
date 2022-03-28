@@ -18,4 +18,12 @@ contract SplitPayment is PaymentSplitter {
     require(0<=royalties && royalties<=10, "should be between 0 and 10");
     emit PayeeAdded(_sellerAddress, 100 -2 - royalties);
   }
+
+  function payeeAddress(uint256 index) external view returns (address) {
+    return payee(index);
+  }
+  
+  // function releasePayment(address payable _to) external {
+  //   release(_to);
+  // }
 }
