@@ -1,8 +1,5 @@
-const {
-  findNftById,
-  getNftComments,
-  createNftComment,
-} = require('../service/nft.content');
+const { findNftById } = require('../service/nft.content');
+const { getComments, createNewComment } = require('../service/comments');
 
 // Retrieve comments on picture
 exports.retrieveComments = async (req, res) => {
@@ -14,7 +11,7 @@ exports.retrieveComments = async (req, res) => {
   const nft = await findNftById(id, res);
   if (!nft || res.headersSent) return;
 
-  const comments = await getNftComments(nft, offset, res);
+  const comments = await getComments(nft, offset, res);
   if (!comments || res.headersSent) return;
 
   res.status(200).send({
@@ -33,7 +30,7 @@ exports.createComment = async (req, res) => {
   const nft = await findNftById(id, res);
   if (!nft || res.headersSent) return;
 
-  const created = await createNftComment(nft, comment, userId, res);
+  const created = await createNewComment(nft, comment, userId, res);
   if (!created || res.headersSent) return;
 
   res.status(200).send({
