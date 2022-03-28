@@ -49,7 +49,6 @@ exports.retrieveComments = (req, res, next) => {
   })
     .then((data) => {
       const commentObjects = data.map((comment) => commentObject(comment));
-
       res.status(200).send({
         message: 'Comments sent successfully',
         data: commentObjects,
@@ -61,7 +60,7 @@ exports.retrieveComments = (req, res, next) => {
 };
 
 // Post a comment on a picture
-exports.createComment = (req, res, next) => {
+exports.createComment = (req, res) => {
   const {
     body: { comment, userId },
     params: { id },
@@ -81,14 +80,14 @@ exports.createComment = (req, res, next) => {
         });
     })
     .catch((err) => {
-      next(defaultCommentsError(err));
+      defaultCommentsError(err);
     });
 };
 
 // Delete a comment on a picture
-exports.deleteComment = (req, res, next) => {
+exports.deleteComment = (req, res) => {
   const {
-    params: { id },
+    body: { id },
   } = req;
 
   Comments.destroy({
@@ -100,12 +99,16 @@ exports.deleteComment = (req, res, next) => {
       });
     })
     .catch((err) => {
-      next(defaultErrorHandler(err, res, 'Something went wrong'));
+      defaultErrorHandler(
+        err,
+        res,
+        'Something went wrong while deleting comment'
+      );
     });
 };
 
 // Patch Comment
-exports.updateComment = async (req, res, next) => {
+exports.updateComment = async (req, res) => {
   const {
     params: { id },
   } = req;
@@ -114,17 +117,20 @@ exports.updateComment = async (req, res, next) => {
     where: { id },
     returning: true,
   })
-    .then(([rowsUpdated, [updatedComment]]) => {
-      if (rowsUpdated) {
+    .then(([rowsUpdated]) => {
+      if (rowsUpdated > 0) {
         res.status(200).send({
-          message: 'Comment updated successfully',
-          comment: updatedComment,
+          message: 'Comment was updated successfully',
         });
       } else {
-        noPathErrorHandler(res);
+        noPathErrorHandler(res, 'Comment');
       }
     })
     .catch((err) => {
-      next(defaultErrorHandler(err, res, 'Something went wrong'));
+      defaultErrorHandler(
+        err,
+        res,
+        'Something went wrong while updating comment'
+      );
     });
 };
