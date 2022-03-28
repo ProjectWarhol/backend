@@ -43,44 +43,18 @@ exports.userIsPromoted = async (req, res) => {
 };
 
 // Create entry in Promoting
-exports.promotingOneUser = (req, res, next) => {
+exports.promotingOneUser = async (req, res) => {
   const {
     body: { userId },
     params: { promotedId },
   } = req;
 
-  Promoting.findOrCreate({
-    where: {
-      [Op.and]: [{ userId }, { promotedId }],
-    },
-    defaults: {
-      ...{ userId },
-      ...{ promotedId },
-    },
-  })
-    // eslint-disable-next-line no-unused-vars
-    .then(async ([newPromoting, created]) => {
-      if (created) {
-        let updatedUsers;
-        try {
-          updatedUsers = await incrementPromoting(userId, promotedId);
-        } catch (err) {
-          next(defaultPromotingError(err));
-        }
+  const created = await createPromotion(userId, promotedId, res);
+  if (!created || res.headersSent) return;
 
-        res.status(200).send({
-          message: 'Promotion added successfully',
-          ...updatedUsers,
-        });
-      } else {
-        res.status(409).send({
-          message: 'Already promoting user',
-        });
-      }
-    })
-    .catch((err) => {
-      next(defaultPromotingError(err));
-    });
+  res.status(200).send({
+    message: 'Promotion added successfully',
+  });
 };
 
 // Delete entry in Promoting
