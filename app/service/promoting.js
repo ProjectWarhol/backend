@@ -46,3 +46,20 @@ exports.getPromoters = async (user, res) => {
 
   return promoters;
 };
+
+exports.createPromotion = async (userId, promotedId, res) => {
+  const newPromotion = await Promoting.create({
+    ...{ userId },
+    ...{ promotedId },
+  }).catch((err) => {
+    if (err.name === 'SequelizeUniqueConstraintError') {
+      defaultConflictHandler(res, 'Promotion already exists');
+    } else if (err.parent.constraint === 'Promoting_promotedId_ck') {
+      defaultConflictHandler(res, 'Self-promotion');
+    } else {
+      defaultErrorHandler(res, 'Something went wrong while creating promotion');
+    }
+  });
+
+  return newPromotion !== undefined;
+};
