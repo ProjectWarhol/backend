@@ -1,6 +1,10 @@
 const { Sequelize } = require('../models');
 const db = require('../models');
 const { commentObject } = require('../util/commentObject');
+const {
+  noPathErrorHandler,
+  defaultErrorHandler,
+} = require('../middlewares/error_handlers.middleware');
 
 const {
   Sequelize: { Op },
@@ -56,7 +60,7 @@ exports.retrieveComments = (req, res, next) => {
 };
 
 // Post a comment on a picture
-exports.createComment = (req, res, next) => {
+exports.createComment = (req, res) => {
   const {
     body: { comment, userId },
     params: { id },
@@ -76,12 +80,12 @@ exports.createComment = (req, res, next) => {
         });
     })
     .catch((err) => {
-      next(defaultCommentsError(err));
+      defaultCommentsError(err);
     });
 };
 
 // Delete a comment on a picture
-exports.deleteComment = (req, res, next) => {
+exports.deleteComment = (req, res) => {
   const {
     body: { id },
   } = req;
@@ -95,12 +99,16 @@ exports.deleteComment = (req, res, next) => {
       });
     })
     .catch((err) => {
-      next(defaultCommentsError(err));
+      defaultErrorHandler(
+        err,
+        res,
+        'Something went wrong while deleting comment'
+      );
     });
 };
 
 // Patch Comment
-exports.updateComment = async (req, res, next) => {
+exports.updateComment = async (req, res) => {
   const {
     params: { id },
   } = req;
@@ -109,23 +117,20 @@ exports.updateComment = async (req, res, next) => {
     where: { id },
     returning: true,
   })
-    .then(([rowsUpdated, [updatedComment]]) => {
-      if (rowsUpdated) {
+    .then(([rowsUpdated]) => {
+      if (rowsUpdated > 0) {
         res.status(200).send({
           message: 'Comment was updated successfully',
-          comment: updatedComment,
         });
       } else {
-        const error = new Error('Comment not found');
-        error.status = 404;
-        next(error);
+        noPathErrorHandler(res, 'Comment');
       }
     })
     .catch((err) => {
-      const error = new Error(
-        'Something went wrong while updating the comment'
+      defaultErrorHandler(
+        err,
+        res,
+        'Something went wrong while updating comment'
       );
-      error.err = err;
-      next(error);
     });
 };
