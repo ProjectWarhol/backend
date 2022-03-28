@@ -7,29 +7,21 @@ const {
 const { findUserById } = require('../service/user');
 
 // Get all users that a user with userId promotes
-exports.userPromoting = (req, res, next) => {
+exports.userPromoting = async (req, res) => {
   const {
     params: { userId },
   } = req;
 
-  User.findAll({
-    include: {
-      model: Promoting,
-      attributes: [],
-      required: true,
-      where: { userId },
-    },
-  })
-    .then((userData) => {
-      const userObjects = userData.map((data) => sessionObject(data));
-      res.status(200).send({
-        message: 'Promoting data sent successfully',
-        data: userObjects,
-      });
-    })
-    .catch((err) => {
-      next(defaultPromotingError(err));
-    });
+  const user = await findUserById(userId, res);
+  if (!user || res.headersSent) return;
+
+  const promotions = await getPromotions(user, res);
+  if (!promotions || res.headersSent) return;
+
+  res.status(200).send({
+    message: 'Promotions data sent successfully',
+    data: promotions,
+  });
 };
 
 // Get all users that promote a user with promotedId
