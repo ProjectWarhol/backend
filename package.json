@@ -1,7 +1,7 @@
 {
-  "name": "warhol-backend",
+  "name": "unos-backend",
   "version": "1.0.0",
-  "description": "project warhol backend",
+  "description": "unos backend",
   "main": "app.js",
   "scripts": {
     "test": "NODE_ENV=test mocha",
@@ -28,9 +28,9 @@
     ]
   },
   "keywords": [
-    "warhol"
+    "unos"
   ],
-  "author": "Warhol team",
+  "author": "Unos team",
   "license": "ISC",
   "dependencies": {
     "@truffle/hdwallet-provider": "^2.0.3",
