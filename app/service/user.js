@@ -1,7 +1,6 @@
 /* eslint-disable consistent-return */
 const bcrypt = require('bcrypt');
 const db = require('../models');
-const errHandler = require('../middlewares/error_handlers.middleware');
 
 const {
   User,
@@ -10,6 +9,7 @@ const {
 const {
   defaultErrorHandler,
   noPathErrorHandler,
+  defaultConflictHandler,
 } = require('../middlewares/error_handlers.middleware');
 
 exports.updateUserWalletId = async (storedWallet, id, res, next) => {
@@ -27,7 +27,7 @@ exports.updateUserWalletId = async (storedWallet, id, res, next) => {
         const object = updatedUser;
         return object;
       }
-      next(noPathErrorHandler(res, 'User'));
+      noPathErrorHandler(res, 'User');
     })
     .catch(() => {
       next(
@@ -37,7 +37,7 @@ exports.updateUserWalletId = async (storedWallet, id, res, next) => {
   return state;
 };
 
-exports.createUser = async (req, res, next) => {
+exports.createUser = async (req, res) => {
   const {
     body: { userName, email, password },
   } = req;
@@ -66,12 +66,10 @@ exports.createUser = async (req, res, next) => {
 
         return newUser;
       }
-      res.status(409).send({
-        message: 'Email or username already in use',
-      });
+      defaultConflictHandler(res, 'Email or username already in use');
     })
-    .catch((err) => {
-      next(errHandler.defaultErrorHandler(err));
+    .catch(() => {
+      defaultErrorHandler(res, 'something went wrong while creating user');
     });
 
   return id;

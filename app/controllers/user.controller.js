@@ -237,8 +237,9 @@ exports.createOne = async (req, res, next) => {
 };
 
 // set updatePassword attributes
-exports.expressSignup = async (req, res, next) => {
-  const user = await createUser(req, res, next);
+exports.expressSignup = async (req, res) => {
+  const user = await createUser(req, res);
+  if (!user || res.headersSent) return;
 
   const wallet = await createCustodialWallet();
   const walletInfo = {
@@ -252,16 +253,15 @@ exports.expressSignup = async (req, res, next) => {
     req.body.password
   );
   if (!encryptedwallet) {
-    next(defaultWrongInputHandler(res, 'wallet input'));
+    defaultWrongInputHandler(res, 'wallet input');
   }
 
   const encryptedData = changeObjectToData(encryptedwallet);
-  const storedWallet = await addWalletToDatabase(encryptedData, res, next);
+  const storedWallet = await addWalletToDatabase(encryptedData, res);
   const newUser = await updateUserWalletId(
     storedWallet,
     user.dataValues.id,
-    res,
-    next
+    res
   );
 
   const newSessionUser = sessionObject(newUser);
