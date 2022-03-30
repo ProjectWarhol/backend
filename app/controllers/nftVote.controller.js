@@ -1,42 +1,37 @@
 const db = require('../models');
 const {
-  // noPathErrorHandler,
+  defaultWrongInputHandler,
   defaultErrorHandler,
 } = require('../middlewares/error_handlers.middleware');
 
-const { NftContent, NftVote } = db;
+const { NftVote } = db;
 
 // Vote on NFT Content
 exports.voteNFT = (req, res) => {
   const {
-    body: { vote, userId },
+    body: { voteType, UserId },
     params: { id },
   } = req;
-  NftContent.findByPk(id)
-    .then(() => {
-      if (vote === true) {
-        console.log('ok');
-        NftContent.increment('upVotes', { by: 1, where: { id } });
+
+  NftVote.findOrCreate({
+    where: {
+      contentId: id,
+      userId: UserId,
+      type: voteType,
+    },
+  })
+
+    .then(([voteObj, created]) => {
+      if (created) {
+        res.status(200).send({
+          message: 'Vote was submitted successfully',
+          value: voteObj,
+        });
       } else {
-        NftContent.increment('downVotes', { by: 1, where: { id } });
+        defaultWrongInputHandler(res, 'VoteType already exists');
       }
     })
-    .then(() => {
-      NftVote.create({
-        contentid: id,
-        userid: userId,
-        type: vote,
-      });
-    })
-    .then(() => {
-      res.status(200).send({
-        message: 'Vote submitted successfully',
-      });
-    })
     .catch((err) => {
-      defaultErrorHandler(
-        err,
-        'Something went wrong voting on the NFT content.'
-      );
+      defaultErrorHandler(err, res, 'Something went wrong while updating vote');
     });
 };
