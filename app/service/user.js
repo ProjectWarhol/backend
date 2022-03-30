@@ -8,6 +8,14 @@ const {
   noPathErrorHandler,
 } = require('../middlewares/error_handlers.middleware');
 
+exports.findUserById = async (id, res) => {
+  const user = await User.findByPk(id, { rejectOnEmpty: true }).catch(() => {
+    noPathErrorHandler(res, 'User');
+  });
+
+  return user;
+};
+
 exports.updateUserWalletId = async (storedWallet, id, res, next) => {
   const state = await User.update(
     {
