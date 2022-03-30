@@ -31,7 +31,7 @@ exports.voteNFT = (req, res) => {
         defaultWrongInputHandler(res, 'VoteType already exists');
       }
     })
-    .catch((err) => {
-      defaultErrorHandler(err, res, 'Something went wrong while updating vote');
+    .catch(() => {
+      defaultErrorHandler(res, 'Something went wrong while updating vote');
     });
 };
