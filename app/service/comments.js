@@ -14,10 +14,15 @@ exports.getComments = async (nft, offset, res) => {
       joinTableAttributes: [],
       include: [User],
     })
-    .then((data) => data.map((comment) => commentObject(comment)))
     .catch(() => {
       defaultErrorHandler(res, 'Something went wrong while fetching comments');
     });
+
+  try {
+    comments.map((comment) => commentObject(comment));
+  } catch (err) {
+    defaultErrorHandler(res, 'Something went wrong while fetching comments');
+  }
 
   return comments;
 };
