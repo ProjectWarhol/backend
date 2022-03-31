@@ -87,7 +87,7 @@ exports.createComment = (req, res) => {
 // Delete a comment on a picture
 exports.deleteComment = (req, res) => {
   const {
-    body: { id },
+    params: { id },
   } = req;
 
   Comments.destroy({
