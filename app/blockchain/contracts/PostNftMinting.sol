@@ -42,7 +42,7 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 			payeesInThisContract.push(newPayee);
 	}
 
-	function getPayeeShare(address _payeeAddress) private view returns(uint256){
+	function getPayeeShares(address _payeeAddress) private view returns(uint256){
 			Payee storage payee = payees[_payeeAddress];
 			return payee.shares;
 	}
