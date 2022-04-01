@@ -1,3 +1,5 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-plusplus */
 /* eslint-disable import/no-unresolved */
 const { assert } = require('chai');
 const Web3 = require('web3');
@@ -19,6 +21,8 @@ contract('PostNftMinting', (accounts) => {
   let web3Instance;
   let acc0;
   let acc1;
+  let acc2;
+  let acc3;
   let tokenCounter = -1;
 
   before(async () => {
@@ -29,6 +33,8 @@ contract('PostNftMinting', (accounts) => {
   beforeEach(async () => {
     acc0 = accounts[0];
     acc1 = accounts[1];
+    acc2 = accounts[2];
+    acc3 = accounts[3];
   });
 
   it('Minting should create token on chain', async () => {
@@ -184,6 +190,35 @@ contract('PostNftMinting', (accounts) => {
         'INVALID_ARGUMENT',
         'Receover address is not valid'
       );
+    }
+  });
+
+  it('Pay Out', async () => {
+    const initialBalances = [];
+    const payees = [acc1, acc2, acc3];
+    const shares = [88, 10, 2];
+    const afterBalances = [];
+    // Before
+    for (let i = 0; i < payees.length; i++) {
+      const currentBalance = await web3.eth.getBalance(payees[i]);
+      initialBalances.push(currentBalance); // balances before payout
+      await instance.addPayee(payees[i], shares[i]);
+    }
+    // Payout
+    await web3Instance.methods.payOut(1000000000000000000n).send({
+      from: acc0,
+      value: 1000000000000000000,
+    });
+    // After
+    for (let i = 0; i < payees.length; i++) {
+      const currentBalance = await web3.eth.getBalance(payees[i]);
+      afterBalances.push(currentBalance); // balances after payout
+    }
+    // Difference between After and Before
+    for (let i = 0; i < payees.length; i++) {
+      const actual = afterBalances[i] - initialBalances[i];
+      // loop
+      assert.equal(actual, (1000000000000000000 * shares[i]) / 100);
     }
   });
 });
