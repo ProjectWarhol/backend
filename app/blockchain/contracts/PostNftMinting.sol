@@ -10,13 +10,13 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 	using Counters for Counters.Counter;
 	Counters.Counter private tokenIdCounter;
 	mapping(string=> bool) private tokenExists;
-    mapping (address => Payee) private payees;
-    Payee[] private payeesInThisContract;
-    uint256 private totalshares = 100;
-    struct Payee {
-        address payeeAddress;
-        uint256 shares;
-    }
+	mapping (address => Payee) private payees;
+	Payee[] private payeesInThisContract;
+	uint256 private totalshares = 100;
+	struct Payee {
+			address payeeAddress;
+			uint256 shares;
+	}
 
 	constructor() ERC721("PostNftMint", "SFT") {}
 
@@ -42,7 +42,7 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 			payeesInThisContract.push(newPayee);
 	}
 
-	function getPayeeShares(address _payeeAddress) private view returns(uint256){
+	function getPayeeShares(address _payeeAddress) external view returns(uint256){
 			Payee storage payee = payees[_payeeAddress];
 			return payee.shares;
 	}
