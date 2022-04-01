@@ -26,6 +26,8 @@ module.exports = {
           key: 'id',
         },
         allowNull: false,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       contentId: {
         type: DataTypes.UUID,
@@ -36,6 +38,8 @@ module.exports = {
           key: 'id',
         },
         allowNull: false,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
     });
   },
