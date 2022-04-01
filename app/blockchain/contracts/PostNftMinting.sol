@@ -34,18 +34,18 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 		safeTransferFrom(msg.sender, _to, _tokenId);
 	}
 
-    function addPayee(address _payeeAddress, uint256 _shares) external{
-        totalshares -= _shares;
-        require(totalshares>=0, "Share should not be over 100");
-        Payee memory newPayee = Payee(_payeeAddress, _shares);
-        payees[msg.sender] = newPayee;
-        payeesInThisContract.push(newPayee);
-    }
+	function addPayee(address _payeeAddress, uint256 _shares) external{
+			totalshares -= _shares;
+			require(totalshares>=0, "Share should not be over 100");
+			Payee memory newPayee = Payee(_payeeAddress, _shares);
+			payees[msg.sender] = newPayee;
+			payeesInThisContract.push(newPayee);
+	}
 
-    function getPayeeShare(address _payeeAddress) private view returns(uint256){
-        Payee storage payee = payees[_payeeAddress];
-        return payee.shares;
-    }
+	function getPayeeShare(address _payeeAddress) private view returns(uint256){
+			Payee storage payee = payees[_payeeAddress];
+			return payee.shares;
+	}
 
 	function payOut(uint256 _price) external payable {
 		require(msg.value == _price, "Sent value and price NOT equal");
