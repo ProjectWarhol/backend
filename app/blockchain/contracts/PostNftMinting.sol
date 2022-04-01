@@ -10,6 +10,13 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 	using Counters for Counters.Counter;
 	Counters.Counter private tokenIdCounter;
 	mapping(string=> bool) private tokenExists;
+    mapping (address => Payee) private payees;
+    Payee[] private payeesInThisContract;
+    uint256 private totalshares = 100;
+    struct Payee {
+        address payeeAddress;
+        uint256 shares;
+    }
 
 	constructor() ERC721("PostNftMint", "SFT") {}
 
@@ -27,13 +34,30 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 		safeTransferFrom(msg.sender, _to, _tokenId);
 	}
 
-	function transferTo(address _to, uint256 _price) external payable {
-		// price is and must be in Wei
-		require(msg.value == _price, "Sent value and price NOT equal");
-		_asyncTransfer(_to, _price);
-	}
+    function addPayee(address _payeeAddress, uint256 _shares) external{
+        totalshares -= _shares;
+        require(totalshares>=0, "Share should not be over 100");
+        Payee memory newPayee = Payee(_payeeAddress, _shares);
+        payees[msg.sender] = newPayee;
+        payeesInThisContract.push(newPayee);
+    }
 
-	function _burn(uint256 _tokenId) internal override(ERC721, ERC721URIStorage) {
+    function getPayeeShare(address _payeeAddress) private view returns(uint256){
+        Payee storage payee = payees[_payeeAddress];
+        return payee.shares;
+    }
+
+	function payOut(uint256 _price) external payable {
+		require(msg.value == _price, "Sent value and price NOT equal");
+        require(payeesInThisContract.length > 0, "No payees");
+        for (uint256 i = 0; i < payeesInThisContract.length; i++) {
+            address currentPayeeAddress = payeesInThisContract[i].payeeAddress;
+            uint256 currentAmount = msg.value * payeesInThisContract[i].shares / 100;
+            payable(currentPayeeAddress).transfer(currentAmount);
+        }
+    }
+
+    function _burn(uint256 _tokenId) internal override(ERC721, ERC721URIStorage) {
     super._burn(_tokenId);
   }
 
