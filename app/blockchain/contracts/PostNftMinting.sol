@@ -45,6 +45,14 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 			return payees[_id];
 	}
 
+	function resetPayees() external {
+		for (uint256 i = 0; i < payeeCounter._value; i++) {
+			delete payees[i];
+		}
+    totalshares = 100;
+		payeeCounter.reset();
+	}
+
 	function payOut(uint256 _price) external payable {
 		require(msg.value == _price, "Sent value and price NOT equal");
         require(payeeCounter._value > 0, "No payees");

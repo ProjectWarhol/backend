@@ -232,4 +232,16 @@ contract('PostNftMinting', (accounts) => {
     assert.equal(shares, 88, 'The share of acc1 should be 88');
     assert.notEqual(shares, 10, 'The share of acc1 should not be 10');
   });
+
+  it('should reset payees', async () => {
+    // Reset
+    await instance.resetPayees();
+    // Add a payee again
+    await instance.addPayee(acc3, 30);
+    const { payeeAddress, shares } = await instance.getPayee(0);
+    assert.equal(payeeAddress, acc3, 'Payee No.0 should be acc3');
+    assert.notEqual(payeeAddress, acc1, 'Payee No.0 should not be acc1');
+    assert.equal(shares, 30, 'The share of acc3 should be 30');
+    assert.notEqual(shares, 10, 'The share of acc3 should not be 10');
+  });
 });
