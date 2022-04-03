@@ -1,4 +1,13 @@
 // for not found paths
+exports.defaultExpirationHandler = (res, message) => {
+  res.status(401).send({
+    error: {
+      status: 401,
+      message: `Expired: ${message}`,
+    },
+  });
+};
+
 exports.noPathErrorHandler = (res, message) => {
   res.status(404).send({
     error: {
@@ -8,11 +17,11 @@ exports.noPathErrorHandler = (res, message) => {
   });
 };
 
-exports.defaultErrorHandler = (res, message) => {
-  res.status(500).send({
+exports.defaultConflictHandler = (res, message) => {
+  res.status(409).send({
     error: {
-      status: 500,
-      message: `Internal Server Error: ${message}`,
+      status: 409,
+      message: `Conflict: ${message}`,
     },
   });
 };
@@ -26,11 +35,11 @@ exports.defaultWrongInputHandler = (res, message) => {
   });
 };
 
-exports.defaultConflictHandler = (res, message) => {
-  res.status(409).send({
+exports.defaultErrorHandler = (res, message) => {
+  res.status(500).send({
     error: {
-      status: 409,
-      message: `Conflict: ${message}`,
+      status: 500,
+      message: `Internal Server Error: ${message}`,
     },
   });
 };
