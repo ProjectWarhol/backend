@@ -22,7 +22,7 @@ Note: if any issues show up during the database setup please refer to the README
 ## Run
 
 1. Run `npm run dev` to start the development server (default port: 3000)
-2. Run `npm run test` to run all tests
+2. Run `npm run test:dev` to run all development tests
 3. Run `npm run lint` for linting with ESLint
 4. Run `npm run format` for formatting with Prettier
 
