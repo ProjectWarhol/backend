@@ -42,6 +42,10 @@ module.exports = {
         onUpdate: 'CASCADE',
       },
     });
+    await queryInterface.addConstraint('NftVote', {
+      fields: ['userId', 'contentId'],
+      type: 'unique',
+    });
   },
 
   down: async (queryInterface) => {
