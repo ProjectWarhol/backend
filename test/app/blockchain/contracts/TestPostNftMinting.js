@@ -195,7 +195,7 @@ contract('PostNftMinting', (accounts) => {
   // Failure
   it('Should reject add a payee', async () => {
     await instance.addPayee(acc1, 120).should.be.rejected;
-  })
+  });
   // Success
   it('Add payees => Pay Out', async () => {
     const initialBalances = [];
@@ -224,5 +224,12 @@ contract('PostNftMinting', (accounts) => {
       // loop
       assert.equal(actual, (1000000000000000000 * shares[i]) / 100);
     }
+  });
+  it('should return payees', async () => {
+    const { payeeAddress, shares } = await instance.getPayee(0);
+    assert.equal(payeeAddress, acc1, 'Payee No.0 should be acc1');
+    assert.notEqual(payeeAddress, acc2, 'Payee No.0 should not be acc2');
+    assert.equal(shares, 88, 'The share of acc1 should be 88');
+    assert.notEqual(shares, 10, 'The share of acc1 should not be 10');
   });
 });
