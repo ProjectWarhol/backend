@@ -9,9 +9,9 @@ import "@openzeppelin/contracts/security/PullPayment.sol";
 contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 	using Counters for Counters.Counter;
 	Counters.Counter private tokenIdCounter;
+	Counters.Counter private payeeCounter;
 	mapping(string=> bool) private tokenExists;
-	mapping (address => Payee) private payees;
-	Payee[] private payeesInThisContract;
+	mapping (uint256 => Payee) private payees;
 	uint256 private totalshares = 100;
 	struct Payee {
 			address payeeAddress;
@@ -38,21 +38,16 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 			totalshares -= _shares;
 			require(totalshares>=0, "Share should not be over 100");
 			Payee memory newPayee = Payee(_payeeAddress, _shares);
-			payees[msg.sender] = newPayee;
-			payeesInThisContract.push(newPayee);
-	}
-
-	function getPayeeShares(address _payeeAddress) external view returns(uint256){
-			Payee storage payee = payees[_payeeAddress];
-			return payee.shares;
+			payees[payeeCounter._value] = newPayee;
+			payeeCounter.increment();
 	}
 
 	function payOut(uint256 _price) external payable {
 		require(msg.value == _price, "Sent value and price NOT equal");
-        require(payeesInThisContract.length > 0, "No payees");
-        for (uint256 i = 0; i < payeesInThisContract.length; i++) {
-            address currentPayeeAddress = payeesInThisContract[i].payeeAddress;
-            uint256 currentAmount = msg.value * payeesInThisContract[i].shares / 100;
+        require(payeeCounter._value > 0, "No payees");
+        for (uint256 i = 0; i < payeeCounter._value; i++) {
+            address currentPayeeAddress = payees[i].payeeAddress;
+            uint256 currentAmount = msg.value * payees[i].shares / 100;
             payable(currentPayeeAddress).transfer(currentAmount);
         }
     }
