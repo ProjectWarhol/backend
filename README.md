@@ -7,17 +7,29 @@ You need to install the following things to be able to run this project on your 
 
 # Getting Started
 
-## Install
+## setup database
+
+1. (On windows if using cmd please us `windows powershell cmd`) navigate to the `bin` folder in the postgresql folder.
+2. create a new user `psql -U userName` and enter a `password` when prompted.
+3. Set up a local Database by running `CREATE DATABASE name`. 
+   EX. (CREATE DATABASE myDatabase)
+4. (optional) you may have to give your account database priviledges using the `GRANT ALL PRIVILEGES` command. 
+   EX. (GRANT ALL PRIVILEGES ON myDB . * TO 'user'@'localhost';)
+## Install and setup the repository
 
 1. Clone this repository
 2. Install dependencies with `npm install`
-3. Duplicate `.env.example` and rename it to `.env`
+3. Duplicate `.env.example` file and rename it to `.env`
 4. Add enviroment variables to `.env`
+   1. Enter a random `string` variable for the `FOO_COOKIE_SECRET` in order to have session cookie generated
+   2. `DB_DEVELOPMENT_HOST`=localhost
+      `DB_DEVELOPMENT_DATABASE` => the name of the database created for this project
+      `DB_DEVELOPMENT_USERNAME` => the username that has access to the development database
+      `DB_DEVELOPMENT_PASSWORD` => your database user password (note if the password containes numbers, you may have to use single quotes EX. 'password123')
+      `DB_DEVELOPMENT_PORT` => usualy is '5432'
 5. Setup testing and development database
-   1. Run `npm run setup:db` to drop & create a new database, and automatically add the fixtures[]
+   1. Run `npm run setup:db` to drop & create a new database and automatically migrate and seed.
    2. Run `npm run setup:testing` to setup the testing database
-
-Note: if any issues show up during the database setup please refer to the README file located in the database folder ./db/README.md
 
 ## Run
 
