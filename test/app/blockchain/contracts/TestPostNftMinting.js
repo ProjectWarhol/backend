@@ -192,13 +192,17 @@ contract('PostNftMinting', (accounts) => {
       );
     }
   });
-
-  it('Pay Out', async () => {
+  // Failure
+  it('Should reject add a payee', async () => {
+    await instance.addPayee(acc1, 120).should.be.rejected;
+  })
+  // Success
+  it('Add payees => Pay Out', async () => {
     const initialBalances = [];
     const payees = [acc1, acc2, acc3];
     const shares = [88, 10, 2];
     const afterBalances = [];
-    // Before
+    // Before paying out
     for (let i = 0; i < payees.length; i++) {
       const currentBalance = await web3.eth.getBalance(payees[i]);
       initialBalances.push(currentBalance); // balances before payout
@@ -209,7 +213,7 @@ contract('PostNftMinting', (accounts) => {
       from: acc0,
       value: 1000000000000000000,
     });
-    // After
+    // After paying out
     for (let i = 0; i < payees.length; i++) {
       const currentBalance = await web3.eth.getBalance(payees[i]);
       afterBalances.push(currentBalance); // balances after payout
