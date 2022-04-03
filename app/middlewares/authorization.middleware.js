@@ -21,7 +21,7 @@ exports.checkLoginInput = async (req, res, next) => {
     req.body.type = 'userName';
   } else {
     const error = new Error('Invalid username or email');
-    error.status = 422;
+    error.status = 401;
     return next(error);
   }
   return next();
