@@ -5,6 +5,7 @@ const {
 const { updateUserWalletId } = require('../service/user');
 const { decryptPrivateKey } = require('../blockchain/wallet/custodial_wallet');
 const { walletObject } = require('../util/walletObject');
+const { hashMnemonic } = require('../util/mnumonicHashing');
 const { changeObjectToData } = require('../util/privateKeyObject');
 const {
   addWalletToDatabase,
@@ -21,8 +22,9 @@ exports.createWallet = async (req, res, next) => {
   const { id } = req.body;
 
   const wallet = await createCustodialWallet();
-  const walletPublicKey = { publicKey: wallet.wallet[0].address };
-  const walletInformation = wallet.wallet[0];
+  const walletPublicKey = { publicKey: wallet.wallet.address };
+  const walletInformation = wallet.wallet;
+  const mnemonicPhrase = wallet.seedPhrase;
 
   const storedWallet = await addWalletToDatabase(walletPublicKey, res, next);
   const userObject = await updateUserWalletId(storedWallet, id, res, next);
@@ -31,26 +33,30 @@ exports.createWallet = async (req, res, next) => {
     message: 'Wallet successfully created',
     walletId: userObject.walletId,
     wallet: walletInformation,
+    mnemonicPhrase,
   });
 };
 
 // store and encrypt privateKey with private/public key and password
 exports.storePrivateKey = async (req, res, next) => {
-  const { id } = req.params;
-  const { password } = req.body;
+  const { walletId } = req.params;
+  const { password, id } = req.body;
   const wallet = {
     address: req.body.address,
     privateKey: req.body.privateKey,
     index: req.body.index,
+    seedPhrase: req.body.seedPhrase,
   };
+
+  const mnemonicHash = await hashMnemonic(id, res, wallet.seedPhrase, password);
 
   const encryptedPrivateKey = await storeCustodialWallet(wallet, password);
   if (!encryptedPrivateKey) {
-    next(defaultWrongInputHandler(res, 'wallet input'));
+    defaultWrongInputHandler(res, 'wallet input');
   }
 
-  const encryptedData = changeObjectToData(encryptedPrivateKey);
-  await updateWallet(encryptedData, id, res, next);
+  const encryptedData = changeObjectToData(encryptedPrivateKey, mnemonicHash);
+  await updateWallet(encryptedData, walletId, res, next);
 
   res.status(200).send({
     message: 'Private key successfully stored',
