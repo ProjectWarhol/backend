@@ -71,6 +71,7 @@ exports.validateSession = (req, res) => {
 exports.expressValidationResponse = (req, res) => {
   res.status(200).send({
     message: 'Express signup complete',
+    walletId: req.body.walletId,
     walletInformation: req.body.walletInformation,
     mnemonicPhrase: req.body.mnemonicPhrase,
   });
