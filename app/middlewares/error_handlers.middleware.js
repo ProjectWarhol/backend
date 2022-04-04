@@ -8,6 +8,15 @@ exports.defaultExpirationHandler = (res, message) => {
   });
 };
 
+exports.unauthorizedHandler = (res, message) => {
+  res.status(403).send({
+    error: {
+      status: 403,
+      message: `Unauthorized: ${message}`,
+    },
+  });
+};
+
 exports.noPathErrorHandler = (res, message) => {
   res.status(404).send({
     error: {
@@ -40,6 +49,15 @@ exports.defaultErrorHandler = (res, message) => {
     error: {
       status: 500,
       message: `Internal Server Error: ${message}`,
+    },
+  });
+};
+
+exports.defaultPasswordMismatch = (res, message) => {
+  res.status(403).send({
+    error: {
+      status: 403,
+      message: `forbidden: ${message}`,
     },
   });
 };

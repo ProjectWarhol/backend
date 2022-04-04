@@ -5,7 +5,9 @@ const fs = require('fs');
 require('chai').use(require('chai-as-promised')).should();
 
 /* eslint-disable prefer-destructuring */
-const PostNftMinting = artifacts.require('PostNftMinting');
+const PostNftMinting = artifacts.require(
+  '../app/blockchain/contracts/postNftMinting'
+);
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
 const abi = JSON.parse(
   fs
