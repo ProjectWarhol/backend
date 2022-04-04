@@ -12,7 +12,7 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 	Counters.Counter private payeeCounter;
 	mapping(string=> bool) private tokenExists;
 	mapping (uint256 => Payee) private payees;
-	uint256 private totalshares = 100;
+	uint256 private totalShares = 100;
 	struct Payee {
 			address payeeAddress;
 			uint256 shares;
@@ -35,8 +35,8 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 	}
 
 	function addPayee(address _payeeAddress, uint256 _shares) external{
-			totalshares -= _shares;
-			require(totalshares>=0, "Share should not be over 100");
+			totalShares -= _shares;
+			require(totalShares>=0, "Share should not be over 100");
 			Payee memory newPayee = Payee(_payeeAddress, _shares);
 			payees[payeeCounter._value] = newPayee;
 			payeeCounter.increment();
@@ -49,7 +49,7 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 		for (uint256 i = 0; i < payeeCounter._value; i++) {
 			delete payees[i];
 		}
-    totalshares = 100;
+    totalShares = 100;
 		payeeCounter.reset();
 	}
 
