@@ -1,13 +1,15 @@
 const { body } = require('express-validator');
+const {
+  unauthorizedHandler,
+  defaultWrongInputHandler,
+} = require('./error_handlers.middleware');
 
 const usernameRegExp = new RegExp('^[a-zA-Z0-9-_.]{4,20}$');
 
 // checks if user is logged in
 exports.isLoggedIn = (req, res, next) => {
   if (!req.session.user) {
-    const error = new Error('Unauthorized user not logged in');
-    error.status = 403;
-    return next(error);
+    unauthorizedHandler(res, 'user not logged in');
   }
   return next();
 };
@@ -20,9 +22,7 @@ exports.checkLoginInput = async (req, res, next) => {
   } else if (usernameRegExp.test(req.body.userCredential)) {
     req.body.type = 'userName';
   } else {
-    const error = new Error('Invalid username or email');
-    error.status = 422;
-    return next(error);
+    defaultWrongInputHandler(res, 'Invalid username or email');
   }
   return next();
 };
