@@ -74,12 +74,13 @@ You need to install the following things to be able to run this project on your 
 
 1. Run `npm run dev` to start the development server (default port: 3000)
 2. Run `npm run test` to run all tests
-3. Run `npm run lint` for linting with ESLint
-4. Run `npm run format` for formatting with Prettier
-5. Run `npm run compile` to check Smart Contracts
-6. Run `npm run mDev` to deploy Smart Contracts to local blockchain (Ganache should run in background)
-7. Run `npm run test:sol` to run Smart Contract tests
-8. Run `npm run lint:sol` to lint Smart Contract
+3. Run `npm run test:dev` to run development tests only
+4. Run `npm run lint` for linting with ESLint
+5. Run `npm run format` for formatting with Prettier
+6. Run `npm run compile` to check Smart Contracts
+7. Run `npm run mDev` to deploy Smart Contracts to local blockchain (Ganache should run in background)
+8. Run `npm run test:sol` to run Smart Contract tests
+9. Run `npm run lint:sol` to lint Smart Contract
 
 ## Other
 
