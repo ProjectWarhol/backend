@@ -45,13 +45,14 @@ exports.mintNft = async (req, res) => {
 };
 
 // Get tokens owned by account
-exports.getTokens = async (req, res) => {
+exports.getTokenIds = async (req, res) => {
+  console.log('BLOCKS:', await provider.getBlock(3))
   try {
     const result = await contract.getTokens(req.params.address)
     // eslint-disable-next-line no-underscore-dangle
     const intTokens = result.map(element => parseInt(element._hex, 16));
     res.status(200).send({
-      tokens: intTokens,
+      tokenIds: intTokens,
     });
   } catch (e) {
     console.error(e)
