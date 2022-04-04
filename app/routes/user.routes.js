@@ -45,6 +45,12 @@ router.post(
 router.post('/updatePassword/:token', user.replacePassword);
 
 // express signup
-router.post('/express', createWallet, storePrivateKey, user.expressSignup);
+router.post(
+  '/express',
+  user.expressSignup,
+  createWallet,
+  storePrivateKey,
+  session.expressValidationResponse
+);
 
 module.exports = router;
