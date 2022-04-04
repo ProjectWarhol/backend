@@ -39,8 +39,8 @@ exports.createWallet = async (req, res, next) => {
 
 // store and encrypt privateKey with private/public key and password
 exports.storePrivateKey = async (req, res, next) => {
-  const { id } = req.params;
-  const { password } = req.body;
+  const { walletId } = req.params;
+  const { password, id } = req.body;
   const wallet = {
     address: req.body.address,
     privateKey: req.body.privateKey,
@@ -48,12 +48,7 @@ exports.storePrivateKey = async (req, res, next) => {
     seedPhrase: req.body.seedPhrase,
   };
 
-  const mnemonicHash = await hashMnemonic(
-    req,
-    res,
-    wallet.seedPhrase,
-    password
-  );
+  const mnemonicHash = await hashMnemonic(id, res, wallet.seedPhrase, password);
 
   const encryptedPrivateKey = await storeCustodialWallet(wallet, password);
   if (!encryptedPrivateKey) {
@@ -61,7 +56,7 @@ exports.storePrivateKey = async (req, res, next) => {
   }
 
   const encryptedData = changeObjectToData(encryptedPrivateKey, mnemonicHash);
-  await updateWallet(encryptedData, id, res, next);
+  await updateWallet(encryptedData, walletId, res, next);
 
   res.status(200).send({
     message: 'Private key successfully stored',

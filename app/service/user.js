@@ -46,8 +46,8 @@ exports.updateUserWalletId = async (storedWallet, id, res, next) => {
   return state;
 };
 
-exports.getUserPasswordHash = async (req, res, password) => {
-  const passwordHash = await User.findByPk(req.body.id)
+exports.getUserPasswordHash = async (id, res, password) => {
+  const passwordHash = await User.findByPk(id)
     .then((user) => user.passwordHash)
     .catch(() => {
       defaultErrorHandler(res, 'Something went wrong while updating user');
