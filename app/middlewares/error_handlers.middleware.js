@@ -1,6 +1,6 @@
 // for not found paths
 exports.unauthorizedHandler = (res, message) => {
-  res.status(404).send({
+  res.status(403).send({
     error: {
       status: 403,
       message: `Unauthorized: ${message}`,
