@@ -91,7 +91,7 @@ exports.updateComment = async (req, res) => {
     .catch(() => {
       defaultErrorHandler(
         res,
-        'Something went wrong while deleting the comment'
+        'Something went wrong while updating the comment'
       );
     });
 };
