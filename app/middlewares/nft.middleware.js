@@ -3,18 +3,27 @@ const fs = require('fs');
 const { NFTStorage, File } = require('nft.storage');
 
 // Save it to IPFS
-const saveNftToStorage = async (name, description, filePath, mimeType) => {
+const saveNftToStorage = async (req, filePath) => {
   const client = new NFTStorage({
     token: process.env.NFT_STORAGE_KEY,
   });
-  const fileExtension = mimeType.split('/')[1];
+  const fileExtension = req.files.image.mimetype.split('/')[1];
   try {
     const metadata = await client.store({
-      name,
-      description,
-      image: new File([fs.readFileSync(filePath)], `${name}.${fileExtension}`, {
-        type: mimeType,
+      name: req.body.name,
+      description: req.body.description,
+      image: new File([fs.readFileSync(filePath)], `${req.body.name}.${fileExtension}`, {
+        type: req.files.image.mimetype,
       }),
+      attributes: {
+        creatorUsername: req.body.creatorUsername,
+        creatorAdress: req.body.creatorAdress,
+        ownerAdress: req.body.ownerAdress,
+        createdAt: req.body.date,
+        location: req.body.location,
+        positionInTree: req.body.positionInTree,
+        amountSold: req.body.amountSold
+      }
     });
     return { success: true, data: metadata.url };
   } catch (error) {
@@ -49,13 +58,8 @@ exports.uploadNft = (req, res, next) => {
     if (err) {
       return res.status(500).send(err);
     }
-
-    const metaData = await saveNftToStorage(
-      req.body.name,
-      req.body.description,
-      filePath,
-      req.files.image.mimetype
-    );
+    
+    const metaData = await saveNftToStorage(req, filePath);
 
     if (!metaData.success) {
       return res.status(500).send({
@@ -67,5 +71,4 @@ exports.uploadNft = (req, res, next) => {
     req.body.metadataUrl = metaData.data;
     return next();
   });
-	return next();
 };

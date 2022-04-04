@@ -13,14 +13,15 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 
 	constructor() ERC721("PostNftMint", "SFT") {}
 
-	function safeMint(address _to, string memory _uri) external {
+	function safeMint(address _to, string memory _uri) external returns (uint256) {
 		// check if _uri doesn't exist
     require(!tokenExists[_uri], "The uri already exists");
 		uint256 tokenId = tokenIdCounter.current();
 		tokenIdCounter.increment();
+		tokenExists[_uri] = true;
 		_safeMint(_to, tokenId);
 		_setTokenURI(tokenId, _uri);
-		tokenExists[_uri] = true;
+		return tokenId;
 	}
 
 	function tokenTransferTo(address _to, uint256 _tokenId) external {
