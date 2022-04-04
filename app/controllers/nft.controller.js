@@ -6,7 +6,7 @@ let contract;
 const { abi } = JSON.parse(fs.readFileSync('app/blockchain/build/contracts/PostNftMinting.json').toString());
 if (process.env.NODE_ENV === 'development') {
   provider = new ethers.providers.JsonRpcProvider('http://localhost:7545');
-  contract = new ethers.Contract('0x14D52Ed582f07E739856958D23aa4d795c6351b1', abi, provider);
+  contract = new ethers.Contract(process.env.CONTRACT_LOCAL_ADDRESS, abi, provider);
 } else if (process.env.NODE_ENV === 'staging') {
   const { ALCHEMY_STAGING_ID, CONTRACT_STAGING_ADDRESS } = process.env
   provider = new ethers.providers.JsonRpcProvider(`https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_STAGING_ID}`);
@@ -16,7 +16,6 @@ if (process.env.NODE_ENV === 'development') {
   provider = new ethers.providers.JsonRpcProvider(`https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_LIVE_ID}`)
   contract = new ethers.Contract(CONTRACT_LIVE_ADDRESS, abi, provider);
 }
-console.log(process.env)
 const signer = provider.getSigner();
 const contractWithSigner = contract.connect(signer);
 
@@ -33,8 +32,7 @@ const removeTemporaryFile = (filePath) => {
 // Mint NFT
 exports.mintNft = async (req, res) => {
   try {
-    const tx = await contractWithSigner.safeMint(req.body.ownerAddress, req.body.metadataUrl)
-    console.log(tx)
+    await contractWithSigner.safeMint(req.body.ownerAddress, req.body.metadataUrl)
     res.status(200).send({
       message: 'Successfully minted NFT'
     });
@@ -46,7 +44,6 @@ exports.mintNft = async (req, res) => {
 
 // Get tokens owned by account
 exports.getTokenIds = async (req, res) => {
-  console.log('BLOCKS:', await provider.getBlock(3))
   try {
     const result = await contract.getTokens(req.params.address)
     // eslint-disable-next-line no-underscore-dangle
@@ -55,6 +52,8 @@ exports.getTokenIds = async (req, res) => {
       tokenIds: intTokens,
     });
   } catch (e) {
-    console.error(e)
+    res.status(400).send({
+      error: e.reason
+    });
   }
 };
