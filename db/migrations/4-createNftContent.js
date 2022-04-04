@@ -55,6 +55,8 @@ module.exports = {
           key: 'id',
         },
         allowNull: false,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
     });
   },

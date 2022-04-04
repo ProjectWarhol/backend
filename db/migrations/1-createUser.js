@@ -43,6 +43,8 @@ module.exports = {
           key: 'id',
         },
         allowNull: true,
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
       },
     });
   },

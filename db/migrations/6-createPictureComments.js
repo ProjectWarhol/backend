@@ -21,6 +21,8 @@ module.exports = {
           key: 'id',
         },
         allowNull: false,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       commentId: {
         type: DataTypes.UUID,
@@ -31,6 +33,8 @@ module.exports = {
           key: 'id',
         },
         allowNull: false,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
     });
   },

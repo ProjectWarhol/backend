@@ -5,7 +5,7 @@ const {
 const { updateUserWalletId } = require('../service/user');
 const { decryptPrivateKey } = require('../blockchain/wallet/custodial_wallet');
 const { walletObject } = require('../util/walletObject');
-const { hashMnumonic } = require('../util/mnumonicHashing');
+const { hashMnemonic } = require('../util/mnumonicHashing');
 const { changeObjectToData } = require('../util/privateKeyObject');
 const {
   addWalletToDatabase,
@@ -24,7 +24,7 @@ exports.createWallet = async (req, res, next) => {
   const wallet = await createCustodialWallet();
   const walletPublicKey = { publicKey: wallet.wallet.address };
   const walletInformation = wallet.wallet;
-  const mnumonicPhrase = wallet.seedPhrase;
+  const mnemonicPhrase = wallet.seedPhrase;
 
   const storedWallet = await addWalletToDatabase(walletPublicKey, res, next);
   const userObject = await updateUserWalletId(storedWallet, id, res, next);
@@ -32,7 +32,7 @@ exports.createWallet = async (req, res, next) => {
     message: 'Wallet successfully created',
     walletId: userObject.walletId,
     wallet: walletInformation,
-    mnumonicPhrase,
+    mnemonicPhrase,
   });
 };
 
@@ -47,7 +47,7 @@ exports.storePrivateKey = async (req, res, next) => {
     seedPhrase: req.body.seedPhrase,
   };
 
-  const mnumonicHash = await hashMnumonic(
+  const mnemonicHash = await hashMnemonic(
     req,
     res,
     wallet.seedPhrase,
@@ -56,10 +56,10 @@ exports.storePrivateKey = async (req, res, next) => {
 
   const encryptedPrivateKey = await storeCustodialWallet(wallet, password);
   if (!encryptedPrivateKey) {
-    next(defaultWrongInputHandler(res, 'wallet input'));
+    defaultWrongInputHandler(res, 'wallet input');
   }
 
-  const encryptedData = changeObjectToData(encryptedPrivateKey, mnumonicHash);
+  const encryptedData = changeObjectToData(encryptedPrivateKey, mnemonicHash);
   await updateWallet(encryptedData, id, res, next);
 
   res.status(200).send({

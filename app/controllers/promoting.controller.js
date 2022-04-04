@@ -1,190 +1,73 @@
-const { Sequelize } = require('../models');
-const db = require('../models');
-const { sessionObject } = require('../util/sessionObject');
-
 const {
-  Promoting,
-  User,
-  Sequelize: { Op },
-} = db;
-
-const defaultPromotingError = (err) => {
-  const error = new Error('Something went wrong');
-  error.status = 500;
-  if (err.name !== 'SequelizeDatabaseError') {
-    error.err = err;
-  }
-  return error;
-};
-
-const incrementPromoting = async (userId, promotedId) => {
-  const updatedUsers = {};
-
-  updatedUsers.promoter = await User.increment('promoting', {
-    where: {
-      id: userId,
-    },
-  });
-
-  updatedUsers.promoted = await User.increment('promoters', {
-    where: {
-      id: promotedId,
-    },
-  });
-
-  updatedUsers.promoter = sessionObject(updatedUsers.promoter[0][0][0]);
-  updatedUsers.promoted = sessionObject(updatedUsers.promoted[0][0][0]);
-  return updatedUsers;
-};
-
-const decrementPromoting = async (userId, promotedId) => {
-  const updatedUsers = {};
-
-  updatedUsers.promoter = await User.decrement('promoting', {
-    where: {
-      id: userId,
-    },
-  });
-
-  updatedUsers.promoted = await User.decrement('promoters', {
-    where: {
-      id: promotedId,
-    },
-  });
-
-  updatedUsers.promoter = sessionObject(updatedUsers.promoter[0][0][0]);
-  updatedUsers.promoted = sessionObject(updatedUsers.promoted[0][0][0]);
-  return updatedUsers;
-};
+  getPromotions,
+  getPromoters,
+  createPromotion,
+  deletePromotion,
+} = require('../service/promoting');
+const { findUserById } = require('../service/user');
 
 // Get all users that a user with userId promotes
-exports.userPromoting = (req, res, next) => {
+exports.userPromoting = async (req, res) => {
   const {
     params: { userId },
   } = req;
 
-  User.findAll({
-    include: {
-      model: Promoting,
-      attributes: [],
-      required: true,
-      where: { userId },
-    },
-  })
-    .then((userData) => {
-      const userObjects = userData.map((data) => sessionObject(data));
-      res.status(200).send({
-        message: 'Promoting data sent successfully',
-        data: userObjects,
-      });
-    })
-    .catch((err) => {
-      next(defaultPromotingError(err));
-    });
+  const user = await findUserById(userId, res);
+  if (!user || res.headersSent) return;
+
+  const promotions = await getPromotions(user, res);
+  if (!promotions || res.headersSent) return;
+
+  res.status(200).send({
+    message: 'Promotions data sent successfully',
+    data: promotions,
+  });
 };
 
 // Get all users that promote a user with promotedId
-exports.userIsPromoted = (req, res, next) => {
+exports.userIsPromoted = async (req, res) => {
   const {
     params: { promotedId },
   } = req;
 
-  User.findAll({
-    include: {
-      model: Promoting,
-      attributes: [],
-      required: true,
-      on: {
-        userId: { [Op.eq]: Sequelize.col('User.id') },
-      },
-      where: { promotedId },
-    },
-  })
-    .then((userData) => {
-      const userObjects = userData.map((data) => sessionObject(data));
-      res.status(200).send({
-        message: 'Promoting data sent',
-        data: userObjects,
-      });
-    })
-    .catch((err) => {
-      next(defaultPromotingError(err));
-    });
+  const user = await findUserById(promotedId, res);
+  if (!user || res.headersSent) return;
+
+  const promoters = await getPromoters(user, res);
+  if (!promoters || res.headersSent) return;
+
+  res.status(200).send({
+    message: 'Promoters data sent successfully',
+    data: promoters,
+  });
 };
 
 // Create entry in Promoting
-exports.promotingOneUser = (req, res, next) => {
+exports.promotingOneUser = async (req, res) => {
   const {
     body: { userId },
     params: { promotedId },
   } = req;
 
-  Promoting.findOrCreate({
-    where: {
-      [Op.and]: [{ userId }, { promotedId }],
-    },
-    defaults: {
-      ...{ userId },
-      ...{ promotedId },
-    },
-  })
-    // eslint-disable-next-line no-unused-vars
-    .then(async ([newPromoting, created]) => {
-      if (created) {
-        let updatedUsers;
-        try {
-          updatedUsers = await incrementPromoting(userId, promotedId);
-        } catch (err) {
-          next(defaultPromotingError(err));
-        }
+  const created = await createPromotion(userId, promotedId, res);
+  if (!created || res.headersSent) return;
 
-        res.status(200).send({
-          message: 'Promotion added successfully',
-          ...updatedUsers,
-        });
-      } else {
-        res.status(409).send({
-          message: 'Already promoting user',
-        });
-      }
-    })
-    .catch((err) => {
-      next(defaultPromotingError(err));
-    });
+  res.status(200).send({
+    message: 'Promotion added successfully',
+  });
 };
 
 // Delete entry in Promoting
-exports.unpromotingOneUser = (req, res, next) => {
+exports.unpromotingOneUser = async (req, res) => {
   const {
     body: { userId },
     params: { promotedId },
   } = req;
 
-  Promoting.destroy({
-    where: {
-      [Op.and]: [{ userId }, { promotedId }],
-    },
-  })
-    .then(async (destroyed) => {
-      if (destroyed) {
-        let updatedUsers;
-        try {
-          updatedUsers = await decrementPromoting(userId, promotedId);
-        } catch (err) {
-          next(defaultPromotingError(err));
-        }
+  const destroyed = await deletePromotion(userId, promotedId, res);
+  if (!destroyed || res.headersSent) return;
 
-        res.status(200).send({
-          message: 'Promotion deleted successfully',
-          ...updatedUsers,
-        });
-      } else {
-        res.status(409).send({
-          message: 'Promotion not found',
-        });
-      }
-    })
-    .catch((err) => {
-      next(defaultPromotingError(err));
-    });
+  res.status(200).send({
+    message: 'Promotion deleted successfully',
+  });
 };

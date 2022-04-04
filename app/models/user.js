@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
       this.hasMany(models.Promoting, {
+        as: 'userPromotions',
         foreignKey: {
           name: 'userId',
           type: DataTypes.UUID,
@@ -13,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       this.hasMany(models.Promoting, {
+        as: 'userPromoters',
         foreignKey: {
           name: 'promotedId',
           type: DataTypes.UUID,
