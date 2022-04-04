@@ -1,6 +1,5 @@
 const bcrypt = require('bcrypt');
 const db = require('../models');
-const errHandler = require('../middlewares/error_handlers.middleware');
 const { sessionObject } = require('../util/sessionObject');
 const { generateToken } = require('../util/tokenGenerator');
 const { createUser } = require('../service/user');
@@ -11,6 +10,10 @@ const {
 const { addWalletToDatabase } = require('../service/user.account');
 const {
   defaultWrongInputHandler,
+  noPathErrorHandler,
+  defaultErrorHandler,
+  defaultExpirationHandler,
+  defaultConflictHandler,
 } = require('../middlewares/error_handlers.middleware');
 const { changeObjectToData } = require('../util/privateKeyObject');
 const { updateUserWalletId } = require('../service/user');
@@ -21,7 +24,7 @@ const {
 } = db;
 
 // Update a user by the id in the request
-exports.updateOne = (req, res, next) => {
+exports.updateOne = (req, res) => {
   const {
     params: { id },
   } = req;
@@ -37,15 +40,11 @@ exports.updateOne = (req, res, next) => {
           user: updatedUser,
         });
       } else {
-        const error = new Error('User not found');
-        error.status = 404;
-        next(error);
+        noPathErrorHandler('User', res);
       }
     })
-    .catch((err) => {
-      const error = new Error('Something went wrong while updating user');
-      error.err = err;
-      next(error);
+    .catch(() => {
+      defaultErrorHandler(res, 'Something went wrong while updating user');
     });
 };
 
@@ -65,20 +64,16 @@ exports.setResetToken = async (req, res, next) => {
         res.locals.user = updatedUser;
         next();
       } else {
-        const error = new Error('User does not exist');
-        error.status = 404;
-        next(error);
+        noPathErrorHandler('User', res);
       }
     })
-    .catch((err) => {
-      const error = new Error('Something went wrong while updating user');
-      error.err = err;
-      next(error);
+    .catch(() => {
+      defaultErrorHandler(res, 'Something went wrong while updating user');
     });
 };
 
 // update User password
-exports.replacePassword = async (req, res, next) => {
+exports.replacePassword = async (req, res) => {
   const {
     body: { password },
     params: { token },
@@ -111,27 +106,23 @@ exports.replacePassword = async (req, res, next) => {
               message: 'Password Successfully updated',
             });
           })
-          .catch((err) => {
-            const error = new Error('Something went wrong while updating user');
-            error.err = err;
-            next(error);
+          .catch(() => {
+            defaultErrorHandler(
+              res,
+              'Something went wrong while updating user'
+            );
           });
       } else {
-        const error = new Error('Password token expired');
-        error.status = 401;
-        next(error);
+        defaultExpirationHandler(res, 'Password token');
       }
     })
-    .catch((err) => {
-      const error = new Error('Invalid token');
-      error.status = 409;
-      error.err = err;
-      next(error);
+    .catch(() => {
+      defaultConflictHandler(res, 'Invalid token');
     });
 };
 
 // Patch User password
-exports.updatePassword = async (req, res, next) => {
+exports.updatePassword = async (req, res) => {
   const {
     body: { id, oldPassword, newPassword },
   } = req;
@@ -151,19 +142,17 @@ exports.updatePassword = async (req, res, next) => {
             });
           });
         } else {
-          const error = new Error("Password doesn't match");
-          error.status = 401;
-          next(error);
+          defaultConflictHandler(res, "Password doesn't match");
         }
       });
     })
-    .catch((err) => {
-      next(errHandler.defaultErrorHandler(err));
+    .catch(() => {
+      defaultWrongInputHandler(res, 'something went wrong while finding user');
     });
 };
 
 // Get User object from the username in the request
-exports.retrieveOne = async (req, res, next) => {
+exports.retrieveOne = async (req, res) => {
   const {
     params: { userName },
   } = req;
@@ -178,18 +167,16 @@ exports.retrieveOne = async (req, res, next) => {
           user: sessionObject(data),
         });
       } else {
-        const error = new Error('User not found');
-        error.status = 404;
-        next(error);
+        noPathErrorHandler(res, 'User');
       }
     })
-    .catch((err) => {
-      next(errHandler.defaultErrorHandler(err));
+    .catch(() => {
+      defaultErrorHandler(res, 'something went wrong while finding user');
     });
 };
 
 // Create new user
-exports.createOne = async (req, res, next) => {
+exports.createOne = async (req, res) => {
   const {
     body: { userName, email, password },
   } = req;
@@ -222,17 +209,18 @@ exports.createOne = async (req, res, next) => {
               userId: newUser.id,
             });
           })
-          .catch((err) => {
-            next(errHandler.defaultErrorHandler(err));
+          .catch(() => {
+            defaultErrorHandler(
+              res,
+              'something went wrong while creating user'
+            );
           });
       } else {
-        res.status(409).send({
-          message: 'Email or username already in use',
-        });
+        defaultConflictHandler(res, 'Email or username already in use');
       }
     })
-    .catch((err) => {
-      next(errHandler.defaultErrorHandler(err));
+    .catch(() => {
+      defaultErrorHandler(res, 'something went wrong while creating user');
     });
 };
 
