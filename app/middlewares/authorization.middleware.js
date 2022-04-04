@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 const { body } = require('express-validator');
 const {
   unauthorizedHandler,
@@ -10,6 +11,7 @@ const usernameRegExp = new RegExp('^[a-zA-Z0-9-_.]{4,20}$');
 exports.isLoggedIn = (req, res, next) => {
   if (!req.session.user) {
     unauthorizedHandler(res, 'user not logged in');
+    return;
   }
   return next();
 };
@@ -23,6 +25,7 @@ exports.checkLoginInput = async (req, res, next) => {
     req.body.type = 'userName';
   } else {
     defaultWrongInputHandler(res, 'Invalid username or email');
+    return;
   }
   return next();
 };
