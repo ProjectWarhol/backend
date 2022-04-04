@@ -29,18 +29,15 @@ exports.createWallet = async (req, res, next) => {
   const storedWallet = await addWalletToDatabase(walletPublicKey, res, next);
   const userObject = await updateUserWalletId(storedWallet, id, res, next);
 
-  res.status(200).send({
-    message: 'Wallet successfully created',
-    walletId: userObject.walletId,
-    wallet: walletInformation,
-    mnemonicPhrase,
-  });
+  req.body.walletInformation = walletInformation;
+  req.body.mnemonicPhrase = mnemonicPhrase;
+  req.body.walletId = userObject.walletId;
+  req.body.id = userObject.id;
 };
 
 // store and encrypt privateKey with private/public key and password
 exports.storePrivateKey = async (req, res, next) => {
-  const { walletId } = req.params;
-  const { password, id } = req.body;
+  const { password, id, walletId } = req.body;
   const wallet = {
     address: req.body.address,
     privateKey: req.body.privateKey,
@@ -57,10 +54,6 @@ exports.storePrivateKey = async (req, res, next) => {
 
   const encryptedData = changeObjectToData(encryptedPrivateKey, mnemonicHash);
   await updateWallet(encryptedData, walletId, res, next);
-
-  res.status(200).send({
-    message: 'Private key successfully stored',
-  });
 };
 
 // get a wallet using walletId and password
