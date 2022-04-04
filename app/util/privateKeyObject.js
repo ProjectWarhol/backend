@@ -1,7 +1,8 @@
-exports.changeObjectToData = (encrypted) => ({
+exports.changeObjectToData = (encrypted, mnumonicHash) => ({
   publicKey: encrypted.address,
   version: encrypted.encryptedPrivateKey.version,
   address: encrypted.encryptedPrivateKey.address,
+  mnumonicHash,
   ciphertext: encrypted.encryptedPrivateKey.crypto.ciphertext,
   iv: encrypted.encryptedPrivateKey.crypto.cipherparams.iv,
   cipher: encrypted.encryptedPrivateKey.crypto.cipher,
