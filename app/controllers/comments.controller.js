@@ -61,11 +61,10 @@ exports.deleteComment = (req, res) => {
         message: 'Comment deleted successfully',
       });
     })
-    .catch((err) => {
+    .catch(() => {
       defaultErrorHandler(
-        err,
         res,
-        'Something went wrong while deleting comment'
+        'Something went wrong while deleting the comment'
       );
     });
 };
@@ -89,11 +88,10 @@ exports.updateComment = async (req, res) => {
         noPathErrorHandler(res, 'Comment');
       }
     })
-    .catch((err) => {
+    .catch(() => {
       defaultErrorHandler(
-        err,
         res,
-        'Something went wrong while updating comment'
+        'Something went wrong while deleting the comment'
       );
     });
 };

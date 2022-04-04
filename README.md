@@ -23,7 +23,7 @@ You need to install the following things to be able to run this project on your 
 3. Set up a local Database by running `CREATE DATABASE name`.
    EX. (CREATE DATABASE myDatabase)
 4. (optional) you may have to give your account database priviledges using the `GRANT ALL PRIVILEGES` command.
-   EX. (GRANT ALL PRIVILEGES ON myDB . * TO 'user'@'localhost';)
+   EX. (GRANT ALL PRIVILEGES ON myDB . \* TO 'user'@'localhost';)
 
 ### Install and setup the repository
 
@@ -43,6 +43,7 @@ You need to install the following things to be able to run this project on your 
       `DB_DEVELOPMENT_PASSWORD` => your database user password (note if the password containes numbers, you may have to use single quotes EX. 'password123')
       `DB_DEVELOPMENT_PORT` => usualy is '5432'
 5. Setup testing and development database
+
    1. Run the following to drop & create a new database and automatically migrate and seed:
 
       ```zsh
@@ -56,6 +57,7 @@ You need to install the following things to be able to run this project on your 
       ```
 
 6. Setup local blockchain
+
    1. Run the following to compile Smart Contracts:
 
       ```zsh
