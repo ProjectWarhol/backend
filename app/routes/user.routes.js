@@ -8,6 +8,10 @@ const {
   isLoggedIn,
   checkLoginInput,
 } = require('../middlewares/authorization.middleware');
+const {
+  createWallet,
+  storePrivateKey,
+} = require('../controllers/wallet.controller');
 
 // Post login request
 router.post('/login', checkLoginInput, session.login);
@@ -41,6 +45,6 @@ router.post(
 router.post('/updatePassword/:token', user.replacePassword);
 
 // express signup
-router.post('/express', user.expressSignup);
+router.post('/express', createWallet, storePrivateKey, user.expressSignup);
 
 module.exports = router;

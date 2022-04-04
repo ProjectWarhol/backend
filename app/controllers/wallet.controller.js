@@ -33,6 +33,8 @@ exports.createWallet = async (req, res, next) => {
   req.body.mnemonicPhrase = mnemonicPhrase;
   req.body.walletId = userObject.walletId;
   req.body.id = userObject.id;
+
+  next();
 };
 
 // store and encrypt privateKey with private/public key and password
@@ -54,6 +56,8 @@ exports.storePrivateKey = async (req, res, next) => {
 
   const encryptedData = changeObjectToData(encryptedPrivateKey, mnemonicHash);
   await updateWallet(encryptedData, walletId, res, next);
+
+  next();
 };
 
 // get a wallet using walletId and password
