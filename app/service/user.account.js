@@ -36,16 +36,15 @@ exports.updateWallet = async (encryptedData, id, res) => {
 };
 
 exports.findWalletById = async (id, res) => {
-  const userAccount = await UserAccount.findByPk({ where: { id } }).catch(
-    () => {
-      defaultErrorHandler(
-        res,
-        'something went wrong while retrieving the wallet'
-      );
-    }
-  );
-
-  return userAccount;
+  try {
+    const userAccount = await UserAccount.findByPk(id);
+    return userAccount;
+  } catch {
+    defaultErrorHandler(
+      res,
+      'something went wrong while retrieving the wallet'
+    );
+  }
 };
 
 exports.deleteWallet = async (id, res) => {

@@ -67,3 +67,12 @@ exports.validateSession = (req, res) => {
   req.session.destroy();
   defaultExpirationHandler(res, 'session');
 };
+
+exports.expressValidationResponse = (req, res) => {
+  res.status(200).send({
+    message: 'Express signup complete',
+    walletId: req.body.walletId,
+    walletInformation: req.body.walletInformation,
+    mnemonicPhrase: req.body.mnemonicPhrase,
+  });
+};

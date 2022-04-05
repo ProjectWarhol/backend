@@ -6,7 +6,6 @@ module.exports = {
     const contentIds = await queryInterface.sequelize.query(
       `SELECT id from "NftContent";`
     );
-
     await queryInterface.sequelize.query(
       `CREATE OR REPLACE FUNCTION incrementVote() 
       RETURNS TRIGGER 
