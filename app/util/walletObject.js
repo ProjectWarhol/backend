@@ -13,7 +13,7 @@ exports.walletObject = (account) => ({
       n: account.n,
       r: account.r,
       p: account.p,
-      mac: account.mac,
     },
+    mac: account.mac,
   },
 });

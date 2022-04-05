@@ -66,19 +66,18 @@ exports.storePrivateKey = async (req, res, next) => {
 };
 
 // get a wallet using walletId and password
-exports.retrieveWallet = async (req, res, next) => {
+exports.retrieveWallet = async (req, res) => {
   const { id } = req.params;
   const { password } = req.body;
 
-  const userAccount = await findWalletById(id, res, next);
+  const userAccount = await findWalletById(id, res);
   const encryptedAccount = walletObject(userAccount);
-  const privateKey = await decryptPrivateKey(encryptedAccount, password);
+  const account = await decryptPrivateKey(encryptedAccount, password);
 
   res.status(200).send({
     message: 'wallet successfully sent',
     walletId: userAccount.id,
-    publicKey: userAccount.publicKey,
-    privateKey,
+    account,
   });
 };
 
