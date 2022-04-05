@@ -170,51 +170,13 @@ exports.retrieveOne = async (req, res) => {
 
 // Create new user
 exports.createOne = async (req, res) => {
-  const {
-    body: { userName, email, password },
-  } = req;
+  const newUser = await createUser(req, res);
+  if (!newUser || res.headersSent) return;
 
-  User.findOrCreate({
-    where: {
-      [Op.or]: [{ userName }, { email }],
-    },
-    defaults: {
-      ...{ userName },
-      ...{ email },
-      createdAt: Date.now(),
-      promoters: 0,
-      promoting: 0,
-      verified: false,
-    },
-  })
-    .then(async ([newUser, created]) => {
-      if (created) {
-        const newPasswordHash = await bcrypt.hash(password, 12);
-
-        // eslint-disable-next-line no-param-reassign
-        newUser.passwordHash = newPasswordHash;
-
-        newUser
-          .save()
-          .then(() => {
-            res.status(200).send({
-              message: 'User registered succesfully',
-              userId: newUser.id,
-            });
-          })
-          .catch(() => {
-            defaultErrorHandler(
-              res,
-              'something went wrong while creating user'
-            );
-          });
-      } else {
-        defaultConflictHandler(res, 'Email or username already in use');
-      }
-    })
-    .catch(() => {
-      defaultErrorHandler(res, 'something went wrong while creating user');
-    });
+  res.status(200).send({
+    message: 'User registered succesfully',
+    userId: newUser.id,
+  });
 };
 
 // set updatePassword attributes
