@@ -227,7 +227,16 @@ contract('PostNftMinting', (accounts) => {
   it('fails transferShares', async () => {
     let payees = [acc1, acc2, acc3];
     let shares = [88, 30, 2];
-    // Shares exceed 100
+    // Shares > 100
+    await web3Instance.methods
+      .transferShares(1000000000000000000n, payees, shares)
+      .send({
+        from: acc0,
+        value: 1000000000000000000,
+      }).should.be.rejected;
+
+    // Shares < 100
+    shares = [30, 30, 10];
     await web3Instance.methods
       .transferShares(1000000000000000000n, payees, shares)
       .send({

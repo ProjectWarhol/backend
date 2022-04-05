@@ -39,7 +39,7 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 		require(_payees.length > 0, "No payees");
 		require(_payees.length == _shares.length, "Should be the same length");
 		uint256 shares = sumShares(_shares);
-		require(shares<=100, "Should not exceed 100");
+		require(shares==100, "Should be 100");
 		for (uint256 i = 0; i < _payees.length; i++) {
 				address currentPayeeAddress = _payees[i];
 				uint256 currentAmount = msg.value * _shares[i] / 100;
