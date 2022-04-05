@@ -1,4 +1,3 @@
-const bcrypt = require('bcrypt');
 const db = require('../models');
 const { sessionObject } = require('../util/sessionObject');
 const { generateToken } = require('../util/tokenGenerator');
@@ -6,18 +5,14 @@ const {
   createUser,
   findUserByUserName,
   retrieveAndUpdatePassword,
+  retrieveTokenAndSetPassword,
 } = require('../service/user');
 const {
   noPathErrorHandler,
   defaultErrorHandler,
-  defaultExpirationHandler,
-  defaultConflictHandler,
 } = require('../middlewares/error_handlers.middleware');
 
-const {
-  User,
-  Sequelize: { Op },
-} = db;
+const { User } = db;
 
 // Update a user by the id in the request
 exports.updateOne = (req, res) => {
@@ -70,51 +65,12 @@ exports.setResetToken = async (req, res, next) => {
 
 // update User password
 exports.replacePassword = async (req, res) => {
-  const {
-    body: { password },
-    params: { token },
-  } = req;
+  const confirmation = await retrieveTokenAndSetPassword(req, res);
+  if (!confirmation || res.headersSent) return;
 
-  User.findOne({
-    where: {
-      [Op.or]: [
-        {
-          resetToken: token,
-        },
-      ],
-    },
-  })
-    .then(async (data) => {
-      if (data.resetTokenExp > Date.now() || data.invitationExp > Date.now()) {
-        const newPasswordHash = await bcrypt.hash(password, 12);
-
-        // eslint-disable-next-line no-param-reassign
-        data.passwordHash = newPasswordHash;
-        // eslint-disable-next-line no-param-reassign
-        data.resetToken = null;
-        // eslint-disable-next-line no-param-reassign
-        data.resetTokenExp = null;
-
-        data
-          .save()
-          .then(() => {
-            res.status(200).send({
-              message: 'Password Successfully updated',
-            });
-          })
-          .catch(() => {
-            defaultErrorHandler(
-              res,
-              'Something went wrong while updating user'
-            );
-          });
-      } else {
-        defaultExpirationHandler(res, 'Password token');
-      }
-    })
-    .catch(() => {
-      defaultConflictHandler(res, 'Invalid token');
-    });
+  res.status(200).send({
+    message: 'Password Successfully updated',
+  });
 };
 
 // Patch User password

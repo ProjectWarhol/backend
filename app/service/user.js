@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable consistent-return */
 const bcrypt = require('bcrypt');
 const db = require('../models');
@@ -12,6 +13,7 @@ const {
   defaultPasswordMismatch,
   defaultConflictHandler,
   defaultWrongInputHandler,
+  defaultExpirationHandler,
 } = require('../middlewares/error_handlers.middleware');
 
 exports.findUserById = async (id, res) => {
@@ -136,5 +138,40 @@ exports.retrieveAndUpdatePassword = async (req, res) => {
     })
     .catch(() => {
       defaultWrongInputHandler(res, 'something went wrong while finding user');
+    });
+};
+
+exports.retrieveTokenAndSetPassword = async (req, res) => {
+  const {
+    body: { password },
+    params: { token },
+  } = req;
+
+  User.findOne({
+    where: {
+      [Op.or]: [
+        {
+          resetToken: token,
+        },
+      ],
+    },
+  })
+    .then(async (data) => {
+      if (data.resetTokenExp > Date.now() || data.invitationExp > Date.now()) {
+        const newPasswordHash = await bcrypt.hash(password, 12);
+
+        data.passwordHash = newPasswordHash;
+        data.resetToken = null;
+        data.resetTokenExp = null;
+
+        data.save().catch(() => {
+          defaultErrorHandler(res, 'Something went wrong while updating user');
+        });
+      } else {
+        defaultExpirationHandler(res, 'Password token');
+      }
+    })
+    .catch(() => {
+      defaultConflictHandler(res, 'Invalid token');
     });
 };
