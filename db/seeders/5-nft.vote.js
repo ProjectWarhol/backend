@@ -47,28 +47,28 @@ module.exports = {
       END; 
       $$;`
     );
-    await queryInterface.sequelize.query(
-      `CREATE OR REPLACE FUNCTION updateVote() 
-      RETURNS TRIGGER 
-      LANGUAGE PLPGSQL 
-      AS 
-      $$ 
-      BEGIN 
-      IF NEW."type" IS TRUE THEN
-        UPDATE "NftContent" 
-        SET "upvotes"="upvotes"+1,
-        "downvotes"="downvotes"-1
-        WHERE "id"=NEW."contentId";
-      ELSE 
-        UPDATE "NftContent" 
-        SET "upvotes"="upvotes"-1,
-        "downvotes"="downvotes"+1
-        WHERE "id"=NEW."contentId";
-      END IF;
-      RETURN NEW; 
-      END; 
-      $$;`
-    );
+    // await queryInterface.sequelize.query(
+    //   `CREATE OR REPLACE FUNCTION updateVote() 
+    //   RETURNS TRIGGER 
+    //   LANGUAGE PLPGSQL 
+    //   AS 
+    //   $$ 
+    //   BEGIN 
+    //   IF NEW."type" IS TRUE THEN
+    //     UPDATE "NftContent" 
+    //     SET "upvotes"="upvotes"+1,
+    //     "downvotes"="downvotes"-1
+    //     WHERE "id"=NEW."contentId";
+    //   ELSE 
+    //     UPDATE "NftContent" 
+    //     SET "upvotes"="upvotes"-1,
+    //     "downvotes"="downvotes"+1
+    //     WHERE "id"=NEW."contentId";
+    //   END IF;
+    //   RETURN NEW; 
+    //   END; 
+    //   $$;`
+    // );
     await queryInterface.sequelize.query(
       `CREATE TRIGGER createNftVote 
       AFTER INSERT ON "NftVote" 
@@ -81,16 +81,16 @@ module.exports = {
       FOR EACH ROW 
       EXECUTE PROCEDURE decrementVote();`
     );
-    await queryInterface.sequelize.query(
-      `CREATE TRIGGER updateNftVote 
-      AFTER UPDATE ON "NftVote" 
-      FOR EACH ROW WHEN (
-        OLD."type"
-        IS DISTINCT FROM
-        NEW."type"
-      )
-      EXECUTE PROCEDURE updateVote();`
-    );
+    // await queryInterface.sequelize.query(
+    //   `CREATE TRIGGER updateNftVote 
+    //   AFTER UPDATE ON "NftVote" 
+    //   FOR EACH ROW WHEN (
+    //     OLD."type"
+    //     IS DISTINCT FROM
+    //     NEW."type"
+    //   )
+    //   EXECUTE PROCEDURE updateVote();`
+    // );
     await queryInterface.bulkInsert('NftVote', [
       {
         userId: userIds[0][0].id,
