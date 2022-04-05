@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const db = require('../models');
 const { sessionObject } = require('../util/sessionObject');
 const { generateToken } = require('../util/tokenGenerator');
-const { createUser } = require('../service/user');
+const { createUser, findUserByUserName } = require('../service/user');
 const {
   defaultWrongInputHandler,
   noPathErrorHandler,
@@ -150,22 +150,12 @@ exports.retrieveOne = async (req, res) => {
     params: { userName },
   } = req;
 
-  User.findOne({
-    where: { userName },
-  })
-    .then((data) => {
-      if (data) {
-        res.status(200).send({
-          message: 'User data sent successfully',
-          user: sessionObject(data),
-        });
-      } else {
-        noPathErrorHandler(res, 'User');
-      }
-    })
-    .catch(() => {
-      defaultErrorHandler(res, 'something went wrong while finding user');
-    });
+  const data = await findUserByUserName(userName, res);
+
+  res.status(200).send({
+    message: 'User data sent successfully',
+    user: sessionObject(data),
+  });
 };
 
 // Create new user
