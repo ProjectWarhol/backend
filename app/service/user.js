@@ -175,3 +175,19 @@ exports.retrieveTokenAndSetPassword = async (req, res) => {
       defaultConflictHandler(res, 'Invalid token');
     });
 };
+
+exports.updateResetToken = (req, res, body) => {
+  User.update(body, {
+    where: { email: req.body.email },
+    returning: true,
+  })
+    .then(([rowsUpdated, [updatedUser]]) => {
+      if (rowsUpdated === 1) {
+        res.locals.user = updatedUser;
+      }
+      noPathErrorHandler('User', res);
+    })
+    .catch(() => {
+      defaultErrorHandler(res, 'Something went wrong while updating user');
+    });
+};

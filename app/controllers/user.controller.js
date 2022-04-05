@@ -6,6 +6,7 @@ const {
   findUserByUserName,
   retrieveAndUpdatePassword,
   retrieveTokenAndSetPassword,
+  updateResetToken,
 } = require('../service/user');
 const {
   noPathErrorHandler,
@@ -46,21 +47,10 @@ exports.setResetToken = async (req, res, next) => {
     resetToken: await generateToken(),
   };
 
-  User.update(body, {
-    where: { email: req.body.email },
-    returning: true,
-  })
-    .then(([rowsUpdated, [updatedUser]]) => {
-      if (rowsUpdated === 1) {
-        res.locals.user = updatedUser;
-        next();
-      } else {
-        noPathErrorHandler('User', res);
-      }
-    })
-    .catch(() => {
-      defaultErrorHandler(res, 'Something went wrong while updating user');
-    });
+  const confirmation = await updateResetToken(req, res, body);
+  if (!confirmation || res.headersSent) return;
+
+  next();
 };
 
 // update User password
