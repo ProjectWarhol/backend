@@ -191,3 +191,21 @@ exports.updateResetToken = (req, res, body) => {
       defaultErrorHandler(res, 'Something went wrong while updating user');
     });
 };
+
+exports.updateUser = async (req, res, id) => {
+  const data = await User.update(req.body, {
+    where: { id },
+    returning: true,
+  })
+    .then(([rowsUpdated, [updatedUser]]) => {
+      if (rowsUpdated) {
+        return updatedUser;
+      }
+      noPathErrorHandler('User', res);
+    })
+    .catch(() => {
+      defaultErrorHandler(res, 'Something went wrong while updating user');
+    });
+
+  return data;
+};

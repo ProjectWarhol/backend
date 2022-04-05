@@ -1,4 +1,3 @@
-const db = require('../models');
 const { sessionObject } = require('../util/sessionObject');
 const { generateToken } = require('../util/tokenGenerator');
 const {
@@ -7,37 +6,22 @@ const {
   retrieveAndUpdatePassword,
   retrieveTokenAndSetPassword,
   updateResetToken,
+  updateUser,
 } = require('../service/user');
-const {
-  noPathErrorHandler,
-  defaultErrorHandler,
-} = require('../middlewares/error_handlers.middleware');
-
-const { User } = db;
 
 // Update a user by the id in the request
-exports.updateOne = (req, res) => {
+exports.updateOne = async (req, res) => {
   const {
     params: { id },
   } = req;
 
-  User.update(req.body, {
-    where: { id },
-    returning: true,
-  })
-    .then(([rowsUpdated, [updatedUser]]) => {
-      if (rowsUpdated) {
-        res.status(200).send({
-          message: 'User was updated successfully',
-          user: updatedUser,
-        });
-      } else {
-        noPathErrorHandler('User', res);
-      }
-    })
-    .catch(() => {
-      defaultErrorHandler(res, 'Something went wrong while updating user');
-    });
+  const data = await updateUser(req, res, id);
+  if (!data || res.headersSent) return;
+
+  res.status(200).send({
+    message: 'User was updated successfully',
+    user: sessionObject(data),
+  });
 };
 
 // set updatePassword attributes
