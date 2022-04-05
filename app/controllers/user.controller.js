@@ -2,9 +2,12 @@ const bcrypt = require('bcrypt');
 const db = require('../models');
 const { sessionObject } = require('../util/sessionObject');
 const { generateToken } = require('../util/tokenGenerator');
-const { createUser, findUserByUserName } = require('../service/user');
 const {
-  defaultWrongInputHandler,
+  createUser,
+  findUserByUserName,
+  retrieveAndUpdatePassword,
+} = require('../service/user');
+const {
   noPathErrorHandler,
   defaultErrorHandler,
   defaultExpirationHandler,
@@ -116,32 +119,12 @@ exports.replacePassword = async (req, res) => {
 
 // Patch User password
 exports.updatePassword = async (req, res) => {
-  const {
-    body: { id, oldPassword, newPassword },
-  } = req;
+  const confirmation = await retrieveAndUpdatePassword(req, res);
+  if (!confirmation || res.headersSent) return;
 
-  User.findByPk(id)
-    .then((data) => {
-      bcrypt.compare(oldPassword, data.passwordHash).then(async (doMatch) => {
-        if (doMatch === true) {
-          const newPasswordHash = await bcrypt.hash(newPassword, 12);
-
-          // eslint-disable-next-line no-param-reassign
-          data.passwordHash = newPasswordHash;
-
-          data.save().then(() => {
-            res.status(200).send({
-              message: 'Password successfully updated',
-            });
-          });
-        } else {
-          defaultConflictHandler(res, "Password doesn't match");
-        }
-      });
-    })
-    .catch(() => {
-      defaultWrongInputHandler(res, 'something went wrong while finding user');
-    });
+  res.status(200).send({
+    message: 'Password successfully updated',
+  });
 };
 
 // Get User object from the username in the request
@@ -151,6 +134,7 @@ exports.retrieveOne = async (req, res) => {
   } = req;
 
   const data = await findUserByUserName(userName, res);
+  if (!data || res.headersSent) return;
 
   res.status(200).send({
     message: 'User data sent successfully',
