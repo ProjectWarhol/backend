@@ -192,12 +192,8 @@ contract('PostNftMinting', (accounts) => {
       );
     }
   });
-  // Failure
-  it('Should reject add a payee', async () => {
-    await instance.addPayee(acc1, 120).should.be.rejected;
-  });
   // Success
-  it('Add payees => Pay Out', async () => {
+  it('transferShares', async () => {
     const initialBalances = [];
     const payees = [acc1, acc2, acc3];
     const shares = [88, 10, 2];
@@ -206,10 +202,10 @@ contract('PostNftMinting', (accounts) => {
     for (let i = 0; i < payees.length; i++) {
       const currentBalance = await web3.eth.getBalance(payees[i]);
       initialBalances.push(currentBalance); // balances before payout
-      await instance.addPayee(payees[i], shares[i]);
+      // await instance.addPayee(payees[i], shares[i]);
     }
-    // Payout
-    await web3Instance.methods.payOut(1000000000000000000n).send({
+    // Transfer shares
+    await web3Instance.methods.transferShares(1000000000000000000n, payees, shares).send({
       from: acc0,
       value: 1000000000000000000,
     });
@@ -224,24 +220,5 @@ contract('PostNftMinting', (accounts) => {
       // loop
       assert.equal(actual, (1000000000000000000 * shares[i]) / 100);
     }
-  });
-  it('should return payees', async () => {
-    const { payeeAddress, shares } = await instance.getPayee(0);
-    assert.equal(payeeAddress, acc1, 'Payee No.0 should be acc1');
-    assert.notEqual(payeeAddress, acc2, 'Payee No.0 should not be acc2');
-    assert.equal(shares, 88, 'The share of acc1 should be 88');
-    assert.notEqual(shares, 10, 'The share of acc1 should not be 10');
-  });
-
-  it('should reset payees', async () => {
-    // Reset
-    await instance.resetPayees();
-    // Add a payee again
-    await instance.addPayee(acc3, 30);
-    const { payeeAddress, shares } = await instance.getPayee(0);
-    assert.equal(payeeAddress, acc3, 'Payee No.0 should be acc3');
-    assert.notEqual(payeeAddress, acc1, 'Payee No.0 should not be acc1');
-    assert.equal(shares, 30, 'The share of acc3 should be 30');
-    assert.notEqual(shares, 10, 'The share of acc3 should not be 10');
   });
 });

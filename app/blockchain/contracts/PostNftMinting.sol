@@ -9,15 +9,7 @@ import "@openzeppelin/contracts/security/PullPayment.sol";
 contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 	using Counters for Counters.Counter;
 	Counters.Counter private tokenIdCounter;
-	Counters.Counter private payeeCounter;
 	mapping(string=> bool) private tokenExists;
-	mapping (uint256 => Payee) private payees;
-	uint256 private totalShares = 100;
-	struct Payee {
-			address payeeAddress;
-			uint256 shares;
-	}
-
 	constructor() ERC721("PostNftMint", "SFT") {}
 
 	function safeMint(address _to, string memory _uri) external {
@@ -34,36 +26,28 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 		safeTransferFrom(msg.sender, _to, _tokenId);
 	}
 
-	function addPayee(address _payeeAddress, uint256 _shares) external{
-			totalShares -= _shares;
-			require(totalShares>=0, "Share should not be over 100");
-			Payee memory newPayee = Payee(_payeeAddress, _shares);
-			payees[payeeCounter._value] = newPayee;
-			payeeCounter.increment();
-	}
-	function getPayee(uint256 _id) external view returns(Payee memory){
-			return payees[_id];
-	}
-
-	function resetPayees() external {
-		for (uint256 i = 0; i < payeeCounter._value; i++) {
-			delete payees[i];
+  function sumShares(uint256[] memory _shares) private pure returns (uint256) {
+		uint256 sum = 0;
+		for (uint256 i = 0; i < _shares.length; i++) {
+				sum += _shares[i];
 		}
-    totalShares = 100;
-		payeeCounter.reset();
-	}
+		return sum;
+  }
 
-	function payOut(uint256 _price) external payable {
+	function transferShares(uint256 _price, address[] memory _payees, uint256[] memory _shares)external payable {
 		require(msg.value == _price, "Sent value and price NOT equal");
-        require(payeeCounter._value > 0, "No payees");
-        for (uint256 i = 0; i < payeeCounter._value; i++) {
-            address currentPayeeAddress = payees[i].payeeAddress;
-            uint256 currentAmount = msg.value * payees[i].shares / 100;
-            payable(currentPayeeAddress).transfer(currentAmount);
-        }
-    }
+		require(_payees.length > 0, "No payees");
+		require(_payees.length == _shares.length, "Should be the same length");
+		uint256 shares = sumShares(_shares);
+		require(shares<=100, "Should not exceed 100");
+		for (uint256 i = 0; i < _payees.length; i++) {
+				address currentPayeeAddress = _payees[i];
+				uint256 currentAmount = msg.value * _shares[i] / 100;
+				payable(currentPayeeAddress).transfer(currentAmount);
+		}
+  }
 
-    function _burn(uint256 _tokenId) internal override(ERC721, ERC721URIStorage) {
+	function _burn(uint256 _tokenId) internal override(ERC721, ERC721URIStorage) {
     super._burn(_tokenId);
   }
 
