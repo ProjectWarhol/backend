@@ -7,10 +7,10 @@ const {
   retrieveById,
   retrieveByToken,
   updateResetToken,
+  getUserPasswordHash,
   updateUser,
 } = require('../service/user');
 const {
-  defaultConflictHandler,
   defaultErrorHandler,
   defaultExpirationHandler,
 } = require('../middlewares/error_handlers.middleware');
@@ -75,12 +75,9 @@ exports.updatePassword = async (req, res) => {
     body: { id, oldPassword, newPassword },
   } = req;
 
+  const result = await getUserPasswordHash(id, res, oldPassword);
   const user = await retrieveById(id, res);
-  if (!user || res.headersSent) return;
-
-  const doMatch = await bcrypt.compare(oldPassword, user.passwordHash);
-  if (!doMatch) defaultConflictHandler(res, "Password doesn't match");
-  if (res.headersSent) return;
+  if (!user || !result || res.headersSent) return;
 
   const newPasswordHash = await bcrypt.hash(newPassword, 12);
   user.passwordHash = newPasswordHash;

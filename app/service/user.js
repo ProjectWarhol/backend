@@ -54,12 +54,10 @@ exports.getUserPasswordHash = async (id, res, password) => {
     .catch(() => {
       defaultErrorHandler(res, 'Something went wrong while updating user');
     });
-
   const result = await bcrypt.compare(password, passwordHash);
   if (!result) {
     defaultPasswordMismatch(res, 'password do not match');
   }
-
   return passwordHash;
 };
 
