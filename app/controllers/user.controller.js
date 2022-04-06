@@ -1,13 +1,17 @@
+const bcrypt = require('bcrypt');
 const { sessionObject } = require('../util/sessionObject');
 const { generateToken } = require('../util/tokenGenerator');
 const {
   createUser,
   findUserByUserName,
-  retrieveAndUpdatePassword,
+  retrieveById,
   retrieveTokenAndSetPassword,
   updateResetToken,
   updateUser,
 } = require('../service/user');
+const {
+  defaultConflictHandler,
+} = require('../middlewares/error_handlers.middleware');
 
 // Update a user by the id in the request
 exports.updateOne = async (req, res) => {
@@ -49,8 +53,20 @@ exports.replacePassword = async (req, res) => {
 
 // Patch User password
 exports.updatePassword = async (req, res) => {
-  const confirmation = await retrieveAndUpdatePassword(req, res);
-  if (!confirmation || res.headersSent) return;
+  const {
+    body: { id, oldPassword, newPassword },
+  } = req;
+
+  const user = await retrieveById(id, res);
+  if (!user || res.headersSent) return;
+
+  const doMatch = await bcrypt.compare(oldPassword, user.passwordHash);
+  if (!doMatch) defaultConflictHandler(res, "Password doesn't match");
+  if (res.headersSent) return;
+
+  const newPasswordHash = await bcrypt.hash(newPassword, 12);
+  user.passwordHash = newPasswordHash;
+  user.save();
 
   res.status(200).send({
     message: 'Password successfully updated',

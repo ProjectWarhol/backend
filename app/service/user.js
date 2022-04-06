@@ -117,28 +117,12 @@ exports.findUserByUserName = async (userName, res) => {
   return user;
 };
 
-exports.retrieveAndUpdatePassword = async (req, res) => {
-  const {
-    body: { id, oldPassword, newPassword },
-  } = req;
+exports.retrieveById = async (id, res) => {
+  const user = await User.findByPk(id).catch(() => {
+    defaultWrongInputHandler(res, 'something went wrong while finding user');
+  });
 
-  await User.findByPk(id)
-    .then((data) => {
-      bcrypt.compare(oldPassword, data.passwordHash).then(async (doMatch) => {
-        if (doMatch === true) {
-          const newPasswordHash = await bcrypt.hash(newPassword, 12);
-
-          // eslint-disable-next-line no-param-reassign
-          data.passwordHash = newPasswordHash;
-          data.save();
-        } else {
-          defaultConflictHandler(res, "Password doesn't match");
-        }
-      });
-    })
-    .catch(() => {
-      defaultWrongInputHandler(res, 'something went wrong while finding user');
-    });
+  return user;
 };
 
 exports.retrieveTokenAndSetPassword = async (req, res) => {
