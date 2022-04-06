@@ -80,6 +80,7 @@ exports.deletePromotion = async (userId, promotedId, res) => {
       ...{ userId },
       ...{ promotedId },
     },
+    individualHooks: true,
   }).catch(() => {
     defaultErrorHandler(res, 'Something went wrong while deleting promotion');
   });
