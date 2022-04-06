@@ -3,7 +3,7 @@ const { sessionObject } = require('../util/sessionObject');
 const { generateToken } = require('../util/tokenGenerator');
 const {
   createUser,
-  findUserByUserName,
+  retrieveByUserName,
   retrieveById,
   retrieveByToken,
   updateResetToken,
@@ -97,7 +97,7 @@ exports.retrieveOne = async (req, res) => {
     params: { userName },
   } = req;
 
-  const data = await findUserByUserName(userName, res);
+  const data = await retrieveByUserName(userName, res);
   if (!data || res.headersSent) return;
 
   res.status(200).send({

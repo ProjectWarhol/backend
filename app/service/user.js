@@ -54,10 +54,12 @@ exports.getUserPasswordHash = async (id, res, password) => {
     .catch(() => {
       defaultErrorHandler(res, 'Something went wrong while updating user');
     });
+
   const result = await bcrypt.compare(password, passwordHash);
   if (!result) {
     defaultPasswordMismatch(res, 'password do not match');
   }
+
   return passwordHash;
 };
 
@@ -99,7 +101,7 @@ exports.createUser = async (req, res) => {
   return id;
 };
 
-exports.findUserByUserName = async (userName, res) => {
+exports.retrieveByUserName = async (userName, res) => {
   const user = await User.findOne({
     where: { userName },
   })
