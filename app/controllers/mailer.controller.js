@@ -4,8 +4,7 @@ const { resetTemplate, welcomeTemplate } = require('../../lib/templates');
 require('dotenv').config();
 
 const transportObject = {
-  host: process.env.MAILER_HOST,
-  port: process.env.MAILER_PORT,
+  service: 'hotmail',
   secure: false, // do not use process.env for this otherwise it won't work
   auth: {
     user: process.env.EMAIL_USER_ACCOUNT,

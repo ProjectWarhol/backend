@@ -13,7 +13,6 @@ const {
   defaultPasswordMismatch,
   defaultConflictHandler,
   defaultWrongInputHandler,
-  defaultExpirationHandler,
 } = require('../middlewares/error_handlers.middleware');
 
 exports.findUserById = async (id, res) => {
@@ -125,13 +124,8 @@ exports.retrieveById = async (id, res) => {
   return user;
 };
 
-exports.retrieveTokenAndSetPassword = async (req, res) => {
-  const {
-    body: { password },
-    params: { token },
-  } = req;
-
-  User.findOne({
+exports.retrieveByToken = async (token, res) => {
+  const data = await User.findOne({
     where: {
       [Op.or]: [
         {
@@ -139,41 +133,31 @@ exports.retrieveTokenAndSetPassword = async (req, res) => {
         },
       ],
     },
-  })
-    .then(async (data) => {
-      if (data.resetTokenExp > Date.now() || data.invitationExp > Date.now()) {
-        const newPasswordHash = await bcrypt.hash(password, 12);
+  }).catch(() => {
+    defaultErrorHandler(res, 'something went wrong while retrieving user');
+  });
 
-        data.passwordHash = newPasswordHash;
-        data.resetToken = null;
-        data.resetTokenExp = null;
+  if (data == null) noPathErrorHandler(res, 'token');
 
-        data.save().catch(() => {
-          defaultErrorHandler(res, 'Something went wrong while updating user');
-        });
-      } else {
-        defaultExpirationHandler(res, 'Password token');
-      }
-    })
-    .catch(() => {
-      defaultConflictHandler(res, 'Invalid token');
-    });
+  return data;
 };
 
-exports.updateResetToken = (req, res, body) => {
-  User.update(body, {
+exports.updateResetToken = async (req, res, body) => {
+  const data = await User.update(body, {
     where: { email: req.body.email },
     returning: true,
   })
     .then(([rowsUpdated, [updatedUser]]) => {
-      if (rowsUpdated === 1) {
-        res.locals.user = updatedUser;
+      if (rowsUpdated !== 1) {
+        noPathErrorHandler('User', res);
       }
-      noPathErrorHandler('User', res);
+      res.locals.user = updatedUser;
+      return updatedUser;
     })
     .catch(() => {
       defaultErrorHandler(res, 'Something went wrong while updating user');
     });
+  return data;
 };
 
 exports.updateUser = async (req, res, id) => {

@@ -5,12 +5,14 @@ const {
   createUser,
   findUserByUserName,
   retrieveById,
-  retrieveTokenAndSetPassword,
+  retrieveByToken,
   updateResetToken,
   updateUser,
 } = require('../service/user');
 const {
   defaultConflictHandler,
+  defaultErrorHandler,
+  defaultExpirationHandler,
 } = require('../middlewares/error_handlers.middleware');
 
 // Update a user by the id in the request
@@ -43,8 +45,24 @@ exports.setResetToken = async (req, res, next) => {
 
 // update User password
 exports.replacePassword = async (req, res) => {
-  const confirmation = await retrieveTokenAndSetPassword(req, res);
-  if (!confirmation || res.headersSent) return;
+  const {
+    body: { password },
+    params: { token },
+  } = req;
+
+  const user = await retrieveByToken(token, res);
+  if (user.resetTokenExp < Date.now()) {
+    defaultExpirationHandler(res, 'Password token');
+  }
+  if (!user || res.headersSent) return;
+
+  const newPasswordHash = await bcrypt.hash(password, 12);
+  user.passwordHash = newPasswordHash;
+  user.resetToken = null;
+  user.resetTokenExp = null;
+  user.save().catch(() => {
+    defaultErrorHandler(res, 'Something went wrong while updating user');
+  });
 
   res.status(200).send({
     message: 'Password Successfully updated',
