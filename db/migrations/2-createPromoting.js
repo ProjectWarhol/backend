@@ -21,6 +21,8 @@ module.exports = {
           key: 'id',
         },
         allowNull: false,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       promotedId: {
         type: DataTypes.UUID,
@@ -31,6 +33,8 @@ module.exports = {
           key: 'id',
         },
         allowNull: false,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       createdAt: Sequelize.DATE,
     });
@@ -42,6 +46,10 @@ module.exports = {
           [Sequelize.Op.ne]: { [Sequelize.Op.col]: 'Promoting.userId' },
         },
       },
+    });
+    await queryInterface.addConstraint('Promoting', {
+      fields: ['userId', 'promotedId'],
+      type: 'unique',
     });
   },
 

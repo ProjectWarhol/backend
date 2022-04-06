@@ -20,6 +20,7 @@ module.exports = {
           notEmpty: false, // change to true later
         },
       },
+      mnumonicHash: DataTypes.STRING,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
       version: DataTypes.INTEGER,
