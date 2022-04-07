@@ -4,9 +4,8 @@ pragma solidity ^0.8.12;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/security/PullPayment.sol";
 
-contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
+contract PostNftMinting is ERC721, ERC721URIStorage {
 	using Counters for Counters.Counter;
 	Counters.Counter private tokenIdCounter;
 	mapping(string=> bool) private tokenExists;
