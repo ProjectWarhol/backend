@@ -192,18 +192,20 @@ contract('PostNftMinting', (accounts) => {
       );
     }
   });
-  // Success
+
+  // Success transfer shares
   it('successes transferShares', async () => {
     const initialBalances = [];
     const payees = [acc1, acc2, acc3];
     const shares = [88, 10, 2];
     const afterBalances = [];
+
     // Before paying out
     for (let i = 0; i < payees.length; i++) {
       const currentBalance = await web3.eth.getBalance(payees[i]);
       initialBalances.push(currentBalance); // balances before payout
-      // await instance.addPayee(payees[i], shares[i]);
     }
+
     // Transfer shares
     await web3Instance.methods
       .transferShares(1000000000000000000n, payees, shares)
@@ -211,22 +213,25 @@ contract('PostNftMinting', (accounts) => {
         from: acc0,
         value: 1000000000000000000,
       });
+
     // After paying out
     for (let i = 0; i < payees.length; i++) {
       const currentBalance = await web3.eth.getBalance(payees[i]);
       afterBalances.push(currentBalance); // balances after payout
     }
+
     // Difference between After and Before
     for (let i = 0; i < payees.length; i++) {
       const actual = afterBalances[i] - initialBalances[i];
-      // loop
       assert.equal(actual, (1000000000000000000 * shares[i]) / 100);
     }
   });
+
   // Failure
   it('fails transferShares', async () => {
     let payees = [acc1, acc2, acc3];
     let shares = [88, 30, 2];
+
     // Shares > 100
     await web3Instance.methods
       .transferShares(1000000000000000000n, payees, shares)
@@ -244,19 +249,19 @@ contract('PostNftMinting', (accounts) => {
         value: 1000000000000000000,
       }).should.be.rejected;
 
+    // A payee is missing
     payees = [acc1, acc2];
     shares = [70, 20, 10];
-    // A payee is missing
     await web3Instance.methods
       .transferShares(1000000000000000000n, payees, shares)
       .send({
         from: acc0,
         value: 1000000000000000000,
       }).should.be.rejected;
+
     // A Shares is missing
     payees = [acc1, acc2, acc3];
     shares = [70, 30];
-    // A payee is missing
     await web3Instance.methods
       .transferShares(1000000000000000000n, payees, shares)
       .send({

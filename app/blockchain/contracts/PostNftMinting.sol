@@ -29,7 +29,7 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
   function sumShares(uint256[] memory _shares) private pure returns (uint256) {
 		uint256 sum = 0;
 		for (uint256 i = 0; i < _shares.length; i++) {
-				sum += _shares[i];
+			sum += _shares[i];
 		}
 		return sum;
   }
@@ -41,9 +41,9 @@ contract PostNftMinting is ERC721, ERC721URIStorage, PullPayment {
 		uint256 shares = sumShares(_shares);
 		require(shares==100, "Should be 100");
 		for (uint256 i = 0; i < _payees.length; i++) {
-				address currentPayeeAddress = _payees[i];
-				uint256 currentAmount = msg.value * _shares[i] / 100;
-				payable(currentPayeeAddress).transfer(currentAmount);
+			address currentPayeeAddress = _payees[i];
+			uint256 currentAmount = msg.value * _shares[i] / 100;
+			payable(currentPayeeAddress).transfer(currentAmount);
 		}
   }
 
