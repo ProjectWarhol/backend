@@ -4,26 +4,43 @@ const { NFTStorage, File } = require('nft.storage');
 
 // Save it to IPFS
 const saveNftToStorage = async (req, filePath) => {
+  const {
+    name,
+    description,
+    creatorUsername,
+    creatorAdress,
+    ownerAdress,
+    date,
+    location,
+    positionInTree,
+    amountSold,
+  } = req.body;
+
+  const fileExtension = req.files.image.mimetype.split('/')[1];
   const client = new NFTStorage({
     token: process.env.NFT_STORAGE_KEY,
   });
-  const fileExtension = req.files.image.mimetype.split('/')[1];
+
   try {
     const metadata = await client.store({
-      name: req.body.name,
-      description: req.body.description,
-      image: new File([fs.readFileSync(filePath)], `${req.body.name}.${fileExtension}`, {
-        type: req.files.image.mimetype,
-      }),
+      name,
+      description,
+      image: new File(
+        [fs.readFileSync(filePath)],
+        `${name}.${fileExtension}`,
+        {
+          type: req.files.image.mimetype,
+        }
+      ),
       attributes: {
-        creatorUsername: req.body.creatorUsername,
-        creatorAdress: req.body.creatorAdress,
-        ownerAdress: req.body.ownerAdress,
-        createdAt: req.body.date,
-        location: req.body.location,
-        positionInTree: req.body.positionInTree,
-        amountSold: req.body.amountSold
-      }
+        creatorUsername,
+        creatorAdress,
+        ownerAdress,
+        date,
+        location,
+        positionInTree,
+        amountSold,
+      },
     });
     return { success: true, data: metadata.url };
   } catch (error) {
@@ -32,6 +49,7 @@ const saveNftToStorage = async (req, filePath) => {
 };
 
 // Upload NFT to NftStorage
+// eslint-disable-next-line consistent-return
 exports.uploadNft = (req, res, next) => {
   if (!req.files) {
     return res.status(400).send({
@@ -58,7 +76,7 @@ exports.uploadNft = (req, res, next) => {
     if (err) {
       return res.status(500).send(err);
     }
-    
+
     const metaData = await saveNftToStorage(req, filePath);
 
     if (!metaData.success) {
