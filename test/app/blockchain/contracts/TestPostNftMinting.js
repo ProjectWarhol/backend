@@ -1,3 +1,5 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-plusplus */
 /* eslint-disable import/no-unresolved */
 const { assert } = require('chai');
 const Web3 = require('web3');
@@ -21,6 +23,8 @@ contract('PostNftMinting', (accounts) => {
   let web3Instance;
   let acc0;
   let acc1;
+  let acc2;
+  let acc3;
   let tokenCounter = -1;
 
   before(async () => {
@@ -31,6 +35,8 @@ contract('PostNftMinting', (accounts) => {
   beforeEach(async () => {
     acc0 = accounts[0];
     acc1 = accounts[1];
+    acc2 = accounts[2];
+    acc3 = accounts[3];
   });
 
   it('Minting should create token on chain', async () => {
@@ -189,51 +195,87 @@ contract('PostNftMinting', (accounts) => {
     }
   });
 
-  it('Deposit of Wei should be successful', async () => {
-    const tx = await web3Instance.methods
-      .transferTo(acc1, 500000000000000000n)
+  // Success transfer shares
+  it('successes transferShares', async () => {
+    const initialBalances = [];
+    const payees = [acc1, acc2, acc3];
+    const shares = [88, 10, 2];
+    const afterBalances = [];
+
+    // Before paying out
+    for (let i = 0; i < payees.length; i++) {
+      const currentBalance = await web3.eth.getBalance(payees[i]);
+      initialBalances.push(currentBalance); // balances before payout
+    }
+
+    // Transfer shares
+    await web3Instance.methods
+      .transferShares(1000000000000000000n, payees, shares)
       .send({
         from: acc0,
-        value: 500000000000000000,
+        value: 1000000000000000000,
       });
 
-    assert.isTrue(tx.status, 'Transaction is successful');
-  });
+    // After paying out
+    for (let i = 0; i < payees.length; i++) {
+      const currentBalance = await web3.eth.getBalance(payees[i]);
+      afterBalances.push(currentBalance); // balances after payout
+    }
 
-  it('Wei is deposited in smart contract', async () => {
-    const depositedPayments = await instance.payments(acc1);
-
-    assert.equal(
-      depositedPayments,
-      500000000000000000,
-      'Amount is not correct'
-    );
-  });
-
-  it('Deposit of Wei should fails due to different values', async () => {
-    try {
-      await web3Instance.methods.transferTo(acc1, 500000000000000000n).send({
-        from: acc0,
-        value: 600000000000000000,
-      });
-    } catch (e) {
-      assert.equal(
-        Object.values(e.data)[0].reason,
-        'Sent value and price NOT equal',
-        'Sent value and price should be the same.'
-      );
+    // Difference between After and Before
+    for (let i = 0; i < payees.length; i++) {
+      const actual = afterBalances[i] - initialBalances[i];
+      assert.equal(actual, (1000000000000000000 * shares[i]) / 100);
     }
   });
 
-  it('Wei is withdrawn from smart contract', async () => {
-    const tx = await instance.withdrawPayments(acc1);
-
-    assert.isTrue(tx.receipt.status, 'Amount is not correct');
+  // Failure
+  it('shares exceed 100', async () => {
+    const payees = [acc1, acc2, acc3];
+    const shares = [88, 30, 2];
+    // Shares > 100
+    await web3Instance.methods
+      .transferShares(1000000000000000000n, payees, shares)
+      .send({
+        from: acc0,
+        value: 1000000000000000000,
+      }).should.be.rejected;
+  });
+  // Failure
+  it('shares are less than 100', async () => {
+    // Shares < 100
+    const payees = [acc1, acc2, acc3];
+    const shares = [30, 30, 10];
+    await web3Instance.methods
+      .transferShares(1000000000000000000n, payees, shares)
+      .send({
+        from: acc0,
+        value: 1000000000000000000,
+      }).should.be.rejected;
+  });
+  // Failure
+  it('lacks one payee', async () => {
+    // A payee is missing
+    const payees = [acc1, acc2];
+    const shares = [70, 20, 10];
+    await web3Instance.methods
+      .transferShares(1000000000000000000n, payees, shares)
+      .send({
+        from: acc0,
+        value: 1000000000000000000,
+      }).should.be.rejected;
   });
 
-  it('No more Wei is deposited in smart contract', async () => {
-    const depositedPayments = await instance.payments(acc1);
-
-    assert.equal(depositedPayments, 0, 'Amount is not correct');
+  // Failure
+  it('lacks one shares', async () => {
+    // A Shares is missing
+    const payees = [acc1, acc2, acc3];
+    const shares = [70, 30];
+    await web3Instance.methods
+      .transferShares(1000000000000000000n, payees, shares)
+      .send({
+        from: acc0,
+        value: 1000000000000000000,
+      }).should.be.rejected;
   });
 });
