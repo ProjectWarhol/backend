@@ -228,10 +228,9 @@ contract('PostNftMinting', (accounts) => {
   });
 
   // Failure
-  it('fails transferShares', async () => {
-    let payees = [acc1, acc2, acc3];
-    let shares = [88, 30, 2];
-
+  it('shares exceed 100', async () => {
+    const payees = [acc1, acc2, acc3];
+    const shares = [88, 30, 2];
     // Shares > 100
     await web3Instance.methods
       .transferShares(1000000000000000000n, payees, shares)
@@ -239,29 +238,37 @@ contract('PostNftMinting', (accounts) => {
         from: acc0,
         value: 1000000000000000000,
       }).should.be.rejected;
-
+  });
+  // Failure
+  it('shares are less than 100', async () => {
     // Shares < 100
-    shares = [30, 30, 10];
+    const payees = [acc1, acc2, acc3];
+    const shares = [30, 30, 10];
     await web3Instance.methods
       .transferShares(1000000000000000000n, payees, shares)
       .send({
         from: acc0,
         value: 1000000000000000000,
       }).should.be.rejected;
-
+  });
+  // Failure
+  it('lacks one payee', async () => {
     // A payee is missing
-    payees = [acc1, acc2];
-    shares = [70, 20, 10];
+    const payees = [acc1, acc2];
+    const shares = [70, 20, 10];
     await web3Instance.methods
       .transferShares(1000000000000000000n, payees, shares)
       .send({
         from: acc0,
         value: 1000000000000000000,
       }).should.be.rejected;
+  });
 
+  // Failure
+  it('lacks one shares', async () => {
     // A Shares is missing
-    payees = [acc1, acc2, acc3];
-    shares = [70, 30];
+    const payees = [acc1, acc2, acc3];
+    const shares = [70, 30];
     await web3Instance.methods
       .transferShares(1000000000000000000n, payees, shares)
       .send({
