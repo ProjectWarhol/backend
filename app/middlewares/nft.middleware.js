@@ -53,7 +53,7 @@ const saveNftToStorage = async (req, filePath) => {
 exports.uploadNft = (req, res, next) => {
   if (!req.files) {
     return res.status(400).send({
-      message: 'No files were uploaded',
+      message: 'No file in body',
     });
   }
 
@@ -66,6 +66,48 @@ exports.uploadNft = (req, res, next) => {
   if (!req.body.description) {
     return res.status(400).send({
       message: 'No description in body',
+    });
+  }
+
+  if (!req.body.creatorUsername) {
+    return res.status(400).send({
+      message: 'No creatorUsername in body',
+    });
+  }
+
+  if (!req.body.creatorAddress) {
+    return res.status(400).send({
+      message: 'No creatorAddress in body',
+    });
+  }
+
+  if (!req.body.ownerAddress) {
+    return res.status(400).send({
+      message: 'No ownerAddress in body',
+    });
+  }
+
+  if (!req.body.date) {
+    return res.status(400).send({
+      message: 'No date in body',
+    });
+  }
+
+  if (!req.body.location) {
+    return res.status(400).send({
+      message: 'No location in body',
+    });
+  }
+
+  if (!req.body.positionInTree) {
+    return res.status(400).send({
+      message: 'No positionInTree in body',
+    });
+  }
+
+  if (!req.body.amountSold) {
+    return res.status(400).send({
+      message: 'No amountSold in body',
     });
   }
 
