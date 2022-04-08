@@ -8,6 +8,11 @@ const {
   isLoggedIn,
   checkLoginInput,
 } = require('../middlewares/authorization.middleware');
+const {
+  createWallet,
+  storePrivateKey,
+} = require('../controllers/wallet.controller');
+const { userHasNotWallet } = require('../middlewares/verification.middleware');
 
 // Post login request
 router.post('/login', checkLoginInput, session.login);
@@ -40,6 +45,14 @@ router.post(
 // update User password & login
 router.post('/updatePassword/:token', user.replacePassword);
 
-router.post('/express');
+// express signup
+router.post(
+  '/express',
+  user.expressSignup,
+  userHasNotWallet,
+  createWallet,
+  storePrivateKey,
+  session.expressValidationResponse
+);
 
 module.exports = router;

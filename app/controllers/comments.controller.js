@@ -1,81 +1,97 @@
-const { Sequelize } = require('../models');
+const { findNftById } = require('../service/nft.content');
+const { getComments, createNewComment } = require('../service/comments');
+
 const db = require('../models');
-const { commentObject } = require('../util/commentObject');
 
 const {
-  Sequelize: { Op },
-  NftContent,
-  Comments,
-  User,
-} = db;
+  noPathErrorHandler,
+  defaultErrorHandler,
+} = require('../middlewares/error_handlers.middleware');
 
-const defaultCommentsError = (err) => {
-  const error = new Error('Something went wrong');
-  error.status = 500;
-  if (err.name !== 'SequelizeDatabaseError') {
-    error.err = err;
-  }
-  return error;
-};
+const { Comments } = db;
 
 // Retrieve comments on picture
-exports.retrieveComments = (req, res, next) => {
+exports.retrieveComments = async (req, res) => {
   const {
     body: { offset },
     params: { id },
   } = req;
 
-  Comments.findAll({
-    ...{ offset },
-    limit: 20,
-    include: [
-      {
-        model: NftContent,
-        attributes: [],
-        required: true,
-        where: { id },
-      },
-      {
-        model: User,
-        on: {
-          id: { [Op.eq]: Sequelize.col('Comments.userId') },
-        },
-      },
-    ],
-  })
-    .then((data) => {
-      const commentObjects = data.map((comment) => commentObject(comment));
-      res.status(200).send({
-        message: 'Comments sent successfully',
-        data: commentObjects,
-      });
-    })
-    .catch((err) => {
-      next(defaultCommentsError(err));
-    });
+  const nft = await findNftById(id, res);
+  if (!nft || res.headersSent) return;
+
+  const comments = await getComments(nft, offset, res);
+  if (!comments || res.headersSent) return;
+
+  res.status(200).send({
+    message: 'Comments sent successfully',
+    data: comments,
+  });
 };
 
 // Post a comment on a picture
-exports.createComment = (req, res, next) => {
+exports.createComment = async (req, res) => {
   const {
     body: { comment, userId },
     params: { id },
   } = req;
 
-  NftContent.findByPk(id)
-    .then((picture) => {
-      picture
-        .createComment({
-          ...{ comment },
-          ...{ userId },
-        })
-        .then(() => {
-          res.status(200).send({
-            message: 'Comment created successfully',
-          });
-        });
+  const nft = await findNftById(id, res);
+  if (!nft || res.headersSent) return;
+
+  const created = await createNewComment(nft, comment, userId, res);
+  if (!created || res.headersSent) return;
+
+  res.status(200).send({
+    message: 'Comment created successfully',
+  });
+};
+
+// Delete a comment on a picture
+exports.deleteComment = (req, res) => {
+  const {
+    params: { id },
+  } = req;
+
+  Comments.destroy({
+    where: { id },
+  })
+    .then(() => {
+      res.status(200).send({
+        message: 'Comment deleted successfully',
+      });
     })
-    .catch((err) => {
-      next(defaultCommentsError(err));
+    .catch(() => {
+      defaultErrorHandler(
+        res,
+        'Something went wrong while deleting the comment'
+      );
+    });
+};
+
+// Patch Comment
+exports.updateComment = async (req, res) => {
+  const {
+    params: { id },
+  } = req;
+
+  Comments.update(req.body, {
+    where: { id },
+    returning: true,
+  })
+    .then(([rowsUpdated]) => {
+      if (rowsUpdated > 0) {
+        res.status(200).send({
+          message: 'Comment was updated successfully',
+        });
+      } else {
+        noPathErrorHandler(res, 'Comment');
+      }
+    })
+    .catch(() => {
+      defaultErrorHandler(
+        res,
+        'Something went wrong while updating the comment'
+      );
     });
 };

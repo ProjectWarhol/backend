@@ -2,7 +2,17 @@ const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class UserAccount extends Model {}
+  class UserAccount extends Model {
+    static associate(models) {
+      this.hasOne(models.User, {
+        foreignKey: {
+          name: 'walletId',
+          type: DataTypes.UUID,
+        },
+        allowNull: true,
+      });
+    }
+  }
   UserAccount.init(
     {
       id: {
@@ -12,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: Sequelize.UUIDV4,
       },
       publicKey: DataTypes.STRING,
+      mnumonicHash: DataTypes.STRING,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
       version: DataTypes.INTEGER,
