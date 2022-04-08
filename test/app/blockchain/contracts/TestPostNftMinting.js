@@ -25,6 +25,7 @@ contract('PostNftMinting', (accounts) => {
   let acc1;
   let acc2;
   let acc3;
+  let acc4;
   let tokenCounter = -1;
 
   before(async () => {
@@ -37,6 +38,7 @@ contract('PostNftMinting', (accounts) => {
     acc1 = accounts[1];
     acc2 = accounts[2];
     acc3 = accounts[3];
+    acc4 = accounts[4];
   });
 
   it('Minting should create token on chain', async () => {
@@ -192,6 +194,25 @@ contract('PostNftMinting', (accounts) => {
         'INVALID_ARGUMENT',
         'Receover address is not valid'
       );
+    }
+  });
+
+  it('Get all tokenIds owned by address', async () => {
+    const result = await web3Instance.methods.getTokens(acc1).call();
+    assert.isArray(result, 'Result ist not an array')
+    assert.isString(result[0], 'IDs should be of type string')
+  });
+
+  it('Get all tokenIds owned by address with no tokens', async () => {
+    const result = await web3Instance.methods.getTokens(acc4).call();
+    assert.isArray(result, 'Result ist not an array')
+  });
+
+  it('Get all tokenIds owned by wrong address', async () => {
+    try {
+      await web3Instance.methods.getTokens('ljadlgh').call();
+    } catch (e) {
+      assert.include(e.reason, 'invalid address', 'Wrong error thrown instead of invalid address')
     }
   });
 
