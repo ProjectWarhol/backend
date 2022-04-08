@@ -12,7 +12,6 @@ const {
   noPathErrorHandler,
   defaultPasswordMismatch,
   defaultConflictHandler,
-  defaultWrongInputHandler,
 } = require('../middlewares/error_handlers.middleware');
 
 exports.findUserById = async (id, res) => {
@@ -118,7 +117,7 @@ exports.retrieveByUserName = async (userName, res) => {
 
 exports.retrieveById = async (id, res) => {
   const user = await User.findByPk(id).catch(() => {
-    defaultWrongInputHandler(res, 'something went wrong while finding user');
+    defaultErrorHandler(res, 'something went wrong while finding user');
   });
 
   return user;
