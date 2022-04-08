@@ -10,6 +10,7 @@ contract PostNftMinting is ERC721, ERC721URIStorage, ERC721Enumerable {
 	using Counters for Counters.Counter;
 	Counters.Counter private tokenIdCounter;
 	mapping(string=> bool) private tokenExists;
+	
 	constructor() ERC721("PostNftMint", "SFT") {}
 
 	function safeMint(address _to, string memory _uri) external {
