@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable no-param-reassign */
 /* eslint-disable consistent-return */
 const bcrypt = require('bcrypt');
@@ -132,18 +133,16 @@ exports.updateResetToken = async (req, res, body) => {
   const data = await User.update(body, {
     where: { email: req.body.email },
     returning: true,
-  })
-    .then(([rowsUpdated, [updatedUser]]) => {
-      if (rowsUpdated !== 1) {
-        noPathErrorHandler('User', res);
-      }
-      res.locals.user = updatedUser;
-      return updatedUser;
-    })
-    .catch(() => {
-      defaultErrorHandler(res, 'Something went wrong while updating user');
-    });
-  return data;
+  }).catch(() => {
+    defaultErrorHandler(res, 'Something went wrong while updating user');
+  });
+
+  if (!data[0]) {
+    noPathErrorHandler('User', res);
+  }
+
+  res.locals.user = data[1];
+  return data[1];
 };
 
 exports.updateUser = async (req, res, id) => {
