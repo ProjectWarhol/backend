@@ -199,20 +199,24 @@ contract('PostNftMinting', (accounts) => {
 
   it('Get all tokenIds owned by address', async () => {
     const result = await web3Instance.methods.getTokens(acc1).call();
-    assert.isArray(result, 'Result ist not an array')
-    assert.isString(result[0], 'IDs should be of type string')
+    assert.isArray(result, 'Result is not an array');
+    assert.isString(result[0], 'IDs should be of type string');
   });
 
   it('Get all tokenIds owned by address with no tokens', async () => {
     const result = await web3Instance.methods.getTokens(acc4).call();
-    assert.isArray(result, 'Result ist not an array')
+    assert.isArray(result, 'Result is not an array');
   });
 
   it('Get all tokenIds owned by wrong address', async () => {
     try {
       await web3Instance.methods.getTokens('ljadlgh').call();
     } catch (e) {
-      assert.include(e.reason, 'invalid address', 'Wrong error thrown instead of invalid address')
+      assert.include(
+        e.reason,
+        'invalid address',
+        'Wrong error thrown instead of invalid address'
+      );
     }
   });
 
