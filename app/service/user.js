@@ -94,17 +94,13 @@ exports.createUser = async (req, res) => {
 exports.retrieveByUserName = async (userName, res) => {
   const user = await User.findOne({
     where: { userName },
-  })
-    .then((data) => {
-      if (data) {
-        return data;
-      }
-      noPathErrorHandler(res, 'User');
-    })
-    .catch(() => {
-      defaultErrorHandler(res, 'something went wrong while finding user');
-    });
+  }).catch(() => {
+    defaultErrorHandler(res, 'something went wrong while finding user');
+  });
 
+  if (!user) {
+    noPathErrorHandler(res, 'User');
+  }
   return user;
 };
 
