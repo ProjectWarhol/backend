@@ -149,16 +149,11 @@ exports.updateUser = async (req, res, id) => {
   const data = await User.update(req.body, {
     where: { id },
     returning: true,
-  })
-    .then(([rowsUpdated, [updatedUser]]) => {
-      if (rowsUpdated) {
-        return updatedUser;
-      }
-      noPathErrorHandler('User', res);
-    })
-    .catch(() => {
-      defaultErrorHandler(res, 'Something went wrong while updating user');
-    });
+  }).catch(() => {
+    defaultErrorHandler(res, 'Something went wrong while updating user');
+  });
+
+  if (!data[0]) noPathErrorHandler('User', res);
 
   return data;
 };
