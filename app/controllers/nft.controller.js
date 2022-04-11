@@ -28,7 +28,7 @@ exports.getTokenIds = async (req, res) => {
     });
   } catch (e) {
     res.status(400).send({
-      error: e.reason,
+      error: e,
     });
   }
 };

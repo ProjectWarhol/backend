@@ -8,10 +8,13 @@ const {
   noPathErrorHandler,
   defaultErrorHandler,
 } = require('./app/middlewares/error_handlers.middleware');
+const { setup } = require('./app/util/bcProvider');
 
 const db = require('./app/models');
 
 require('dotenv').config();
+
+setup()
 
 const app = express();
 

@@ -25,13 +25,9 @@ const saveNftToStorage = async (req, filePath) => {
     const metadata = await client.store({
       name,
       description,
-      image: new File(
-        [fs.readFileSync(filePath)],
-        `${name}.${fileExtension}`,
-        {
-          type: req.files.image.mimetype,
-        }
-      ),
+      image: new File([fs.readFileSync(filePath)], `${name}.${fileExtension}`, {
+        type: req.files.image.mimetype,
+      }),
       attributes: {
         creatorUsername,
         creatorAdress,
