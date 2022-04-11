@@ -48,11 +48,11 @@ contract PostNftMinting is ERC721, ERC721URIStorage, ERC721Enumerable {
 		}
   }
 
-	function getTokens(address _from) external view returns(uint256[] memory){
-		uint256 balance = super.balanceOf(_from);
+	function getTokens(address _owner) external view returns(uint256[] memory){
+		uint256 balance = super.balanceOf(_owner);
 		uint256[] memory tokenIds = new uint[](balance);
 		for (uint256 i = 0; i < balance; i++) {
-			tokenIds[i] = tokenOfOwnerByIndex(_from, i);
+			tokenIds[i] = tokenOfOwnerByIndex(_owner, i);
 		}
 		return tokenIds;
 	}
