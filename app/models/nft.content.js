@@ -34,8 +34,8 @@ module.exports = (sequelize, DataTypes) => {
       contentSize: DataTypes.FLOAT,
       price: DataTypes.FLOAT,
       flags: DataTypes.INTEGER,
-      upVotes: DataTypes.INTEGER,
-      downVotes: DataTypes.INTEGER,
+      upvotes: DataTypes.INTEGER,
+      downvotes: DataTypes.INTEGER,
       hasSold: DataTypes.BOOLEAN,
     },
     {
