@@ -105,7 +105,7 @@ exports.retrieveByUserName = async (userName, res) => {
 
 exports.retrieveById = async (id, res) => {
   const user = await User.findByPk(id).catch(() => {
-    defaultErrorHandler(res, 'something went wrong while finding user');
+    noPathErrorHandler('User', res);
   });
 
   return user;
