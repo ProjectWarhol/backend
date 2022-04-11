@@ -7,22 +7,18 @@ module.exports = {
     await queryInterface.bulkInsert('NftContent', [
       {
         title: 'A nice nft',
-        createdAt: new Date(),
         userId: userIds[0][0].id,
       },
       {
         title: 'A nicer nft',
-        createdAt: new Date(),
         userId: userIds[0][1].id,
       },
       {
         title: 'An even nicer nft',
-        createdAt: new Date(),
         userId: userIds[0][2].id,
       },
       {
         title: 'A beautiful nft',
-        createdAt: new Date(),
         userId: userIds[0][3].id,
       },
     ]);
