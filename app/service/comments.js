@@ -11,7 +11,6 @@ exports.getComments = async (nft, offset, res) => {
     .getComments({
       ...{ offset },
       limit: 20,
-      joinTableAttributes: [],
       include: [User],
     })
     .catch(() => {
