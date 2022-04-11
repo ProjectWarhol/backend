@@ -120,11 +120,10 @@ exports.retrieveByToken = async (token, res) => {
         },
       ],
     },
+    rejectOnEmpty: true,
   }).catch(() => {
-    defaultErrorHandler(res, 'something went wrong while retrieving user');
+    noPathErrorHandler(res, 'token');
   });
-
-  if (data == null) noPathErrorHandler(res, 'token');
 
   return data;
 };
