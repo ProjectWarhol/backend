@@ -200,12 +200,14 @@ contract('PostNftMinting', (accounts) => {
   it('Get all tokenIds owned by address', async () => {
     const result = await web3Instance.methods.getTokens(acc1).call();
     assert.isArray(result, 'Result is not an array');
+    assert.isNotEmpty(result, 'Should not be empty');
     assert.isString(result[0], 'IDs should be of type string');
   });
 
   it('Get all tokenIds owned by address with no tokens', async () => {
     const result = await web3Instance.methods.getTokens(acc4).call();
     assert.isArray(result, 'Result is not an array');
+    assert.isEmpty(result, 'Should be empty');
   });
 
   it('Get all tokenIds owned by wrong address', async () => {
