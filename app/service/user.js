@@ -48,16 +48,17 @@ exports.updateUserWalletId = async (storedWallet, id, res, next) => {
 };
 
 exports.getUserPasswordHash = async (id, res, password) => {
-  const passwordHash = await User.findByPk(id)
-    .then((user) => user.passwordHash)
-    .catch(() => {
-      defaultErrorHandler(res, 'Something went wrong while updating user');
-    });
-  const result = await bcrypt.compare(password, passwordHash);
+  const user = await User.findByPk(id).catch(() => {
+    noPathErrorHandler('User', res);
+  });
+
+  const result = await bcrypt.compare(password, user.passwordHash);
+
   if (!result) {
     defaultPasswordMismatch(res, 'password do not match');
   }
-  return passwordHash;
+
+  return user.passwordHash;
 };
 
 exports.createUser = async (req, res) => {
@@ -94,13 +95,11 @@ exports.createUser = async (req, res) => {
 exports.retrieveByUserName = async (userName, res) => {
   const user = await User.findOne({
     where: { userName },
+    rejectOnEmpty: true,
   }).catch(() => {
-    defaultErrorHandler(res, 'something went wrong while finding user');
+    noPathErrorHandler(res, 'User');
   });
 
-  if (!user) {
-    noPathErrorHandler(res, 'User');
-  }
   return user;
 };
 
