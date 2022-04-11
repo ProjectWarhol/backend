@@ -65,37 +65,30 @@ exports.createUser = async (req, res) => {
     body: { userName, email, password },
   } = req;
 
-  const id = await User.findOrCreate({
+  const passwordHash = await bcrypt.hash(password, 12);
+
+  const user = await User.findOrCreate({
     where: {
       [Op.or]: [{ userName }, { email }],
     },
     defaults: {
       ...{ userName },
       ...{ email },
+      ...{ passwordHash },
       createdAt: Date.now(),
       promoters: 0,
       promoting: 0,
       verified: false,
     },
-  })
-    .then(async ([newUser, created]) => {
-      if (created) {
-        const newPasswordHash = await bcrypt.hash(password, 12);
+  }).catch(() => {
+    defaultErrorHandler(res, 'something went wrong while creating user');
+  });
 
-        // eslint-disable-next-line no-param-reassign
-        newUser.passwordHash = newPasswordHash;
+  if (!user[1]) {
+    defaultConflictHandler(res, 'Email or username already in use');
+  }
 
-        newUser.save();
-
-        return newUser;
-      }
-      defaultConflictHandler(res, 'Email or username already in use');
-    })
-    .catch(() => {
-      defaultErrorHandler(res, 'something went wrong while creating user');
-    });
-
-  return id;
+  return user[0];
 };
 
 exports.retrieveByUserName = async (userName, res) => {
