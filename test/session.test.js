@@ -52,7 +52,18 @@ describe('POST /users/login', () => {
   });
 
   it('Successful login response should match schema', () => {
-    expect(this.successfullResponse).to.be.jsonSchema(authSchema);
+    chai
+      .request(app)
+      .post('/users/login')
+      .send({
+        userCredential: process.env.TEST_EMAIL,
+        password: process.env.TEST_PASSWORD,
+      })
+      .end((err, res) => {
+        // eslint-disable-next-line no-unused-expressions
+        expect(res.body).to.be.jsonSchema(authSchema);
+        done();
+      });
   });
 
   it('Should reject when wrong password is entered', (done) => {
