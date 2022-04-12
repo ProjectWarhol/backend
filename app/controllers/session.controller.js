@@ -1,12 +1,18 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
 const bcrypt = require('bcrypt');
 const db = require('../models');
 const { sessionObject } = require('../util/sessionObject');
+const {
+  defaultErrorHandler,
+  defaultExpirationHandler,
+  defaultConflictHandler,
+} = require('../middlewares/error_handlers.middleware');
 
 const { User } = db;
 
 // login user and return sessionToken as cookie
-exports.login = (req, res, next) => {
+exports.login = (req, res) => {
   const { userCredential, password, type } = req.body;
 
   const defaulLoginError = new Error('Wrong email or password');
@@ -27,13 +33,12 @@ exports.login = (req, res, next) => {
             user: newSessionUser,
           });
         } else {
-          next(defaulLoginError);
+          defaultConflictHandler(res, 'password does not match');
         }
       });
     })
-    .catch((err) => {
-      defaulLoginError.err = err;
-      next(defaulLoginError);
+    .catch(() => {
+      defaultErrorHandler(res, 'something went wrong while finding user');
     });
 };
 
@@ -47,7 +52,7 @@ exports.logout = (req, res) => {
 };
 
 // validate existing session from client
-exports.validateSession = (req, res, next) => {
+exports.validateSession = (req, res) => {
   const currentUser = req.session.user;
   const currentCookieDate = req.session.cookie._expires;
   const dateTime = new Date();
@@ -60,6 +65,14 @@ exports.validateSession = (req, res, next) => {
   }
   res.status(401).clearCookie('my.sid', { path: '/' });
   req.session.destroy();
-  const error = new Error('Unauthorized please Login');
-  return next(error);
+  defaultExpirationHandler(res, 'session');
+};
+
+exports.expressValidationResponse = (req, res) => {
+  res.status(200).send({
+    message: 'Express signup complete',
+    walletId: req.body.walletId,
+    walletInformation: req.body.walletInformation,
+    mnemonicPhrase: req.body.mnemonicPhrase,
+  });
 };

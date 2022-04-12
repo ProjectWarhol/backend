@@ -34,9 +34,12 @@ exports.storeCustodialWallet = (custodialWalletData, password) => {
   }
 };
 
-exports.decryptPrivateKey = (encryptedPrivateKey, password) => {
+exports.decryptPrivateKey = async (encryptedPrivateKey, password) => {
   try {
-    const privateKey = web3.eth.accounts.decrypt(encryptedPrivateKey, password);
+    const privateKey = await web3.eth.accounts.decrypt(
+      encryptedPrivateKey,
+      password
+    );
     return privateKey;
   } catch (err) {
     return err;

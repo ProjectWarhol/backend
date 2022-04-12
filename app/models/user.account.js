@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       id: {
         type: DataTypes.UUID,
         primaryKey: true,
+<<<<<<< HEAD
         validate: {
           isUUID: 4,
         },
@@ -83,6 +84,28 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true, // false
       },
+=======
+        allowNull: false,
+        defaultValue: Sequelize.UUIDV4,
+      },
+      publicKey: DataTypes.STRING,
+      mnumonicHash: DataTypes.STRING,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
+      version: DataTypes.INTEGER,
+      versionId: DataTypes.UUID,
+      address: DataTypes.STRING,
+      ciphertext: DataTypes.STRING,
+      iv: DataTypes.STRING,
+      cipher: DataTypes.STRING,
+      kdf: DataTypes.STRING,
+      mac: DataTypes.STRING,
+      dklen: DataTypes.INTEGER,
+      salt: DataTypes.STRING,
+      n: DataTypes.INTEGER,
+      r: DataTypes.INTEGER,
+      p: DataTypes.INTEGER,
+>>>>>>> main
     },
     {
       sequelize,

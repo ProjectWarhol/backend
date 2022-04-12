@@ -14,6 +14,7 @@ module.exports = {
       },
       publicKey: {
         type: DataTypes.STRING,
+<<<<<<< HEAD
         allowNull: false,
       },
       createdAt: {
@@ -78,6 +79,30 @@ module.exports = {
         type: DataTypes.INTEGER,
         allowNull: true, // false
       },
+=======
+        allowNull: true, // change to false
+        validate: {
+          notNull: false, // change to true later
+          notEmpty: false, // change to true later
+        },
+      },
+      mnumonicHash: DataTypes.STRING,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
+      version: DataTypes.INTEGER,
+      versionId: DataTypes.UUID,
+      address: DataTypes.STRING,
+      ciphertext: DataTypes.STRING,
+      iv: DataTypes.STRING,
+      cipher: DataTypes.STRING,
+      kdf: DataTypes.STRING,
+      mac: DataTypes.STRING,
+      dklen: DataTypes.INTEGER,
+      salt: DataTypes.STRING,
+      n: DataTypes.INTEGER,
+      r: DataTypes.INTEGER,
+      p: DataTypes.INTEGER,
+>>>>>>> main
     });
   },
 

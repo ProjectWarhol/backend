@@ -7,7 +7,7 @@ const { commentObject } = require('../util/commentObject');
 const { User } = db;
 
 exports.getComments = async (nft, offset, res) => {
-  const comments = await nft
+  let comments = await nft
     .getComments({
       ...{ offset },
       limit: 20,
@@ -18,7 +18,7 @@ exports.getComments = async (nft, offset, res) => {
     });
 
   try {
-    comments.map((comment) => commentObject(comment));
+    comments = comments.map((comment) => commentObject(comment));
   } catch (err) {
     defaultErrorHandler(res, 'Something went wrong while fetching comments');
   }
