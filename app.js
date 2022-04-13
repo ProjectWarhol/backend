@@ -1,4 +1,5 @@
 const express = require('express');
+const fileupload = require('express-fileupload');
 const morgan = require('morgan');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
@@ -7,10 +8,13 @@ const {
   noPathErrorHandler,
   defaultErrorHandler,
 } = require('./app/middlewares/error_handlers.middleware');
+const { setup } = require('./app/util/bcProvider');
 
 const db = require('./app/models');
 
 require('dotenv').config();
+
+setup()
 
 const app = express();
 
@@ -47,6 +51,12 @@ app.use(
       secure: ['staging', 'production'].includes(process.env.NODE_ENV),
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days in milliseconds
     },
+  })
+);
+
+app.use(
+  fileupload({
+    createParentPath: true,
   })
 );
 
