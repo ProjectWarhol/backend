@@ -76,10 +76,12 @@ You need to install the following things to be able to run this project on your 
       npm run mDev
       ```
 
-      After this, you have to get the address of the PostNftMinting contract.
-         1. In your console output, you should see something similar to this:
+      After this, you have to get the address of the PostNftMinting contract:
+      
+      1. In your console output, you should see something similar to this:
+          ![console_output_truffle migrate](https://user-images.githubusercontent.com/28442090/163338955-e4df8b55-7e6e-4d9b-a25e-5acd012612fa.png)
 
-         2. Copy the address of the contract and paste it to `CONTRACT_LOCAL_ADDRESS` in the `.env`
+      2. Copy the address of the contract and paste it to `CONTRACT_LOCAL_ADDRESS` in the `.env`
 
 ### Commands
 
