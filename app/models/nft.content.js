@@ -33,7 +33,6 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: Sequelize.literal('uuid_generate_v4()'),
       },
       title: DataTypes.STRING,
-<<<<<<< HEAD
       contentPath: {
         type: DataTypes.STRING,
         validate: {
@@ -74,17 +73,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
-=======
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
-      contentPath: DataTypes.STRING,
-      contentSize: DataTypes.FLOAT,
-      price: DataTypes.FLOAT,
-      flags: DataTypes.INTEGER,
-      upvotes: DataTypes.INTEGER,
-      downvotes: DataTypes.INTEGER,
-      hasSold: DataTypes.BOOLEAN,
->>>>>>> main
     },
     {
       sequelize,
