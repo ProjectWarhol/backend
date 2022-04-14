@@ -34,6 +34,28 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
+      hooks: {
+        afterCreate: async (newPromoting) => {
+          const { userId, promotedId } = newPromoting;
+
+          await sequelize.models.User.increment('promoting', {
+            where: { id: userId },
+          });
+          await sequelize.models.User.increment('promoters', {
+            where: { id: promotedId },
+          });
+        },
+        afterDestroy: async (oldPromoting) => {
+          const { userId, promotedId } = oldPromoting;
+
+          await sequelize.models.User.decrement('promoting', {
+            where: { id: userId },
+          });
+          await sequelize.models.User.decrement('promoters', {
+            where: { id: promotedId },
+          });
+        },
+      },
       sequelize,
       timestamps: true,
       updatedAt: false,

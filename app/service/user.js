@@ -1,3 +1,5 @@
+/* eslint-disable prefer-destructuring */
+/* eslint-disable no-param-reassign */
 /* eslint-disable consistent-return */
 const bcrypt = require('bcrypt');
 const db = require('../models');
@@ -47,16 +49,17 @@ exports.updateUserWalletId = async (storedWallet, id, res, next) => {
 };
 
 exports.getUserPasswordHash = async (id, res, password) => {
-  const passwordHash = await User.findByPk(id)
-    .then((user) => user.passwordHash)
-    .catch(() => {
-      defaultErrorHandler(res, 'Something went wrong while updating user');
-    });
-  const result = await bcrypt.compare(password, passwordHash);
+  const user = await User.findByPk(id).catch(() => {
+    noPathErrorHandler('User', res);
+  });
+
+  const result = await bcrypt.compare(password, user.passwordHash);
+
   if (!result) {
     defaultPasswordMismatch(res, 'password do not match');
   }
-  return passwordHash;
+
+  return user.passwordHash;
 };
 
 exports.createUser = async (req, res) => {
@@ -64,35 +67,93 @@ exports.createUser = async (req, res) => {
     body: { userName, email, password },
   } = req;
 
-  const id = await User.findOrCreate({
+  const passwordHash = await bcrypt.hash(password, 12);
+
+  const user = await User.findOrCreate({
     where: {
       [Op.or]: [{ userName }, { email }],
     },
     defaults: {
       ...{ userName },
       ...{ email },
+      ...{ passwordHash },
       createdAt: Date.now(),
       promoters: 0,
       promoting: 0,
       verified: false,
     },
-  })
-    .then(async ([newUser, created]) => {
-      if (created) {
-        const newPasswordHash = await bcrypt.hash(password, 12);
+  }).catch(() => {
+    defaultErrorHandler(res, 'something went wrong while creating user');
+  });
 
-        // eslint-disable-next-line no-param-reassign
-        newUser.passwordHash = newPasswordHash;
+  if (!user[1]) {
+    defaultConflictHandler(res, 'Email or username already in use');
+  }
 
-        newUser.save();
+  return user[0];
+};
 
-        return newUser;
-      }
-      defaultConflictHandler(res, 'Email or username already in use');
-    })
-    .catch(() => {
-      defaultErrorHandler(res, 'something went wrong while creating user');
-    });
+exports.retrieveByUserName = async (userName, res) => {
+  const user = await User.findOne({
+    where: { userName },
+    rejectOnEmpty: true,
+  }).catch(() => {
+    noPathErrorHandler(res, 'User');
+  });
 
-  return id;
+  return user;
+};
+
+exports.retrieveById = async (id, res) => {
+  const user = await User.findByPk(id).catch(() => {
+    noPathErrorHandler('User', res);
+  });
+
+  return user;
+};
+
+exports.retrieveByToken = async (token, res) => {
+  const data = await User.findOne({
+    where: {
+      [Op.or]: [
+        {
+          resetToken: token,
+        },
+      ],
+    },
+    rejectOnEmpty: true,
+  }).catch(() => {
+    noPathErrorHandler(res, 'token');
+  });
+
+  return data;
+};
+
+exports.updateResetToken = async (req, res, body) => {
+  const data = await User.update(body, {
+    where: { email: req.body.email },
+    returning: true,
+  }).catch(() => {
+    defaultErrorHandler(res, 'Something went wrong while updating user');
+  });
+
+  if (!data[0]) {
+    noPathErrorHandler('User', res);
+  }
+
+  res.locals.user = data[1];
+  return data[1];
+};
+
+exports.updateUser = async (req, res, id) => {
+  const data = await User.update(req.body, {
+    where: { id },
+    returning: true,
+  }).catch(() => {
+    defaultErrorHandler(res, 'Something went wrong while updating user');
+  });
+
+  if (!data[0]) noPathErrorHandler('User', res);
+
+  return data;
 };

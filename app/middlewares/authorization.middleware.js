@@ -1,11 +1,10 @@
 /* eslint-disable consistent-return */
-const { body } = require('express-validator');
+const { body, validationResult } = require('express-validator');
 const {
   unauthorizedHandler,
   defaultWrongInputHandler,
+  defaultErrorHandler,
 } = require('./error_handlers.middleware');
-
-const usernameRegExp = new RegExp('^[a-zA-Z0-9-_.]{4,20}$');
 
 // checks if user is logged in
 exports.isLoggedIn = (req, res, next) => {
@@ -17,15 +16,20 @@ exports.isLoggedIn = (req, res, next) => {
 };
 
 exports.checkLoginInput = async (req, res, next) => {
-  const { errors } = await body('userCredential').isEmail().run(req);
+  await body('userCredential')
+    .isEmail()
+    .withMessage('userName')
+    .matches(/^[a-z0-9-_.]{4,20}$/i)
+    .withMessage('email')
+    .run(req);
 
-  if (!errors.length) {
-    req.body.type = 'email';
-  } else if (usernameRegExp.test(req.body.userCredential)) {
-    req.body.type = 'userName';
-  } else {
-    defaultWrongInputHandler(res, 'Invalid username or email');
-    return;
+  if (validationResult(req).errors.length === 2) {
+    return defaultWrongInputHandler(res, 'Invalid username or email');
   }
-  return next();
+  if (validationResult(req).errors.length === 1) {
+    req.body.type = validationResult(req).errors[0].msg;
+    return next();
+  }
+
+  return defaultErrorHandler(res, 'Something went wrong');
 };

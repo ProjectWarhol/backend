@@ -7,7 +7,9 @@ const promotingRoutes = require('./promoting.routes');
 const promotedRoutes = require('./promoted.routes');
 const walletRoutes = require('./wallet.routes');
 const commentsRoutes = require('./comments.routes');
+const nftVoteRoutes = require('./nftVote.routes');
 const nftRoutes = require('./nft.routes');
+
 
 // this file acts as the main router for all incoming requests
 router.get('/', (req, res) => {
@@ -19,6 +21,8 @@ router.use('/promoting', promotingRoutes);
 router.use('/promoted', promotedRoutes);
 router.use('/wallet', walletRoutes);
 router.use('/comments', commentsRoutes);
+router.use('/nftVote', nftVoteRoutes);
 router.use('/nft', nftRoutes);
+
 
 module.exports = router;

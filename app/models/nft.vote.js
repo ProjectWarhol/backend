@@ -35,6 +35,36 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
     },
     {
+      hooks: {
+        afterCreate: async (newVote) => {
+          const { contentId, type } = newVote;
+
+          await sequelize.models.NftContent.increment(
+            type ? 'upvotes' : 'downvotes',
+            { where: { id: contentId } }
+          );
+        },
+        afterDestroy: async (oldVote) => {
+          const { contentId, type } = oldVote;
+
+          await sequelize.models.NftContent.decrement(
+            type ? 'upvotes' : 'downvotes',
+            { where: { id: contentId } }
+          );
+        },
+        afterUpdate: async (updatedVote) => {
+          const { contentId, type } = updatedVote;
+
+          await sequelize.models.NftContent.increment(
+            type ? 'upvotes' : 'downvotes',
+            { where: { id: contentId } }
+          );
+          await sequelize.models.NftContent.decrement(
+            type ? 'downvotes' : 'upvotes',
+            { where: { id: contentId } }
+          );
+        },
+      },
       sequelize,
       timestamps: true,
       updatedAt: false,
