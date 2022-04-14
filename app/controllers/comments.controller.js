@@ -3,7 +3,6 @@ const { getComments, createNewComment } = require('../service/comments');
 
 const db = require('../models');
 
-
 const {
   noPathErrorHandler,
   defaultErrorHandler,
@@ -69,7 +68,6 @@ exports.deleteComment = (req, res) => {
       );
     });
 };
-
 
 // Patch Comment
 exports.updateComment = async (req, res) => {

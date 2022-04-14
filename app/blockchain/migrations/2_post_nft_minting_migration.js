@@ -6,7 +6,7 @@ module.exports = async function (deployer) {
     // for testing
     require('dotenv').config();
     const instance = await PostNftMinting.deployed();
-    console.log(instance.address)
+    console.log(instance.address);
     process.env.CONTRACT_LOCAL_ADDRESS = instance.address;
   }
 };

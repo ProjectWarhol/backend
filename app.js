@@ -14,7 +14,7 @@ const db = require('./app/models');
 
 require('dotenv').config();
 
-setup()
+setup();
 
 const app = express();
 
