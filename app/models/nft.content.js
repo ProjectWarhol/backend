@@ -42,11 +42,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       contentSize: {
         type: DataTypes.FLOAT,
-        defaultValue: 0,
+        defaultValue: 10,
       },
       price: {
         type: DataTypes.FLOAT,
-        defaultValue: 0,
+        defaultValue: 1,
       },
       flags: {
         type: DataTypes.INTEGER,

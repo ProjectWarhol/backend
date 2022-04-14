@@ -24,12 +24,12 @@ module.exports = {
       contentSize: {
         type: Sequelize.FLOAT,
         allowNull: false,
-        defaultValue: 0, // remove this later
+        defaultValue: 10, // remove this later
       },
       price: {
         type: Sequelize.FLOAT,
         allowNull: false,
-        defaultValue: 0, // remove this later (?)
+        defaultValue: 1, // remove this later (?)
       },
       flags: {
         type: Sequelize.INTEGER,
