@@ -7,10 +7,15 @@ module.exports = {
     );
     await queryInterface.createTable('Promoting', {
       id: {
-        primaryKey: true,
-        allowNull: false,
         type: DataTypes.UUID,
         defaultValue: Sequelize.literal('uuid_generate_v4()'),
+        primaryKey: true,
+        allowNull: false,
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn('now'),
       },
       userId: {
         type: DataTypes.UUID,
@@ -36,7 +41,6 @@ module.exports = {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       },
-      createdAt: Sequelize.DATE,
     });
     await queryInterface.addConstraint('Promoting', {
       fields: ['promotedId'],
