@@ -12,9 +12,12 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       });
 
-      this.belongsToMany(models.NftContent, {
-        through: models.PictureComments,
-        foreignKey: 'commentId',
+      this.belongsTo(models.NftContent, {
+        foreignKey: {
+          name: 'contentId',
+          type: DataTypes.UUID,
+        },
+        allowNull: false,
       });
     }
   }
@@ -24,12 +27,12 @@ module.exports = (sequelize, DataTypes) => {
       id: {
         type: DataTypes.UUID,
         primaryKey: true,
-        allowNull: false,
-        defaultValue: Sequelize.UUIDV4,
+        validate: {
+          isUUID: 4,
+        },
+        defaultValue: Sequelize.literal('uuid_generate_v4()'),
       },
       comment: DataTypes.STRING,
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
     },
     {
       sequelize,
