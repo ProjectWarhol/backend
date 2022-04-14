@@ -69,7 +69,7 @@ module.exports = {
           },
           key: 'id',
         },
-        allowNull: false,
+        allowNull: true,
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE',
       },

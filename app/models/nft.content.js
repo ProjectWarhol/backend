@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
           name: 'userId',
           type: DataTypes.UUID,
         },
-        allowNull: false,
+        allowNull: true,
       });
 
       this.hasMany(models.Comments, {
