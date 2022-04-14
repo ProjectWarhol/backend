@@ -10,7 +10,7 @@ const {
 const { User, Promoting } = db;
 
 exports.getPromotions = async (user, res) => {
-  const promotions = await user
+  let promotions = await user
     .getUserPromotions({
       attributes: [],
       include: [User],
@@ -23,7 +23,7 @@ exports.getPromotions = async (user, res) => {
     });
 
   try {
-    promotions.map((promotion) => sessionObject(promotion.User));
+    promotions = promotions.map((promotion) => sessionObject(promotion.User));
   } catch (err) {
     defaultErrorHandler(res, 'Something went wrong while fetching promotions');
   }
@@ -32,7 +32,7 @@ exports.getPromotions = async (user, res) => {
 };
 
 exports.getPromoters = async (user, res) => {
-  const promoters = await user
+  let promoters = await user
     .getUserPromoters({
       attributes: [],
       include: [
@@ -49,7 +49,7 @@ exports.getPromoters = async (user, res) => {
     });
 
   try {
-    promoters.map((promoter) => sessionObject(promoter.User));
+    promoters = promoters.map((promoter) => sessionObject(promoter.User));
   } catch (err) {
     defaultErrorHandler(res, 'Something went wrong while fetching promoters');
   }

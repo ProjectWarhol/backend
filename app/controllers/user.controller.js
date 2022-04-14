@@ -1,44 +1,33 @@
 const bcrypt = require('bcrypt');
-const db = require('../models');
 const { sessionObject } = require('../util/sessionObject');
 const { generateToken } = require('../util/tokenGenerator');
-const { createUser } = require('../service/user');
 const {
-  defaultWrongInputHandler,
-  noPathErrorHandler,
+  createUser,
+  retrieveByUserName,
+  retrieveById,
+  retrieveByToken,
+  updateResetToken,
+  getUserPasswordHash,
+  updateUser,
+} = require('../service/user');
+const {
   defaultErrorHandler,
   defaultExpirationHandler,
-  defaultConflictHandler,
 } = require('../middlewares/error_handlers.middleware');
 
-const {
-  User,
-  Sequelize: { Op },
-} = db;
-
 // Update a user by the id in the request
-exports.updateOne = (req, res) => {
+exports.updateOne = async (req, res) => {
   const {
     params: { id },
   } = req;
 
-  User.update(req.body, {
-    where: { id },
-    returning: true,
-  })
-    .then(([rowsUpdated, [updatedUser]]) => {
-      if (rowsUpdated) {
-        res.status(200).send({
-          message: 'User was updated successfully',
-          user: updatedUser,
-        });
-      } else {
-        noPathErrorHandler('User', res);
-      }
-    })
-    .catch(() => {
-      defaultErrorHandler(res, 'Something went wrong while updating user');
-    });
+  const data = await updateUser(req, res, id);
+  if (!data || res.headersSent) return;
+
+  res.status(200).send({
+    message: 'User was updated successfully',
+    user: sessionObject(data),
+  });
 };
 
 // set updatePassword attributes
@@ -48,21 +37,10 @@ exports.setResetToken = async (req, res, next) => {
     resetToken: await generateToken(),
   };
 
-  User.update(body, {
-    where: { email: req.body.email },
-    returning: true,
-  })
-    .then(([rowsUpdated, [updatedUser]]) => {
-      if (rowsUpdated === 1) {
-        res.locals.user = updatedUser;
-        next();
-      } else {
-        noPathErrorHandler('User', res);
-      }
-    })
-    .catch(() => {
-      defaultErrorHandler(res, 'Something went wrong while updating user');
-    });
+  const confirmation = await updateResetToken(req, res, body);
+  if (!confirmation || res.headersSent) return;
+
+  next();
 };
 
 // update User password
@@ -72,46 +50,23 @@ exports.replacePassword = async (req, res) => {
     params: { token },
   } = req;
 
-  User.findOne({
-    where: {
-      [Op.or]: [
-        {
-          resetToken: token,
-        },
-      ],
-    },
-  })
-    .then(async (data) => {
-      if (data.resetTokenExp > Date.now() || data.invitationExp > Date.now()) {
-        const newPasswordHash = await bcrypt.hash(password, 12);
+  const user = await retrieveByToken(token, res);
+  if (user.resetTokenExp < Date.now()) {
+    defaultExpirationHandler(res, 'Password token');
+  }
+  if (!user || res.headersSent) return;
 
-        // eslint-disable-next-line no-param-reassign
-        data.passwordHash = newPasswordHash;
-        // eslint-disable-next-line no-param-reassign
-        data.resetToken = null;
-        // eslint-disable-next-line no-param-reassign
-        data.resetTokenExp = null;
+  const newPasswordHash = await bcrypt.hash(password, 12);
+  user.passwordHash = newPasswordHash;
+  user.resetToken = null;
+  user.resetTokenExp = null;
+  user.save().catch(() => {
+    defaultErrorHandler(res, 'Something went wrong while updating user');
+  });
 
-        data
-          .save()
-          .then(() => {
-            res.status(200).send({
-              message: 'Password Successfully updated',
-            });
-          })
-          .catch(() => {
-            defaultErrorHandler(
-              res,
-              'Something went wrong while updating user'
-            );
-          });
-      } else {
-        defaultExpirationHandler(res, 'Password token');
-      }
-    })
-    .catch(() => {
-      defaultConflictHandler(res, 'Invalid token');
-    });
+  res.status(200).send({
+    message: 'Password Successfully updated',
+  });
 };
 
 // Patch User password
@@ -120,28 +75,17 @@ exports.updatePassword = async (req, res) => {
     body: { id, oldPassword, newPassword },
   } = req;
 
-  User.findByPk(id)
-    .then((data) => {
-      bcrypt.compare(oldPassword, data.passwordHash).then(async (doMatch) => {
-        if (doMatch === true) {
-          const newPasswordHash = await bcrypt.hash(newPassword, 12);
+  const result = await getUserPasswordHash(id, res, oldPassword);
+  const user = await retrieveById(id, res);
+  if (!user || !result || res.headersSent) return;
 
-          // eslint-disable-next-line no-param-reassign
-          data.passwordHash = newPasswordHash;
+  const newPasswordHash = await bcrypt.hash(newPassword, 12);
+  user.passwordHash = newPasswordHash;
+  user.save();
 
-          data.save().then(() => {
-            res.status(200).send({
-              message: 'Password successfully updated',
-            });
-          });
-        } else {
-          defaultConflictHandler(res, "Password doesn't match");
-        }
-      });
-    })
-    .catch(() => {
-      defaultWrongInputHandler(res, 'something went wrong while finding user');
-    });
+  res.status(200).send({
+    message: 'Password successfully updated',
+  });
 };
 
 // Get User object from the username in the request
@@ -150,71 +94,24 @@ exports.retrieveOne = async (req, res) => {
     params: { userName },
   } = req;
 
-  User.findOne({
-    where: { userName },
-  })
-    .then((data) => {
-      if (data) {
-        res.status(200).send({
-          message: 'User data sent successfully',
-          user: sessionObject(data),
-        });
-      } else {
-        noPathErrorHandler(res, 'User');
-      }
-    })
-    .catch(() => {
-      defaultErrorHandler(res, 'something went wrong while finding user');
-    });
+  const data = await retrieveByUserName(userName, res);
+  if (!data || res.headersSent) return;
+
+  res.status(200).send({
+    message: 'User data sent successfully',
+    user: sessionObject(data),
+  });
 };
 
 // Create new user
 exports.createOne = async (req, res) => {
-  const {
-    body: { userName, email, password },
-  } = req;
+  const newUser = await createUser(req, res);
+  if (!newUser || res.headersSent) return;
 
-  User.findOrCreate({
-    where: {
-      [Op.or]: [{ userName }, { email }],
-    },
-    defaults: {
-      ...{ userName },
-      ...{ email },
-      createdAt: Date.now(),
-      promoters: 0,
-      promoting: 0,
-      verified: false,
-    },
-  })
-    .then(async ([newUser, created]) => {
-      if (created) {
-        const newPasswordHash = await bcrypt.hash(password, 12);
-
-        // eslint-disable-next-line no-param-reassign
-        newUser.passwordHash = newPasswordHash;
-
-        newUser
-          .save()
-          .then(() => {
-            res.status(200).send({
-              message: 'User registered succesfully',
-              userId: newUser.id,
-            });
-          })
-          .catch(() => {
-            defaultErrorHandler(
-              res,
-              'something went wrong while creating user'
-            );
-          });
-      } else {
-        defaultConflictHandler(res, 'Email or username already in use');
-      }
-    })
-    .catch(() => {
-      defaultErrorHandler(res, 'something went wrong while creating user');
-    });
+  res.status(200).send({
+    message: 'User registered succesfully',
+    userId: newUser.id,
+  });
 };
 
 // set updatePassword attributes
