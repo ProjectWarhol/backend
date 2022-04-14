@@ -36,52 +36,6 @@ module.exports = {
         createdAt: new Date(),
       },
     ]);
-    await queryInterface.sequelize.query(
-      `CREATE OR REPLACE FUNCTION incrementPromoting() 
-      RETURNS TRIGGER 
-      LANGUAGE PLPGSQL 
-      AS 
-      $$ 
-      BEGIN 
-      UPDATE "User" 
-      SET "promoting"="promoting"+1 
-      WHERE "id"=NEW."userId"; 
-      UPDATE "User" 
-      SET "promoters"="promoters"+1 
-      WHERE "id"=NEW."promotedId"; 
-      RETURN NEW; 
-      END; 
-      $$;`
-    );
-    await queryInterface.sequelize.query(
-      `CREATE OR REPLACE FUNCTION decrementPromoting() 
-      RETURNS TRIGGER 
-      LANGUAGE PLPGSQL 
-      AS 
-      $$ 
-      BEGIN 
-      UPDATE "User" 
-      SET "promoting"="promoting"-1 
-      WHERE "id"=OLD."userId"; 
-      UPDATE "User" 
-      SET "promoters"="promoters"-1 
-      WHERE "id"=OLD."promotedId"; 
-      RETURN OLD; 
-      END; 
-      $$;`
-    );
-    await queryInterface.sequelize.query(
-      `CREATE TRIGGER createPromoting 
-      AFTER INSERT ON "Promoting" 
-      FOR EACH ROW 
-      EXECUTE PROCEDURE incrementPromoting();`
-    );
-    await queryInterface.sequelize.query(
-      `CREATE TRIGGER deletePromoting 
-      AFTER DELETE ON "Promoting" 
-      FOR EACH ROW 
-      EXECUTE PROCEDURE decrementPromoting();`
-    );
   },
 
   down: async (queryInterface) => {
