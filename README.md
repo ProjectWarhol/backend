@@ -11,12 +11,15 @@ You need to install the following things to be able to run this project on your 
 
 1. [nodeJS](https://nodejs.org/en/download/) (LTS v16.13.0)
 2. At leaset two [PostgreSQL](https://www.postgresql.org/download/) v10 (or higher) instances for development & testing (we recommend v13 or higher)
-3. truffle -> `npm install -g truffle`
-4. [Ganache – local blockchain](https://trufflesuite.com/ganache/index.html)
+3. A [Redis](https://redis.io/docs/getting-started/installation/) instance.
+4. truffle -> `npm install -g truffle`
+5. [Ganache – local blockchain](https://trufflesuite.com/ganache/index.html)
 
 ## Getting Started
 
 ### Setup database
+
+#### PostgreSQL
 
 1. (On windows if using cmd please us `windows powershell cmd`) navigate to the `bin` folder in the postgresql folder.
 2. create a new user `psql -U userName` and enter a `password` when prompted.
@@ -24,6 +27,17 @@ You need to install the following things to be able to run this project on your 
    EX. (CREATE DATABASE myDatabase)
 4. (optional) you may have to give your account database priviledges using the `GRANT ALL PRIVILEGES` command.
    EX. (GRANT ALL PRIVILEGES ON myDB . \* TO 'user'@'localhost';)
+
+#### Redis
+
+1. Follow installation guide on [here](https://redis.io/docs/getting-started/installation/).
+2. Start the instance
+   1. MacOS - Run `brew services start redis`.
+   2. Windows - Run `sudo service redis-server start`.
+3. Test Redis instance
+   1. Run `redis-cli`
+   2. Run `PING`
+   3. If everything is working correctly, you should see `PONG` in the output.
 
 ### Install and setup the repository
 
