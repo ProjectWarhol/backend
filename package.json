@@ -59,7 +59,6 @@
     "pg-hstore": "^2.3.4",
     "sanitize": "^2.1.0",
     "sequelize": "^6.6.5",
-    "superagent": "^7.1.2",
     "web3": "^1.7.1"
   },
   "devDependencies": {
