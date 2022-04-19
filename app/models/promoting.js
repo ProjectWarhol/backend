@@ -21,14 +21,17 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
+
   Promoting.init(
     {
       id: {
         type: DataTypes.UUID,
         primaryKey: true,
-        defaultValue: Sequelize.UUIDV4,
+        validate: {
+          isUUID: 4,
+        },
+        defaultValue: Sequelize.literal('uuid_generate_v4()'),
       },
-      createdAt: DataTypes.DATE,
     },
     {
       hooks: {

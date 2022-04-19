@@ -7,16 +7,20 @@ module.exports = {
     );
     await queryInterface.createTable('NftVote', {
       id: {
-        primaryKey: true,
-        allowNull: false,
         type: DataTypes.UUID,
         defaultValue: Sequelize.literal('uuid_generate_v4()'),
+        primaryKey: true,
+        allowNull: false,
       },
       type: {
-        allowNull: false,
         type: Sequelize.BOOLEAN,
+        allowNull: false,
       },
-      createdAt: Sequelize.DATE,
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn('now'),
+      },
       userId: {
         type: DataTypes.UUID,
         references: {
@@ -41,6 +45,10 @@ module.exports = {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       },
+    });
+    await queryInterface.addConstraint('NftVote', {
+      fields: ['userId', 'contentId'],
+      type: 'unique',
     });
   },
 
