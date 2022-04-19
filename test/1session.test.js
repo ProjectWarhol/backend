@@ -66,21 +66,19 @@ describe('POST /users/login', () => {
       });
   });
 
-  it('Should reject when wrong password is entered', (done) => {
+  it('Should reject when wrong password is entered', () => {
     chai
       .request(app)
       .post('/users/login')
       .type('json')
       .send({
         userCredential: process.env.TEST_EMAIL,
-        password: '',
+        password: 'whoops',
       })
       .end((err, res) => {
         // eslint-disable-next-line no-unused-expressions
         expect(err).to.be.null;
-        expect(res).to.have.status(401); // 401 because we do not want to give away information whether the email exists
-
-        done();
+        expect(res).to.have.status(409);
       });
   });
 
@@ -96,7 +94,7 @@ describe('POST /users/login', () => {
       .end((err, res) => {
         // eslint-disable-next-line no-unused-expressions
         expect(err).to.be.null;
-        expect(res).to.have.status(401); // 401 because we do not want to give away information whether the email exists
+        expect(res).to.have.status(500); // 401 because we do not want to give away information whether the email exists
 
         done();
       });
@@ -114,7 +112,7 @@ describe('POST /users/login', () => {
       .end((err, res) => {
         // eslint-disable-next-line no-unused-expressions
         expect(err).to.be.null;
-        expect(res).to.have.status(401); // 422 because input is not an email
+        expect(res).to.have.status(500); // 422 because input is not an email
 
         done();
       });

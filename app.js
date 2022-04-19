@@ -14,13 +14,13 @@ const db = require('./app/models');
 
 require('dotenv').config();
 
-setup()
+setup();
 
 const app = express();
 
 app.use(express.json());
 
-app.use(express.urlencoded({ extended: false }));
+// app.use(express.urlencoded({ extended: false }));
 
 if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('combined'));
