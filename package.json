@@ -59,6 +59,7 @@
     "pg-hstore": "^2.3.4",
     "sanitize": "^2.1.0",
     "sequelize": "^6.6.5",
+    "superagent": "^7.1.2",
     "web3": "^1.7.1"
   },
   "devDependencies": {
@@ -84,7 +85,7 @@
     "sequelize-cli": "^6.2.0",
     "sinon": "^11.1.2",
     "solhint": "^3.3.7",
-    "supertest": "^6.1.6"
+    "supertest": "^6.2.2"
   },
   "repository": {
     "type": "git",
