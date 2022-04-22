@@ -110,7 +110,11 @@ You need to install the following things to be able to run this project on your 
 - Backend:
    - ExpressJS
 - Postgres DB:
+   - All application related data is stored on it
 - Redis:
+   - Way faster than Postgres
+   - Used for keeping a counter of each user's requests every minute
+   - A middleware drops the requests if the user surpasses its rate
 - Blockchain:
    - Chain: Ethereum
    - Smart Contracts: Solidity
