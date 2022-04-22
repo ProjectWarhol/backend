@@ -107,6 +107,7 @@ You need to install the following things to be able to run this project on your 
 ![Project Architecture](https://user-images.githubusercontent.com/28442090/164616055-627c3748-2296-4ff4-84cc-1aa7c0fb95c1.png)
 
 - Frontend:
+   - react-native
 - Backend:
    - ExpressJS
 - Postgres DB:
@@ -122,7 +123,7 @@ You need to install the following things to be able to run this project on your 
    - Local Blockchain Env: Truffle & Ganache
 - IPFS:
    - Distributed File System
-   - Images of NFTS and their metadata is stored their
+   - Images of NFTS and their metadata is stored there
 
 ### Documentation
 
