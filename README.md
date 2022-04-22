@@ -113,7 +113,6 @@ You need to install the following things to be able to run this project on your 
    - ORM: Sequelize.js
    - Stores data needed by frontend for UI (Promotions, Comments, Votes...)
    - Stores sensitive user info (password hashes, wallets...)
-   - TODO: Configure Sequelize to use transactions
 - Redis:
    - Used for keeping a counter of each user's requests every minute
    - A middleware drops the requests if the user surpasses their rate
