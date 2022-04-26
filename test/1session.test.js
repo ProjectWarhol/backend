@@ -47,6 +47,7 @@ describe('POST /users/login', () => {
         expect(res.body).to.have.property('user');
         expect(res.body).to.have.nested.property('user.id');
 
+        agent.id = res.body.user.id;
         this.successfullResponse = res.body;
         done();
       });
