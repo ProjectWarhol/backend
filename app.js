@@ -3,6 +3,9 @@ const fileupload = require('express-fileupload');
 const morgan = require('morgan');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const RedisStore = require('rate-limit-redis');
+const rateLimit = require('express-rate-limit');
+const RedisClient = require('ioredis');
 const mainRoute = require('./app/routes/main');
 const {
   noPathErrorHandler,
@@ -53,6 +56,22 @@ app.use(
     },
   })
 );
+
+const client = new RedisClient({
+  host: process.env.REDIS_HOST || 'localhost',
+  port: process.env.REDIS_PORT || 6379,
+});
+
+const reqLimiter = rateLimit({
+  windowMs: (process.env.REQ_WINDOW_MINUTES || 1) * 60 * 1000,
+  max: process.env.MAX_REQ || 50,
+  legacyHeaders: false,
+  store: new RedisStore({
+    sendCommand: (...args) => client.call(...args),
+  }),
+});
+
+app.use(reqLimiter);
 
 app.use(
   fileupload({
