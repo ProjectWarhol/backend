@@ -5,14 +5,43 @@ module.exports = {
     await queryInterface.sequelize.query(
       'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
     );
-    await queryInterface.createTable('PictureComments', {
+    await queryInterface.createTable('Comments', {
       id: {
-        primaryKey: true,
-        allowNull: false,
         type: DataTypes.UUID,
         defaultValue: Sequelize.literal('uuid_generate_v4()'),
+        primaryKey: true,
+        allowNull: false,
       },
-      pictureId: {
+      comment: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('now'),
+        allowNull: false,
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('now'),
+        allowNull: false,
+      },
+      userId: {
+        type: DataTypes.UUID,
+        references: {
+          model: {
+            tableName: 'User',
+          },
+          key: 'id',
+        },
+        allowNull: false,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+        validate: {
+          isUUID: 4,
+        },
+      },
+      contentId: {
         type: DataTypes.UUID,
         references: {
           model: {
@@ -23,23 +52,14 @@ module.exports = {
         allowNull: false,
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
-      },
-      commentId: {
-        type: DataTypes.UUID,
-        references: {
-          model: {
-            tableName: 'Comments',
-          },
-          key: 'id',
+        validate: {
+          isUUID: 4,
         },
-        allowNull: false,
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
       },
     });
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable('PictureComments');
+    await queryInterface.dropTable('Comments');
   },
 };

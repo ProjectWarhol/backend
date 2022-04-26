@@ -11,7 +11,10 @@ exports.setup = () => {
       .readFileSync('app/blockchain/build/contracts/PostNftMinting.json')
       .toString()
   );
-  if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+  if (
+    process.env.NODE_ENV === 'development' ||
+    process.env.NODE_ENV === 'test'
+  ) {
     provider = new ethers.providers.JsonRpcProvider('http://localhost:7545');
     contract = new ethers.Contract(
       process.env.CONTRACT_LOCAL_ADDRESS,

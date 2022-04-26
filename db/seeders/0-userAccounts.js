@@ -9,22 +9,15 @@ module.exports = {
       await createCustodialWallet().wallet.address,
       await createCustodialWallet().wallet.address,
     ];
-
     await queryInterface.bulkInsert('UserAccount', [
       {
         publicKey: publicKeys[0],
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
       {
         publicKey: publicKeys[1],
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
       {
         publicKey: publicKeys[2],
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
     ]);
   },

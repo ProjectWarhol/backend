@@ -9,12 +9,15 @@ module.exports = (sequelize, DataTypes) => {
           name: 'userId',
           type: DataTypes.UUID,
         },
-        allowNull: false,
+        allowNull: true,
       });
 
-      this.belongsToMany(models.Comments, {
-        through: models.PictureComments,
-        foreignKey: 'pictureId',
+      this.hasMany(models.Comments, {
+        foreignKey: {
+          name: 'contentId',
+          type: DataTypes.UUID,
+        },
+        allowNull: false,
       });
     }
   }
@@ -24,19 +27,52 @@ module.exports = (sequelize, DataTypes) => {
       id: {
         type: DataTypes.UUID,
         primaryKey: true,
-        allowNull: false,
-        defaultValue: Sequelize.UUIDV4,
+        validate: {
+          isUUID: 4,
+        },
+        defaultValue: Sequelize.literal('uuid_generate_v4()'),
       },
       title: DataTypes.STRING,
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
-      contentPath: DataTypes.STRING,
-      contentSize: DataTypes.FLOAT,
-      price: DataTypes.FLOAT,
-      flags: DataTypes.INTEGER,
-      upvotes: DataTypes.INTEGER,
-      downvotes: DataTypes.INTEGER,
-      hasSold: DataTypes.BOOLEAN,
+      contentPath: {
+        type: DataTypes.STRING,
+        validate: {
+          isUrl: true,
+        },
+        defaultValue: 'https://pbs.twimg.com/media/FB6YhR8WQAI5MnM.png', // remove this later
+      },
+      contentSize: {
+        type: DataTypes.FLOAT,
+        defaultValue: 10,
+      },
+      price: {
+        type: DataTypes.FLOAT,
+        defaultValue: 1,
+      },
+      flags: {
+        type: DataTypes.INTEGER,
+        validate: {
+          min: 0,
+        },
+        defaultValue: 0,
+      },
+      upvotes: {
+        type: DataTypes.INTEGER,
+        validate: {
+          min: 0,
+        },
+        defaultValue: 0,
+      },
+      downvotes: {
+        type: DataTypes.INTEGER,
+        validate: {
+          min: 0,
+        },
+        defaultValue: 0,
+      },
+      hasSold: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {
       sequelize,
