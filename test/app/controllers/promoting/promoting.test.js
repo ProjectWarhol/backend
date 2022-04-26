@@ -4,12 +4,14 @@ const { expect } = require('chai');
 const chaiHttp = require('chai-http');
 const app = require('../../../../app');
 const { sequelize } = require('../../../../app/models');
-const { getCookie } = require('../../../1session.test')
+const { getAgent } = require('../../../1session.test')
 
 chai.use(chaiHttp);
 require('dotenv').config();
 
 let userId;
+
+const agent = getAgent();
 
 describe('GET /promoting', () => {
 
@@ -19,10 +21,8 @@ describe('GET /promoting', () => {
   });
 
   it('should return a list of promoted users', (done) => {
-    chai
-      .request(app)
+    agent
       .get(`/promoting/${userId}`)
-      .set('Cookie', getCookie())
       .send()
       .end((err, res) => {
         // eslint-disable-next-line no-unused-expressions
@@ -48,10 +48,8 @@ describe('GET /promoting', () => {
   });
 
   it('should send 404 when user is not found', (done) => {
-    chai
-      .request(app)
+    agent
       .get(`/promoting/randomStr1ng!`)
-      .set('Cookie', getCookie())
       .send()
       .end((err, res) => {
         // eslint-disable-next-line no-unused-expressions
@@ -67,10 +65,8 @@ describe('GET /promoting', () => {
 describe('GET /promoted', () => {
 
   it('should return a list of users promoting', (done) => {
-    chai
-      .request(app)
+    agent
       .get(`/promoted/${userId}`)
-      .set('Cookie', getCookie())
       .send()
       .end((err, res) => {
         // eslint-disable-next-line no-unused-expressions
@@ -96,10 +92,8 @@ describe('GET /promoted', () => {
   });
 
   it('should send 404 when user is not found', (done) => {
-    chai
-      .request(app)
+    agent
       .get(`/promoted/randomStr1ng!`)
-      .set('Cookie', getCookie())
       .send()
       .end((err, res) => {
         // eslint-disable-next-line no-unused-expressions

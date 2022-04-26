@@ -28,14 +28,12 @@ const authSchema = {
   },
 };
 
-let loginCookie;
-
-module.exports.getCookie = () => loginCookie;
+const agent = chai.request.agent(app)
+module.exports.getAgent = () => agent;
 
 describe('POST /users/login', () => {
   it('Should login, response with cookie and user data', (done) => {
-    chai
-      .request(app)
+    agent
       .post('/users/login')
       .send({
         userCredential: process.env.TEST_EMAIL,
@@ -49,17 +47,13 @@ describe('POST /users/login', () => {
         expect(res.body).to.have.property('user');
         expect(res.body).to.have.nested.property('user.id');
 
-        // eslint-disable-next-line prefer-destructuring
-        loginCookie = res.header['set-cookie'][0];
         this.successfullResponse = res.body;
-
         done();
       });
   });
 
   it('Successful login response should match schema', () => {
-    chai
-      .request(app)
+    agent
       .post('/users/login')
       .send({
         userCredential: process.env.TEST_EMAIL,
@@ -73,8 +67,7 @@ describe('POST /users/login', () => {
   });
 
   it('Should reject when wrong password is entered', () => {
-    chai
-      .request(app)
+    agent
       .post('/users/login')
       .type('json')
       .send({
@@ -89,8 +82,7 @@ describe('POST /users/login', () => {
   });
 
   it('Should reject with 401 when wrong email is entered', (done) => {
-    chai
-      .request(app)
+    agent
       .post('/users/login')
       .type('json')
       .send({
@@ -107,8 +99,7 @@ describe('POST /users/login', () => {
   });
 
   it('Should reject with 401 when no email is entered', (done) => {
-    chai
-      .request(app)
+    agent
       .post('/users/login')
       .type('json')
       .send({
