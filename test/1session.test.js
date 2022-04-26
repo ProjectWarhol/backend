@@ -28,6 +28,10 @@ const authSchema = {
   },
 };
 
+let loginCookie;
+
+module.exports.getCookie = () => loginCookie;
+
 describe('POST /users/login', () => {
   it('Should login, response with cookie and user data', (done) => {
     chai
@@ -45,6 +49,8 @@ describe('POST /users/login', () => {
         expect(res.body).to.have.property('user');
         expect(res.body).to.have.nested.property('user.id');
 
+        // eslint-disable-next-line prefer-destructuring
+        loginCookie = res.header['set-cookie'][0];
         this.successfullResponse = res.body;
 
         done();
