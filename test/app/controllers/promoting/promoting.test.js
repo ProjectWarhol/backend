@@ -4,7 +4,7 @@ const { expect } = require('chai');
 const chaiHttp = require('chai-http');
 const app = require('../../../../app');
 const { sequelize } = require('../../../../app/models');
-const { getAgent } = require('../../../1session.test')
+const { getAgent } = require('../../../1session.test');
 
 chai.use(chaiHttp);
 require('dotenv').config();
@@ -55,6 +55,7 @@ describe('GET /promoting', () => {
   });
 });
 
+
 describe('GET /promoted', () => {
 
   it('should return a list of users promoting', (done) => {
@@ -98,6 +99,7 @@ describe('GET /promoted', () => {
       })
   });
 });
+
 
 describe('POST /promoting', () => {
   let promotedId;
@@ -166,6 +168,7 @@ describe('POST /promoting', () => {
       })
   });
 });
+
 
 describe('DELETE /promoting', () => {
   let promotedId;
