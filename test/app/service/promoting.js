@@ -56,11 +56,17 @@ const badMockUser = {
 }
 
 describe('SERVICE-getPromotions', () => {
+  
   it('should map promotions correctly', async () => {
     const res = mockResponse();
     const promotions = await getPromotions(goodMockUser, res);
+
     assert.propertyVal(promotions[0], 'userName', 'massi');
     assert.notProperty(promotions[0], 'passwordHash');
+    // eslint-disable-next-line no-unused-expressions
+    expect(res.status).to.have.not.been.called;
+    // eslint-disable-next-line no-unused-expressions
+    expect(res.send).to.have.not.been.called;
   });
   
   it('should handle errors gracefully', async () => {
