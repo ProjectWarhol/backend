@@ -84,6 +84,7 @@ describe('unit - getPromotions', () => {
 });
 
 describe('unit - getPromoters', () => {
+  
   it('should map promoters correctly', async () => {
     const res = mockResponse();
     const promoters = await getPromoters(goodMockUser, res);
