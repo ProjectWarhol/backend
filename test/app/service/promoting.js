@@ -48,12 +48,12 @@ const goodMockUser = {
       resetTokenExp: 'timestamp',
     }
   }],
-}
+};
 
 const badMockUser = {
   getUserPromotions: async () => new Error(),
   getUserPromoters: async () => new Error(),
-}
+};
 
 describe('unit - getPromotions', () => {
 
@@ -84,7 +84,7 @@ describe('unit - getPromotions', () => {
 });
 
 describe('unit - getPromoters', () => {
-  
+
   it('should map promoters correctly', async () => {
     const res = mockResponse();
     const promoters = await getPromoters(goodMockUser, res);
