@@ -83,6 +83,10 @@ module.exports = {
       fields: ['email'],
       type: 'unique',
     });
+    await queryInterface.addConstraint('User', {
+      fields: ['userName'],
+      type: 'unique',
+    });
   },
 
   down: async (queryInterface) => {
