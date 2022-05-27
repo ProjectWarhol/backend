@@ -50,6 +50,7 @@ You need to install the following things to be able to run this project on your 
 
 3. Duplicate `.env.example` file and rename it to `.env`
 4. Add enviroment variables to `.env`
+
    1. Enter a random `string` variable for the `FOO_COOKIE_SECRET` in order to have session cookie generated
    2. `DB_DEVELOPMENT_HOST`=localhost
    3. `DB_DEVELOPMENT_DATABASE` => the name of the database created for this project
@@ -59,6 +60,7 @@ You need to install the following things to be able to run this project on your 
       `DB_DEVELOPMENT_PASSWORD` => your database user password (note if the password containes numbers, you may have to use single quotes EX. 'password123')
 
       `DB_DEVELOPMENT_PORT` => usualy is '5432'
+
 5. Setup testing and development database
 
    1. Run the following to drop & create a new database and automatically migrate and seed:

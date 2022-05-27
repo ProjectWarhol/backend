@@ -54,10 +54,8 @@ exports.logout = (req, res) => {
 // validate existing session from client
 exports.validateSession = (req, res) => {
   const currentUser = req.session.user;
-  const currentCookieDate = req.session.cookie._expires;
-  const dateTime = new Date();
 
-  if (currentUser && currentCookieDate >= dateTime.now()) {
+  if (currentUser) {
     return res.status(200).send({
       message: 'Valid session',
       user: currentUser,
