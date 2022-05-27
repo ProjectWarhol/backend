@@ -1,14 +1,17 @@
 const nodemailer = require('nodemailer');
-const { resetTemplate, welcomeTemplate } = require('../../lib/templates');
+const { resetTemplate } = require('../../lib/templates');
 
 require('dotenv').config();
 
 const transportObject = {
-  service: 'hotmail',
+  service: 'hotmail', // using gmail requires added security authentication check nodemailer docs
   secure: false, // do not use process.env for this otherwise it won't work
   auth: {
     user: process.env.EMAIL_USER_ACCOUNT,
     pass: process.env.EMAIL_PASSWORD,
+  },
+  tls: {
+    rejectUnauthorized: false,
   },
 };
 
@@ -26,43 +29,22 @@ const sendMail = async (email, subject, template) => {
   return response;
 };
 
-exports.welcomeUser = (req, res, next) => {
-  const { user } = res.locals;
-  sendMail(
-    user.email,
-    'Hello there fellow Jedi',
-    welcomeTemplate(user.invitationToken)
-  )
-    .then(() => {
-      res.status(200).send({
-        message: 'User successfully invited',
-        user,
-      });
-    })
-    .catch((err) => {
-      const error = new Error('Something went wrong while inviting user');
-      error.err = err;
-      next(error);
-    });
-};
-
-exports.sendResetPasswordInstructions = (req, res, next) => {
-  const { user } = res.locals;
-  sendMail(
-    user.email,
+exports.sendResetPasswordInstructions = async (req, res, next) => {
+  const { email } = req.body;
+  const { resetToken } = req.body.resetToken[0].dataValues;
+  await sendMail(
+    email,
     'Reseting Password Instructions',
-    resetTemplate(user.resetToken)
-  )
-    .then(() => {
-      res.status(200).send({
-        message: 'reset instructions successfully send',
-      });
-    })
-    .catch((err) => {
-      const error = new Error(
-        'Something went wrong while sending reset instructions'
-      );
-      error.err = err;
-      next(error);
-    });
+    resetTemplate(resetToken)
+  ).catch((err) => {
+    const error = new Error(
+      'Something went wrong while sending reset instructions'
+    );
+    error.err = err;
+    next(error);
+  });
+
+  res.status(200).send({
+    message: 'reset instructions successfully send',
+  });
 };
