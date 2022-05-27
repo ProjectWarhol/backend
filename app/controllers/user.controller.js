@@ -103,17 +103,6 @@ exports.retrieveOne = async (req, res) => {
   });
 };
 
-// Create new user
-exports.createOne = async (req, res) => {
-  const newUser = await createUser(req, res);
-  if (!newUser || res.headersSent) return;
-
-  res.status(200).send({
-    message: 'User registered succesfully',
-    userId: newUser.id,
-  });
-};
-
 // set updatePassword attributes
 exports.expressSignup = async (req, res, next) => {
   const user = await createUser(req, res);
