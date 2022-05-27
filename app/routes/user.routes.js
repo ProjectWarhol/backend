@@ -26,9 +26,6 @@ router.get('/session', session.validateSession);
 // Get User object
 router.get('/:userName', isLoggedIn, user.retrieveOne);
 
-// Create User
-router.post('/createUser', user.createOne);
-
 // patch User Password
 router.patch('/updatePassword', isLoggedIn, user.updatePassword);
 

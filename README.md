@@ -52,15 +52,13 @@ You need to install the following things to be able to run this project on your 
 4. Add enviroment variables to `.env`
    1. Enter a random `string` variable for the `FOO_COOKIE_SECRET` in order to have session cookie generated
    2. `DB_DEVELOPMENT_HOST`=localhost
-   3. 
-      `DB_DEVELOPMENT_DATABASE` => the name of the database created for this project
-      
+   3. `DB_DEVELOPMENT_DATABASE` => the name of the database created for this project
+
       `DB_DEVELOPMENT_USERNAME` => the username that has access to the development database
-      
+
       `DB_DEVELOPMENT_PASSWORD` => your database user password (note if the password containes numbers, you may have to use single quotes EX. 'password123')
-      
+
       `DB_DEVELOPMENT_PORT` => usualy is '5432'
-      
 5. Setup testing and development database
 
    1. Run the following to drop & create a new database and automatically migrate and seed:
@@ -122,23 +120,23 @@ You need to install the following things to be able to run this project on your 
 ![Project Architecture](https://user-images.githubusercontent.com/28442090/164616055-627c3748-2296-4ff4-84cc-1aa7c0fb95c1.png)
 
 - Frontend:
-   - react-native
+  - react-native
 - Backend:
-   - ExpressJS
+  - ExpressJS
 - Postgres DB:
-   - ORM: Sequelize.js
-   - Stores data needed by frontend for UI (Promotions, Comments, Votes...)
-   - Stores sensitive user info (password hashes, wallets...)
+  - ORM: Sequelize.js
+  - Stores data needed by frontend for UI (Promotions, Comments, Votes...)
+  - Stores sensitive user info (password hashes, wallets...)
 - Redis:
-   - Used for keeping a counter of each user's requests every minute
-   - A middleware drops the requests if the user surpasses their rate
+  - Used for keeping a counter of each user's requests every minute
+  - A middleware drops the requests if the user surpasses their rate
 - Blockchain:
-   - Chain: Ethereum
-   - Smart Contracts: Solidity
-   - Local Blockchain Env: Truffle & Ganache
+  - Chain: Ethereum
+  - Smart Contracts: Solidity
+  - Local Blockchain Env: Truffle & Ganache
 - IPFS:
-   - Distributed File System
-   - Images of NFTS and their metadata is stored there
+  - Distributed File System
+  - Images of NFTS and their metadata is stored there
 
 ### Documentation
 
