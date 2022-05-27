@@ -9,6 +9,7 @@ exports.userHasNotWallet = async (req, res, next) => {
     error.status = 403;
     return next(error);
   }
+
   return next();
 };
 

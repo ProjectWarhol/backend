@@ -28,7 +28,7 @@ exports.createWallet = async (req, res, next) => {
 
   const storedWallet = await addWalletToDatabase(walletPublicKey, res, next);
   const userObject = await updateUserWalletId(storedWallet, id, res, next);
-
+  console.log('WALLET');
   req.body.walletInformation = walletInformation;
   req.body.mnemonicPhrase = mnemonicPhrase;
   req.body.walletId = userObject.walletId;
