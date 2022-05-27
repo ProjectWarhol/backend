@@ -141,7 +141,7 @@ exports.updateResetToken = async (req, res, body) => {
     noPathErrorHandler('User', res);
   }
 
-  res.locals.user = data[1];
+  req.body.resetToken = data[1];
   return data[1];
 };
 
