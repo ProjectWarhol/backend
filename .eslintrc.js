@@ -21,6 +21,7 @@ module.exports = {
     ],
     'prefer-arrow-callback': ['error', { allowNamedFunctions: false }],
     'func-style': ['error', 'expression', { allowArrowFunctions: true }],
+    'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
   },
   globals: {
     web3: 'readonly',
@@ -30,5 +31,6 @@ module.exports = {
     beforeEach: 'readonly',
     it: 'readonly',
     assert: 'readonly',
+    StatusError: 'readonly',
   },
 };
