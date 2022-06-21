@@ -1,3 +1,10 @@
+global.StatusError = class extends Error {
+  constructor(message, status) {
+    super(message);
+    this.status = status;
+  }
+}
+
 // for not found paths
 exports.defaultExpirationHandler = (res, message) => {
   res.status(401).send({
