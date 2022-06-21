@@ -46,65 +46,45 @@ const saveNftToStorage = async (req, filePath) => {
 
 // Upload NFT to NftStorage
 // eslint-disable-next-line consistent-return
-exports.uploadNft = (req, res, next) => {
+exports.uploadNft = (req, _res, next) => {
   if (!req.files) {
-    return res.status(400).send({
-      message: 'No file in body',
-    });
+    return next(new StatusError('No file in body', 400));
   }
 
   if (!req.body.name) {
-    return res.status(400).send({
-      message: 'No name in body',
-    });
+    return next(new StatusError('No name in body', 400));
   }
 
   if (!req.body.description) {
-    return res.status(400).send({
-      message: 'No description in body',
-    });
+    return next(new StatusError('No description in body', 400));
   }
 
   if (!req.body.creatorUsername) {
-    return res.status(400).send({
-      message: 'No creatorUsername in body',
-    });
+    return next(new StatusError('No creatorUsername in body', 400));
   }
 
   if (!req.body.creatorAddress) {
-    return res.status(400).send({
-      message: 'No creatorAddress in body',
-    });
+    return next(new StatusError('No creatorAddress in body', 400));
   }
 
   if (!req.body.ownerAddress) {
-    return res.status(400).send({
-      message: 'No ownerAddress in body',
-    });
+    return next(new StatusError('No ownerAddress in body', 400));
   }
 
   if (!req.body.date) {
-    return res.status(400).send({
-      message: 'No date in body',
-    });
+    return next(new StatusError('No date in body', 400));
   }
 
   if (!req.body.location) {
-    return res.status(400).send({
-      message: 'No location in body',
-    });
+    return next(new StatusError('No location in body', 400));
   }
 
   if (!req.body.positionInTree) {
-    return res.status(400).send({
-      message: 'No positionInTree in body',
-    });
+    return next(new StatusError('No positionInTree in body', 400));
   }
 
   if (!req.body.amountSold) {
-    return res.status(400).send({
-      message: 'No amountSold in body',
-    });
+    return next(new StatusError('No amountSold in body', 400));
   }
 
   const file = req.files.image;
@@ -112,15 +92,21 @@ exports.uploadNft = (req, res, next) => {
 
   file.mv(filePath, async (err) => {
     if (err) {
-      return res.status(500).send(err);
+      // return res.status(500).send(err); !!! POSSIBLE VERBOSE ERROR !!!
+      return next(
+        new StatusError('Something went wrong while uploading NFT', 500)
+      );
     }
 
     const metaData = await saveNftToStorage(req, filePath);
 
     if (!metaData.success) {
-      return res.status(500).send({
-        message: metaData.error,
-      });
+      // return res.status(500).send({
+      //   message: metaData.error,      !!! POSSIBLE VERBOSE ERROR !!!
+      // });
+      return next(
+        new StatusError('Something went wrong while saving NFT', 500)
+      );
     }
 
     req.body.filePath = filePath;
