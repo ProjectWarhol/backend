@@ -20,6 +20,17 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       });
     }
+
+    static findById = (id) => {
+      return Comments.findByPk(id, { rejectOnEmpty: true }).catch(() => {
+        throw new StatusError('Comment', 404);
+      });
+    };
+
+    updateComment = (comment) => {
+      this.comment = comment;
+      return this.save();
+    };
   }
 
   Comments.init(

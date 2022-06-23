@@ -1,6 +1,8 @@
 const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 
+const { commentObject } = require('../util/commentObject');
+
 module.exports = (sequelize, DataTypes) => {
   class NftContent extends Model {
     static associate(models) {
@@ -19,6 +21,36 @@ module.exports = (sequelize, DataTypes) => {
         },
         allowNull: false,
       });
+    }
+
+    static findById = (id) => {
+      return NftContent.findByPk(id, { rejectOnEmpty: true })
+      .catch(() => {
+        throw new StatusError('Nft', 404);
+      });
+    };
+
+    getNftComments = (offset, limit) => {
+      return this.getComments({
+        ...{ offset },
+        ...{ limit },
+        include: [sequelize.models.User],
+      })
+      .then((comments) => comments.map((comment) => commentObject(comment)))
+      .catch(() => {
+        throw new StatusError('Something went wrong while fetching comments', 500);
+      })
+    }
+
+    createNftComment = (userId, comment) => {
+      return this.createComment({
+        ...{ userId },
+        ...{ comment },
+        include: [sequelize.models.User],
+      })
+      .catch(() => {
+        throw new StatusError('Something went wrong while creating comment', 500);
+      })
     }
   }
 
