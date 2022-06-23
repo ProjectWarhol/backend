@@ -9,8 +9,15 @@ exports.noPathHandler = (_req, _res, next) =>
   next(new StatusError('Path', 404));
 
 exports.errorHandler = (err, _req, res, _next) => {
-  let { message } = err;
-  const { status } = err;
+  let message, status;
+
+  if (err instanceof StatusError) {
+    message = err.message;
+    status = err.status;
+  } else {
+    message = 'Something went wrong';
+    status = 500;
+  }
 
   switch (status) {
     case 400:
