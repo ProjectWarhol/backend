@@ -20,7 +20,7 @@ router.use('/promoting', promotingRoutes);
 router.use('/promoted', promotedRoutes);
 router.use('/wallet', walletRoutes);
 router.use('/comments', commentsRoutes);
+router.use('/vote', nftVoteRoutes);
 router.use('/nft', nftRoutes);
-router.use('/votes', nftVoteRoutes);
 
 module.exports = router;

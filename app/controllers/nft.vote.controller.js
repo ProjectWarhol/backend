@@ -12,7 +12,7 @@ exports.retrieveNftVotes = async (req, res, next) => {
     .then((votes) => {
       return res.status(200).send({
         message: 'Votes sent successfully',
-        votes: {
+        data: {
           ...votes[0],
           ...votes[1],
         },
@@ -23,8 +23,8 @@ exports.retrieveNftVotes = async (req, res, next) => {
 
 exports.createNftVote = async (req, res, next) => {
   const {
-    body: { type, userId },
     params: { id },
+    body: { type, userId },
   } = req;
 
   NftContent.findById(id)
@@ -43,12 +43,14 @@ exports.deleteNftVote = async (req, res, next) => {
     body: { userId },
   } = req;
 
-  const destroyed = await deleteVote(id, userId, res);
-  if (!destroyed || res.headersSent) return;
-
-  res.status(200).send({
-    message: 'Vote successfully deleted',
-  });
+  NftVote.findByContentAndUserId(id, userId)
+    .then((vote) => vote.destroy())
+    .then(() => {
+      return res.status(200).send({
+        message: 'Vote deleted successfully',
+      });
+    })
+    .catch((err) => next(err));
 };
 
 exports.updateNftVote = async (req, res, next) => {
@@ -57,10 +59,12 @@ exports.updateNftVote = async (req, res, next) => {
     body: { userId },
   } = req;
 
-  const updated = await updateVote(id, userId, res);
-  if (!updated || res.headersSent) return;
-
-  res.status(200).send({
-    message: 'Vote successfully updated',
-  });
+  NftVote.findByContentAndUserId(id, userId)
+    .then((vote) => vote.switchType())
+    .then(() => {
+      return res.status(200).send({
+        message: 'Vote updated successfully',
+      });
+    })
+    .catch((err) => next(err));
 };
