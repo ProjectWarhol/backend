@@ -25,11 +25,11 @@ exports.errorHandler = (err, _req, res, _next) => {
       break;
 
     case 401:
-      message = `Expired: ${message}`;
+      message = `Unauthorized: ${message}`;
       break;
 
     case 403:
-      message = `Unauthorized: ${message}`;
+      message = `Forbidden: ${message}`;
       break;
 
     case 404:
