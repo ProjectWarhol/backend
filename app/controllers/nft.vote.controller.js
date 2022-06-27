@@ -1,6 +1,6 @@
 const db = require('../models');
 
-const { NftContent } = db;
+const { NftContent, NftVote } = db;
 
 exports.retrieveNftVotes = async (req, res, next) => {
   const {
