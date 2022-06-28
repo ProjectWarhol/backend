@@ -2,7 +2,7 @@ const { removeTemporaryFile } = require('../util/removeTemporaryFile');
 const { getContract, getSignedContract } = require('../util/bcProvider');
 
 // Mint NFT
-exports.mintNft = async (req, res) => {
+exports.mintNft = async (req, res, next) => {
   try {
     await getSignedContract().safeMint(
       req.body.ownerAddress,
@@ -11,8 +11,8 @@ exports.mintNft = async (req, res) => {
     res.status(200).send({
       message: 'Successfully minted NFT',
     });
-  } catch (e) {
-    res.status(400).send(e.body);
+  } catch {
+    next(new StatusError('Something went wrong while minting NFT', 400));
   }
   removeTemporaryFile(req.body.filePath);
 };
@@ -26,9 +26,7 @@ exports.getTokenIds = async (req, res) => {
     res.status(200).send({
       tokenIds: intTokens,
     });
-  } catch (e) {
-    res.status(400).send({
-      error: e,
-    });
+  } catch {
+    next(new StatusError('Something went wrong while getting token ids', 400));
   }
 };

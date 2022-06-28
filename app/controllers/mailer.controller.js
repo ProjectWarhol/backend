@@ -36,15 +36,16 @@ exports.sendResetPasswordInstructions = async (req, res, next) => {
     email,
     'Reseting Password Instructions',
     resetTemplate(resetToken)
-  ).catch((err) => {
-    const error = new Error(
-      'Something went wrong while sending reset instructions'
+  ).catch(() => {
+    next(
+      new StatusError(
+        'Something went wrong while sending reset instructions',
+        500
+      )
     );
-    error.err = err;
-    next(error);
   });
 
   res.status(200).send({
-    message: 'reset instructions successfully send',
+    message: 'Reset instructions successfully sent',
   });
 };

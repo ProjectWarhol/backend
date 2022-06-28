@@ -92,7 +92,6 @@ exports.uploadNft = (req, _res, next) => {
 
   file.mv(filePath, async (err) => {
     if (err) {
-      // return res.status(500).send(err); !!! POSSIBLE VERBOSE ERROR !!!
       return next(
         new StatusError('Something went wrong while uploading NFT', 500)
       );
@@ -101,9 +100,6 @@ exports.uploadNft = (req, _res, next) => {
     const metaData = await saveNftToStorage(req, filePath);
 
     if (!metaData.success) {
-      // return res.status(500).send({
-      //   message: metaData.error,      !!! POSSIBLE VERBOSE ERROR !!!
-      // });
       return next(
         new StatusError('Something went wrong while saving NFT', 500)
       );
