@@ -1,11 +1,13 @@
 const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 
+const { sessionObject } = require('../util/sessionObject');
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
       this.hasMany(models.Promoting, {
-        as: 'userPromotions',
+        as: 'promotions',
         foreignKey: {
           name: 'userId',
           type: DataTypes.UUID,
@@ -14,7 +16,6 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       this.hasMany(models.Promoting, {
-        as: 'userPromoters',
         foreignKey: {
           name: 'userId',
           type: DataTypes.UUID,
@@ -54,6 +55,54 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       });
     }
+
+    static findById = (id) => {
+      return User.findByPk(id, { rejectOnEmpty: true }).catch(() => {
+        throw new StatusError('User', 404);
+      });
+    };
+
+    promotes = () => {
+      return this.getPromotions({
+        attributes: [],
+        include: [User],
+      })
+        .then((promotions) =>
+          promotions.map((promotion) => sessionObject(promotion.User))
+        )
+        .catch(() => {
+          throw new StatusError(
+            'Something went wrong while fetching promotions',
+            500
+          );
+        });
+    };
+
+    promotedBy = () => {
+      return sequelize.models.Promoting.findAll({
+        attributes: [],
+        where: {
+          promotedId: this.id,
+        },
+        include: [
+          {
+            model: User,
+            on: {
+              id: { [Sequelize.Op.eq]: Sequelize.col('Promoting.userId') },
+            },
+          },
+        ],
+      })
+        .then((promoters) =>
+          promoters.map((promoter) => sessionObject(promoter.User))
+        )
+        .catch(() => {
+          throw new StatusError(
+            'Something went wrong while fetching promoters',
+            500
+          );
+        });
+    };
   }
   User.init(
     {
