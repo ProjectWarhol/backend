@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       this.belongsTo(models.NftContent, {
         foreignKey: {
-          name: 'id',
+          name: 'parentId',
           type: DataTypes.UUID,
         },
         allowNull: false,
