@@ -22,13 +22,6 @@ module.exports = (sequelize, DataTypes) => {
           isUUID: 4,
         },
       },
-      parentId: {
-        type: DataTypes.UUID,
-        primaryKey: false,
-        validate: {
-          isUUID: 4,
-        },
-      },
       favoriteChild: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,

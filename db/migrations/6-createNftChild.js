@@ -14,9 +14,15 @@ module.exports = {
       },
       parentId: {
         type: DataTypes.UUID,
-        defaultValue: Sequelize.literal('uuid_generate_v4()'),
-        primaryKey: true,
-        allowNull: false,
+        references: {
+          model: {
+            tableName: 'NftContent',
+          },
+          key: 'id',
+        },
+        allowNull: true,
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
       },
       favotiteChild: {
         type: DataTypes.BOOLEAN,
