@@ -19,6 +19,13 @@ module.exports = (sequelize, DataTypes) => {
         },
         allowNull: false,
       });
+      this.hasMany(models.NftChild, {
+        foreignKey: {
+          name: 'childId',
+          type: DataTypes.UUID,
+        },
+        allowNull: true,
+      });
     }
   }
 
