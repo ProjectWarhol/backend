@@ -1,21 +1,16 @@
 module.exports = {
   up: async (queryInterface) => {
-    const parentId = await queryInterface.sequelize.query(
+    const id = await queryInterface.sequelize.query(
       `SELECT id from "NftContent";`
     );
 
     await queryInterface.bulkInsert('NftChild', [
       {
-        parentId: parentId[0][0].id,
-      },
-      {
-        userId: parentId[0][1].id,
-      },
-      {
-        userId: parentId[0][2].id,
-      },
-      {
-        userId: parentId[0][3].id,
+        childId: '856907ff-dbd3-4970-8b71-fb43c2ab7f8e',
+        favoriteChild: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        parentId: id[0][0].id,
       },
     ]);
   },

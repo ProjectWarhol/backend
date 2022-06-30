@@ -12,6 +12,23 @@ module.exports = {
         primaryKey: true,
         allowNull: false,
       },
+
+      favoriteChild: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: true,
+        defaultValue: Sequelize.fn('now'),
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: true,
+        defaultValue: Sequelize.fn('now'),
+      },
+
       parentId: {
         type: DataTypes.UUID,
         references: {
@@ -20,24 +37,8 @@ module.exports = {
           },
           key: 'id',
         },
-        allowNull: true,
+        allowNull: false,
         onDelete: 'SET NULL',
-        onUpdate: 'CASCADE',
-      },
-      favotiteChild: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: false,
-      },
-      createdAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.fn('now'),
-      },
-      updatedAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.fn('now'),
       },
     });
   },
