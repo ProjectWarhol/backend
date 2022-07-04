@@ -49,19 +49,3 @@ exports.getChildNfts = async (req, res) => {
     });
   }
 };
-
-// const hasChild = async (parentId) => {
-//   if (!parentId) {
-//     return false;
-//   }
-//   const client = new NFTStorage({
-//     token: process.env.NFT_STORAGE_KEY,
-//   });
-
-//   try {
-//     const metadata = await client.get(parentId);
-//     return metadata.attributes.childId;
-//   } catch (error) {
-//     return false;
-//   }
-// }
