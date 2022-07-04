@@ -1,6 +1,8 @@
 const { removeTemporaryFile } = require('../util/removeTemporaryFile');
 const { getContract, getSignedContract } = require('../util/bcProvider');
 
+const db = require('../models');
+
 // Mint NFT
 exports.mintNft = async (req, res) => {
   try {
@@ -32,3 +34,34 @@ exports.getTokenIds = async (req, res) => {
     });
   }
 };
+
+// Get Child NFTs
+exports.getChildNfts = async (req, res) => {
+  try {
+    const result = await db.NftChild.findAll({
+      where: { parentId: req.params.id }, // How do i get the parentId from the request?
+      order: [['id', 'ASC']],
+    });
+    res.status(200).send({ result });
+  } catch (e) {
+    res.status(400).send({
+      error: e,
+    });
+  }
+};
+
+// const hasChild = async (parentId) => {
+//   if (!parentId) {
+//     return false;
+//   }
+//   const client = new NFTStorage({
+//     token: process.env.NFT_STORAGE_KEY,
+//   });
+
+//   try {
+//     const metadata = await client.get(parentId);
+//     return metadata.attributes.childId;
+//   } catch (error) {
+//     return false;
+//   }
+// }

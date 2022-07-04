@@ -128,3 +128,12 @@ exports.uploadNft = (req, res, next) => {
     return next();
   });
 };
+
+exports.retrieveChild = (req, res, next) => {
+  if (!req.body.hasChild) {
+    return res.status(400).send({
+      message: 'No child elements to retrieve',
+    });
+  }
+  return next();
+};
