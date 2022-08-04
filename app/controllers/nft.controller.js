@@ -1,7 +1,11 @@
+/* eslint-disable guard-for-in */
+/* eslint-disable no-restricted-syntax */
 const { removeTemporaryFile } = require('../util/removeTemporaryFile');
 const { getContract, getSignedContract } = require('../util/bcProvider');
 
 const db = require('../models');
+
+const { NftContent, NftChild } = db;
 
 // Mint NFT
 exports.mintNft = async (req, res) => {
@@ -35,14 +39,44 @@ exports.getTokenIds = async (req, res) => {
   }
 };
 
-// Get Child NFTs
-exports.getChildNfts = async (req, res) => {
+// Retrieve NFTs
+exports.retrieveNFTs = async (req, res) => {
+  const displayedNfts = [];
   try {
-    const result = await db.NftChild.findAll({
-      where: { parentId: req.params.id }, // How do i get the parentId from the request?
-      order: [['id', 'ASC']],
+    const nftsParent = await NftContent.findAll({
+      limit: 3,
+      order: [['upvotes', 'DESC']],
     });
-    res.status(200).send({ result });
+    displayedNfts.push(nftsParent);
+
+    // Filter out Nfts with children
+    const nftsWithChild = nftsParent.filter(
+      (nft) => nft.dataValues.hasChild === true
+    );
+    const parentIds = [];
+    for (const obj of nftsWithChild) {
+      const parentId = Object.values(obj.dataValues)[0];
+      parentIds.push(parentId);
+    }
+
+    const nftsChildren = await NftChild.findAll({
+      where: { parentId: parentIds.map((id) => id.toString()) },
+      limit: 3,
+    });
+
+    nftsChildren.forEach((child) => {
+      const nft = nftsParent.find((parent) => parent.id === child.parentId);
+      if (nft.dataValues.children == null) {
+        nft.dataValues.children = [];
+        nft.dataValues.children.push(child);
+      } else {
+        nft.dataValues.children.push(child);
+      }
+    });
+
+    res.status(200).send({
+      nfts: nftsParent,
+    });
   } catch (e) {
     res.status(400).send({
       error: e,

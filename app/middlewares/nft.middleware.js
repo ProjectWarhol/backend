@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 const path = require('path');
 const fs = require('fs');
 const { NFTStorage, File } = require('nft.storage');
@@ -14,6 +15,7 @@ const saveNftToStorage = async (req, filePath) => {
     location,
     positionInTree,
     amountSold,
+    hasChild,
   } = req.body;
 
   const fileExtension = req.files.image.mimetype.split('/')[1];
@@ -36,6 +38,7 @@ const saveNftToStorage = async (req, filePath) => {
         location,
         positionInTree,
         amountSold,
+        hasChild,
       },
     });
     return { success: true, data: metadata.url };
@@ -127,13 +130,4 @@ exports.uploadNft = (req, res, next) => {
     req.body.metadataUrl = metaData.data;
     return next();
   });
-};
-
-exports.retrieveChild = (req, res, next) => {
-  if (!req.body.hasChild) {
-    return res.status(400).send({
-      message: 'No child elements to retrieve',
-    });
-  }
-  return next();
 };

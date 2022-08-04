@@ -6,7 +6,7 @@ const session = require('../controllers/session.controller');
 const mailer = require('../controllers/mailer.controller');
 const {
   isLoggedIn,
-  checkLoginInput,
+  // checkLoginInput,
 } = require('../middlewares/authorization.middleware');
 const {
   createWallet,
@@ -15,7 +15,8 @@ const {
 const { userHasNotWallet } = require('../middlewares/verification.middleware');
 
 // Post login request
-router.post('/login', checkLoginInput, session.login);
+// router.post('/login', checkLoginInput, session.login);
+router.post('/login', session.login);
 
 // Post logout request
 router.post('/logout', isLoggedIn, session.logout);

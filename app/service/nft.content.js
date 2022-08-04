@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 const db = require('../models');
 const {
   noPathErrorHandler,

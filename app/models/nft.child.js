@@ -26,6 +26,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
+      parentId: {
+        type: DataTypes.UUID,
+      },
     },
     {
       sequelize,
