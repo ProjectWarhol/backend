@@ -1,6 +1,6 @@
 const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
-
+const bcrypt = require('bcrypt');
 const { sessionObject } = require('../util/sessionObject');
 
 module.exports = (sequelize, DataTypes) => {
@@ -59,6 +59,23 @@ module.exports = (sequelize, DataTypes) => {
     static findById = (id) => {
       return User.findByPk(id, { rejectOnEmpty: true }).catch(() => {
         throw new StatusError('User', 404);
+      });
+    };
+
+    static findByLogin = (type, userCredential) => {
+      return User.findOne({
+        where: { [type]: userCredential },
+      });
+    };
+
+    login = (password, req) => {
+      return bcrypt.compare(password, this.passwordHash).then((doMatch) => {
+        if (!doMatch) {
+          throw new StatusError('Wrong email or password', 403);
+        }
+        const newSessionUser = sessionObject(this);
+        req.session.user = newSessionUser;
+        return req.session.save();
       });
     };
 
