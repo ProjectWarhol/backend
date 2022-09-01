@@ -8,7 +8,7 @@ exports.mintNft = async (req, res, next) => {
       req.body.ownerAddress,
       req.body.metadataUrl
     );
-    res.status(200).send({
+    return res.status(200).send({
       message: 'Successfully minted NFT',
     });
   } catch {
@@ -18,12 +18,12 @@ exports.mintNft = async (req, res, next) => {
 };
 
 // Get tokens owned by account
-exports.getTokenIds = async (req, res) => {
+exports.getTokenIds = async (req, res, next) => {
   try {
     const result = await getContract().getTokens(req.params.address);
     // eslint-disable-next-line no-underscore-dangle
     const intTokens = result.map((element) => parseInt(element._hex, 16));
-    res.status(200).send({
+    return res.status(200).send({
       tokenIds: intTokens,
     });
   } catch {
