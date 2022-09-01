@@ -23,6 +23,8 @@ module.exports = {
     'prefer-arrow-callback': ['error', { allowNamedFunctions: false }],
     'func-style': ['error', 'expression', { allowArrowFunctions: true }],
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    'arrow-body-style': ['off'],
+    'one-var': ['off'],
   },
   globals: {
     web3: 'readonly',
