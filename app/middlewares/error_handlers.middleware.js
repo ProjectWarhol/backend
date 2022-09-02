@@ -14,6 +14,10 @@ exports.errorHandler = (err, _req, res, _next) => {
   if (err instanceof StatusError) {
     message = err.message;
     status = err.status;
+  } else if (process.env.ERR_VERBOSE === 'true') {
+    return res.status(500).send({
+      err: err.stack,
+    });
   } else {
     message = 'Something went wrong';
     status = 500;
