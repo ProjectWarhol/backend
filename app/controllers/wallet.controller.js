@@ -13,9 +13,6 @@ const {
   findWalletById,
   deleteWallet,
 } = require('../service/user.account');
-const {
-  defaultWrongInputHandler,
-} = require('../middlewares/error_handlers.middleware');
 
 // create a wallet with private/public keys
 exports.createWallet = async (req, res, next) => {
@@ -61,13 +58,13 @@ exports.storePrivateKey = async (req, res, next) => {
 
   const encryptedPrivateKey = await storeCustodialWallet(wallet, password);
   if (!encryptedPrivateKey) {
-    defaultWrongInputHandler(res, 'wallet input');
+    return next(new StatusError('Wrong input', 400));
   }
 
   const encryptedData = changeObjectToData(encryptedPrivateKey, mnemonicHash);
   await updateWallet(encryptedData, walletId, res, next);
 
-  next();
+  return next();
 };
 
 // get a wallet using walletId and password

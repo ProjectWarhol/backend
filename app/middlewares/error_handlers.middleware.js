@@ -56,7 +56,7 @@ exports.errorHandler = (err, _req, res, _next) => {
       break;
   }
 
-  res.status(status).send({
+  return res.status(status).send({
     error: { message },
   });
 };
