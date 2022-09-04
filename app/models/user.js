@@ -2,6 +2,7 @@ const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 const bcrypt = require('bcrypt');
 const { sessionObject } = require('../util/sessionObject');
+const { generateToken } = require('../util/tokenGenerator');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -65,18 +66,64 @@ module.exports = (sequelize, DataTypes) => {
     static findByLogin = (type, userCredential) => {
       return User.findOne({
         where: { [type]: userCredential },
+        rejectOnEmpty: true,
+      }).catch(() => {
+        throw new StatusError('User', 404);
       });
     };
 
+    static findByToken = (resetToken) => {
+      return User.findOne({
+        where: { resetToken },
+        rejectOnEmpty: true,
+      }).catch(() => {
+        throw new StatusError('User', 404);
+      });
+    };
+
+    stripSensitive = () => sessionObject(this);
+
     login = (password, req) => {
-      return bcrypt.compare(password, this.passwordHash).then((doMatch) => {
-        if (!doMatch) {
-          throw new StatusError('Wrong email or password', 403);
-        }
-        const newSessionUser = sessionObject(this);
+      return this.comparePassword(password).then((doMatch) => {
+        if (!doMatch) throw new StatusError('Wrong credentials', 403);
+        const newSessionUser = this.stripSensitive();
         req.session.user = newSessionUser;
         return req.session.save();
       });
+    };
+
+    // avoids code dupes, throws an error if password doesn't match.
+    // error is caught in the controller
+    comparePassword = (password) => {
+      bcrypt.compare(password, this.passwordHash).then((doMatch) => {
+        if (!doMatch) throw new StatusError('Wrong credentials', 403);
+        return true;
+      });
+    };
+
+    setPassword = (password) => {
+      return bcrypt.hash(password, 12).then((passwordHash) => {
+        this.passwordHash = passwordHash;
+        this.resetToken = null;
+        this.resetTokenExp = null;
+        return this.save();
+      });
+    };
+
+    replacePassword = (oldPassword, newPassword) => {
+      return this.comparePassword(oldPassword).then(() =>
+        this.setPassword(newPassword)
+      );
+    };
+
+    setResetToken = () => {
+      return generateToken()
+        .then((token) => {
+          this.resetToken = token.toString('hex');
+          this.resetTokenExp = Date.now() + 3600000;
+          return this.save();
+        })
+        .then(() => this.resetToken);
     };
 
     promotes = () => {
@@ -85,7 +132,7 @@ module.exports = (sequelize, DataTypes) => {
         include: [User],
       })
         .then((promotions) =>
-          promotions.map((promotion) => sessionObject(promotion.User))
+          promotions.map((promotion) => promotion.User.stripSensitive())
         )
         .catch(() => {
           throw new StatusError(
@@ -111,7 +158,7 @@ module.exports = (sequelize, DataTypes) => {
         ],
       })
         .then((promoters) =>
-          promoters.map((promoter) => sessionObject(promoter.User))
+          promoters.map((promoter) => promoter.User.stripSensitive())
         )
         .catch(() => {
           throw new StatusError(

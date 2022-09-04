@@ -7,8 +7,8 @@ exports.login = (req, res, next) => {
   const { userCredential, password, type } = req.body;
 
   User.findByLogin(type, userCredential)
+    .catch(() => next(new StatusError('Wrong credentials', 403)))
     .then((user) => {
-      if (!user) throw new StatusError('Wrong email or password', 403);
       return user.login(password, req);
     })
     .then(() => {

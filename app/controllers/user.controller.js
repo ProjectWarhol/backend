@@ -1,106 +1,95 @@
-const bcrypt = require('bcrypt');
-const { sessionObject } = require('../util/sessionObject');
-const { generateToken } = require('../util/tokenGenerator');
-const {
-  createUser,
-  retrieveByUserName,
-  retrieveById,
-  retrieveByToken,
-  updateResetToken,
-  getUserPasswordHash,
-  updateUser,
-} = require('../service/user');
-const {
-  defaultErrorHandler,
-  defaultExpirationHandler,
-} = require('../middlewares/error_handlers.middleware');
+const { createUser } = require('../service/user');
+const db = require('../models');
+
+const { User } = db;
 
 // Update a user by the id in the request
-exports.updateOne = async (req, res) => {
+exports.updateOne = (req, res, next) => {
   const {
     params: { id },
   } = req;
 
-  const data = await updateUser(req, res, id);
-  if (!data || res.headersSent) return;
-
-  res.status(200).send({
-    message: 'User was updated successfully',
-    user: sessionObject(data),
-  });
+  User.findById(id)
+    .then((user) => {
+      user.set(req.body);
+      return user.save();
+    })
+    .then((user) => {
+      return res.status(200).send({
+        message: 'User was updated successfully',
+        user: user.stripSensitive(),
+      });
+    })
+    .catch((err) => next(err));
 };
 
 // set updatePassword attributes
-exports.setResetToken = async (req, res, next) => {
-  const body = {
-    resetTokenExp: Date.now() + 3600000,
-    resetToken: await generateToken(),
-  };
+exports.setResetToken = (req, res, next) => {
+  const {
+    body: { email },
+  } = req;
 
-  const confirmation = await updateResetToken(req, res, body);
-  if (!confirmation || res.headersSent) return;
-
-  next();
+  User.findByLogin('email', email)
+    .then((user) => user.setResetToken())
+    .then((token) => {
+      res.locals.resetToken = token;
+      return next();
+    })
+    .catch((err) => next(err));
 };
 
 // update User password
-exports.replacePassword = async (req, res) => {
+exports.replacePassword = (req, res, next) => {
   const {
     body: { password },
     params: { token },
   } = req;
 
-  const user = await retrieveByToken(token, res);
-  if (user.resetTokenExp < Date.now()) {
-    defaultExpirationHandler(res, 'Password token');
-  }
-  if (!user || res.headersSent) return;
-
-  const newPasswordHash = await bcrypt.hash(password, 12);
-  user.passwordHash = newPasswordHash;
-  user.resetToken = null;
-  user.resetTokenExp = null;
-  user.save().catch(() => {
-    defaultErrorHandler(res, 'Something went wrong while updating user');
-  });
-
-  res.status(200).send({
-    message: 'Password Successfully updated',
-  });
+  User.findByToken(token)
+    .then((user) => {
+      if (user.resetTokenExp < Date.now()) {
+        throw new StatusError('Token expired', 401);
+      }
+      return user.setPassword(password);
+    })
+    .then(() => {
+      return res.status(200).send({
+        message: 'Password successfully updated',
+      });
+    })
+    .catch((err) => next(err));
 };
 
 // Patch User password
-exports.updatePassword = async (req, res) => {
+exports.updatePassword = async (req, res, next) => {
   const {
-    body: { id, oldPassword, newPassword },
+    body: { userId, oldPassword, newPassword },
   } = req;
 
-  const result = await getUserPasswordHash(id, res, oldPassword);
-  const user = await retrieveById(id, res);
-  if (!user || !result || res.headersSent) return;
-
-  const newPasswordHash = await bcrypt.hash(newPassword, 12);
-  user.passwordHash = newPasswordHash;
-  user.save();
-
-  res.status(200).send({
-    message: 'Password successfully updated',
-  });
+  User.findById(userId)
+    .then((user) => user.replacePassword(oldPassword, newPassword))
+    .then(() => {
+      return res.status(200).send({
+        message: 'Password successfully updated',
+      });
+    })
+    .catch((err) => next(err));
 };
 
 // Get User object from the username in the request
-exports.retrieveOne = async (req, res) => {
+exports.retrieveOne = (req, res, next) => {
   const {
     params: { userName },
   } = req;
 
-  const data = await retrieveByUserName(userName, res);
-  if (!data || res.headersSent) return;
-
-  res.status(200).send({
-    message: 'User data sent successfully',
-    user: sessionObject(data),
-  });
+  User.findByLogin('userName', userName)
+    .then((user) => {
+      return res.status(200).send({
+        message: 'User data sent successfully',
+        user: user.stripSensitive(),
+      });
+    })
+    .catch((err) => next(err));
 };
 
 // set updatePassword attributes
