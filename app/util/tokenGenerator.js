@@ -1,3 +1,4 @@
-const crypto = require('crypto');
+const { promisify } = require('util');
+const randomBytesAsync = promisify(require('crypto').randomBytes);
 
-exports.generateToken = () => crypto.randomBytes(32).toString('hex');
+exports.generateToken = () => randomBytesAsync(32);
