@@ -1,9 +1,9 @@
 const {
   createCustodialWallet,
   storeCustodialWallet,
-} = require('../blockchain/wallet/custodial_wallet');
+} = require('./custodial_wallet');
 const { updateUserWalletId } = require('../service/user');
-const { decryptPrivateKey } = require('../blockchain/wallet/custodial_wallet');
+const { decryptPrivateKey } = require('./custodial_wallet');
 const { walletObject } = require('../util/walletObject');
 const { hashMnemonic } = require('../util/mnumonicHashing');
 const { changeObjectToData } = require('../util/privateKeyObject');

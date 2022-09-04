@@ -1,6 +1,6 @@
 const {
   createCustodialWallet,
-} = require('../../app/blockchain/wallet/custodial_wallet');
+} = require('../../app/controllers/custodial_wallet');
 
 module.exports = {
   up: async (queryInterface) => {
