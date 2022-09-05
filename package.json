@@ -6,7 +6,6 @@
   "scripts": {
     "test": "NODE_ENV=test mocha",
     "test:dev": "NODE_ENV=test npm run test ./test/*.test.js",
-    "test:devBc": "kill $(lsof -t -i:7545) || NODE_ENV=test npm run localBc & npm run mDev && npm run test ./test/nft.test.js",
     "dev": "NODE_ENV=development nodemon --trace-warnings app.js",
     "start": "node app.js",
     "lint": "eslint .",
@@ -15,13 +14,7 @@
     "prepare": "husky install",
     "setup:db": "sequelize db:drop && sequelize db:create && sequelize db:migrate && sequelize db:seed:all",
     "setup:testing": "NODE_ENV=test npm run setup:db",
-    "localBc": "ganache-cli --accounts 5 --port 7545 --quiet",
-    "lint:sol": "solhint './app/blockchain/contracts/**/*.sol'",
-    "compile": "npm run lint:sol && truffle compile",
-    "test:sol": "npm run lint:sol && truffle test ./test/app/blockchain/contracts/*",
-    "mDev": "npm run lint:sol && truffle migrate --network development",
-    "mOnDev": "npm run lint:sol && truffle migrate --network onlineDevelopment",
-    "mStaging": "npm run lint:sol && truffle migrate --network staging"
+    "lint:sol": "solhint './app/blockchain/contracts/**/*.sol'"
   },
   "lint-staged": {
     "**/*.js": [
@@ -66,8 +59,6 @@
     "web3": "^1.7.1"
   },
   "devDependencies": {
-    "@openzeppelin/contracts": "^4.5.0",
-    "@truffle/contract": "^4.4.11",
     "chai": "^4.3.4",
     "chai-http": "^4.3.0",
     "chai-json-schema": "^1.5.1",
@@ -79,7 +70,6 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-prefer-arrow": "^1.2.3",
-    "ganache-cli": "^6.12.2",
     "husky": "^7.0.2",
     "lint-staged": "^11.1.2",
     "mocha": "^9.1.3",

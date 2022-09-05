@@ -1,5 +1,4 @@
 const express = require('express');
-const fileupload = require('express-fileupload');
 const morgan = require('morgan');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
@@ -11,13 +10,9 @@ const {
   noPathHandler,
   errorHandler,
 } = require('./app/middlewares/error_handlers.middleware');
-const { setup } = require('./app/util/bcProvider');
-
 const db = require('./app/models');
 
 require('dotenv').config();
-
-setup();
 
 const app = express();
 
@@ -72,12 +67,6 @@ const reqLimiter = rateLimit({
 });
 
 app.use(reqLimiter);
-
-app.use(
-  fileupload({
-    createParentPath: true,
-  })
-);
 
 app.use(require('sanitize').middleware);
 
