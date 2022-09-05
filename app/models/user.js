@@ -92,14 +92,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     };
 
-    // avoids code dupes, throws an error if password doesn't match.
-    // error is caught in the controller
-    comparePassword = (password) => {
-      bcrypt.compare(password, this.passwordHash).then((doMatch) => {
-        if (!doMatch) throw new StatusError('Wrong credentials', 403);
-        return true;
-      });
-    };
+    comparePassword = (password) => bcrypt.compare(password, this.passwordHash);
 
     setPassword = (password) => {
       return bcrypt.hash(password, 12).then((passwordHash) => {
@@ -111,9 +104,10 @@ module.exports = (sequelize, DataTypes) => {
     };
 
     replacePassword = (oldPassword, newPassword) => {
-      return this.comparePassword(oldPassword).then(() =>
-        this.setPassword(newPassword)
-      );
+      return this.comparePassword(oldPassword).then((doMatch) => {
+        if (!doMatch) throw new StatusError('Wrong credentials', 403);
+        this.setPassword(newPassword);
+      });
     };
 
     setResetToken = () => {
