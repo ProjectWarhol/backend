@@ -5,6 +5,7 @@ module.exports = {
     node: true,
   },
   extends: ['airbnb-base', 'prettier'],
+  parser: 'babel-eslint',
   parserOptions: {
     ecmaVersion: 12,
   },
@@ -21,6 +22,9 @@ module.exports = {
     ],
     'prefer-arrow-callback': ['error', { allowNamedFunctions: false }],
     'func-style': ['error', 'expression', { allowArrowFunctions: true }],
+    'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    'arrow-body-style': ['off'],
+    'one-var': ['off'],
   },
   globals: {
     web3: 'readonly',
@@ -30,5 +34,6 @@ module.exports = {
     beforeEach: 'readonly',
     it: 'readonly',
     assert: 'readonly',
+    StatusError: 'readonly',
   },
 };

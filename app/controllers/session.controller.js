@@ -1,58 +1,35 @@
-/* eslint-disable consistent-return */
-/* eslint-disable no-underscore-dangle */
-const bcrypt = require('bcrypt');
 const db = require('../models');
-const { sessionObject } = require('../util/sessionObject');
-const {
-  defaultErrorHandler,
-  defaultExpirationHandler,
-  defaultConflictHandler,
-} = require('../middlewares/error_handlers.middleware');
 
 const { User } = db;
 
 // login user and return sessionToken as cookie
-exports.login = (req, res) => {
+exports.login = (req, res, next) => {
   const { userCredential, password, type } = req.body;
 
-  const defaulLoginError = new Error('Wrong email or password');
-  defaulLoginError.status = 401;
-
-  User.findOne({
-    where: { [type]: userCredential },
-  })
-    .then((data) => {
-      bcrypt.compare(password, data.passwordHash).then((doMatch) => {
-        // change to salterpassword
-        if (doMatch === true) {
-          const newSessionUser = sessionObject(data);
-          req.session.user = newSessionUser;
-          req.session.save();
-          res.status(200).send({
-            message: 'Successfully logged in',
-            user: newSessionUser,
-          });
-        } else {
-          defaultConflictHandler(res, 'password does not match');
-        }
+  User.findByLogin(type, userCredential)
+    .catch(() => next(new StatusError('Wrong credentials', 403)))
+    .then((user) => {
+      return user.login(password, req);
+    })
+    .then(() => {
+      return res.status(200).send({
+        message: 'Successfully logged in',
+        user: req.session.user,
       });
     })
-    .catch(() => {
-      defaultErrorHandler(res, 'something went wrong while finding user');
-    });
+    .catch((err) => next(err));
 };
 
 // log out user & destroy session
-exports.logout = (req, res) => {
-  res.status(200).clearCookie('my.sid', { path: '/' });
+exports.logout = (req, res, _next) => {
   req.session.destroy();
-  res.send({
+  return res.clearCookie('my.sid', { path: '/' }).status(200).send({
     message: 'Successfully logged out',
   });
 };
 
 // validate existing session from client
-exports.validateSession = (req, res) => {
+exports.validateSession = (req, res, next) => {
   const currentUser = req.session.user;
 
   if (currentUser) {
@@ -61,13 +38,14 @@ exports.validateSession = (req, res) => {
       user: currentUser,
     });
   }
-  res.status(401).clearCookie('my.sid', { path: '/' });
+
+  res.clearCookie('my.sid', { path: '/' });
   req.session.destroy();
-  defaultExpirationHandler(res, 'session');
+  return next(new StatusError('Invalid session', 403));
 };
 
-exports.expressValidationResponse = (req, res) => {
-  res.status(200).send({
+exports.expressValidationResponse = (req, res, _next) => {
+  return res.status(200).send({
     message: 'Express signup complete',
     userId: req.body.id,
     walletId: req.body.walletId,

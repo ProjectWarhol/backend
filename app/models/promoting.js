@@ -20,6 +20,45 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       });
     }
+
+    static createPromotion = (userId, promotedId) => {
+      return Promoting.create({
+        ...{ userId },
+        ...{ promotedId },
+      }).catch((err) => {
+        if (err.name === 'SequelizeUniqueConstraintError') {
+          throw new StatusError('Promotion already exists', 409);
+        } else if (err.parent.constraint === 'Promoting_promotedId_ck') {
+          throw new StatusError('Self-promotion', 409);
+        } else {
+          throw new StatusError(
+            'Something went wrong while creating promotion',
+            500
+          );
+        }
+      });
+    };
+
+    static deletePromotion = (userId, promotedId) => {
+      return Promoting.destroy({
+        where: {
+          ...{ userId },
+          ...{ promotedId },
+        },
+        individualHooks: true,
+      })
+        .catch(() => {
+          throw new StatusError(
+            'Something went wrong while deleting promotion',
+            500
+          );
+        })
+        .then((destroyed) => {
+          if (destroyed === 0) {
+            throw new StatusError('Promotion', 404);
+          }
+        });
+    };
   }
 
   Promoting.init(

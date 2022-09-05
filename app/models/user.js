@@ -1,11 +1,14 @@
 const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
+const bcrypt = require('bcrypt');
+const { sessionObject } = require('../util/sessionObject');
+const { generateToken } = require('../util/tokenGenerator');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
       this.hasMany(models.Promoting, {
-        as: 'userPromotions',
+        as: 'promotions',
         foreignKey: {
           name: 'userId',
           type: DataTypes.UUID,
@@ -14,7 +17,6 @@ module.exports = (sequelize, DataTypes) => {
       });
 
       this.hasMany(models.Promoting, {
-        as: 'userPromoters',
         foreignKey: {
           name: 'userId',
           type: DataTypes.UUID,
@@ -54,6 +56,117 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       });
     }
+
+    static findById = (id) => {
+      return User.findByPk(id, { rejectOnEmpty: true }).catch(() => {
+        throw new StatusError('User', 404);
+      });
+    };
+
+    static findByLogin = (type, userCredential) => {
+      return User.findOne({
+        where: { [type]: userCredential },
+        rejectOnEmpty: true,
+      }).catch(() => {
+        throw new StatusError('User', 404);
+      });
+    };
+
+    static findByToken = (resetToken) => {
+      return User.findOne({
+        where: { resetToken },
+        rejectOnEmpty: true,
+      }).catch(() => {
+        throw new StatusError('User', 404);
+      });
+    };
+
+    stripSensitive = () => sessionObject(this);
+
+    login = (password, req) => {
+      return this.comparePassword(password).then((doMatch) => {
+        if (!doMatch) throw new StatusError('Wrong credentials', 403);
+        const newSessionUser = this.stripSensitive();
+        req.session.user = newSessionUser;
+        return req.session.save();
+      });
+    };
+
+    // avoids code dupes, throws an error if password doesn't match.
+    // error is caught in the controller
+    comparePassword = (password) => {
+      bcrypt.compare(password, this.passwordHash).then((doMatch) => {
+        if (!doMatch) throw new StatusError('Wrong credentials', 403);
+        return true;
+      });
+    };
+
+    setPassword = (password) => {
+      return bcrypt.hash(password, 12).then((passwordHash) => {
+        this.passwordHash = passwordHash;
+        this.resetToken = null;
+        this.resetTokenExp = null;
+        return this.save();
+      });
+    };
+
+    replacePassword = (oldPassword, newPassword) => {
+      return this.comparePassword(oldPassword).then(() =>
+        this.setPassword(newPassword)
+      );
+    };
+
+    setResetToken = () => {
+      return generateToken()
+        .then((token) => {
+          this.resetToken = token.toString('hex');
+          this.resetTokenExp = Date.now() + 3600000;
+          return this.save();
+        })
+        .then(() => this.resetToken);
+    };
+
+    promotes = () => {
+      return this.getPromotions({
+        attributes: [],
+        include: [User],
+      })
+        .then((promotions) =>
+          promotions.map((promotion) => promotion.User.stripSensitive())
+        )
+        .catch(() => {
+          throw new StatusError(
+            'Something went wrong while fetching promotions',
+            500
+          );
+        });
+    };
+
+    promotedBy = () => {
+      return sequelize.models.Promoting.findAll({
+        attributes: [],
+        where: {
+          promotedId: this.id,
+        },
+        include: [
+          {
+            model: User,
+            on: {
+              id: { [Sequelize.Op.eq]: Sequelize.col('Promoting.userId') },
+            },
+          },
+        ],
+      })
+        .then((promoters) =>
+          promoters.map((promoter) => promoter.User.stripSensitive())
+        )
+        .catch(() => {
+          throw new StatusError(
+            'Something went wrong while fetching promoters',
+            500
+          );
+        });
+    };
   }
   User.init(
     {

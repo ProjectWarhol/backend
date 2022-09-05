@@ -7,8 +7,8 @@ const rateLimit = require('express-rate-limit');
 const RedisClient = require('ioredis');
 const mainRoute = require('./app/routes/main');
 const {
-  noPathErrorHandler,
-  defaultErrorHandler,
+  noPathHandler,
+  errorHandler,
 } = require('./app/middlewares/error_handlers.middleware');
 const db = require('./app/models');
 
@@ -71,8 +71,8 @@ app.use(reqLimiter);
 app.use(require('sanitize').middleware);
 
 app.use(mainRoute);
-app.use(noPathErrorHandler);
-app.use(defaultErrorHandler);
+app.use(noPathHandler);
+app.use(errorHandler);
 
 db.sequelize.sync({ alter: true });
 

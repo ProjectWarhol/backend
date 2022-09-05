@@ -20,6 +20,23 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       });
     }
+
+    static findByContentAndUserId = (contentId, userId) => {
+      return NftVote.findOne({
+        where: {
+          ...{ contentId },
+          ...{ userId },
+        },
+        rejectOnEmpty: true,
+      }).catch(() => {
+        throw new StatusError('Vote', 404);
+      });
+    };
+
+    switchType = () => {
+      this.type = !this.type;
+      return this.save();
+    };
   }
 
   NftVote.init(

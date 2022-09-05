@@ -1,97 +1,71 @@
-const { findNftById } = require('../service/nft.content');
-const { getComments, createNewComment } = require('../service/comments');
-
 const db = require('../models');
 
-const {
-  noPathErrorHandler,
-  defaultErrorHandler,
-} = require('../middlewares/error_handlers.middleware');
-
-const { Comments } = db;
+const { NftContent, Comments } = db;
 
 // Retrieve comments on picture
-exports.retrieveComments = async (req, res) => {
+exports.retrieveComments = (req, res, next) => {
   const {
     body: { offset },
     params: { id },
   } = req;
 
-  const nft = await findNftById(id, res);
-  if (!nft || res.headersSent) return;
-
-  const comments = await getComments(nft, offset, res);
-  if (!comments || res.headersSent) return;
-
-  res.status(200).send({
-    message: 'Comments sent successfully',
-    data: comments,
-  });
+  NftContent.findById(id)
+    .then((nft) => nft.getNftComments(Number(offset), 20))
+    .then((comments) => {
+      return res.status(200).send({
+        message: 'Comments sent successfully',
+        data: comments,
+      });
+    })
+    .catch((err) => next(err));
 };
 
 // Post a comment on a picture
-exports.createComment = async (req, res) => {
+exports.createComment = (req, res, next) => {
   const {
     body: { comment, userId },
     params: { id },
   } = req;
 
-  const nft = await findNftById(id, res);
-  if (!nft || res.headersSent) return;
-
-  const created = await createNewComment(nft, comment, userId, res);
-  if (!created || res.headersSent) return;
-
-  res.status(200).send({
-    message: 'Comment created successfully',
-  });
+  NftContent.findById(id)
+    .then((nft) => nft.createNftComment(userId, comment))
+    .then(() => {
+      return res.status(200).send({
+        message: 'Comment created successfully',
+      });
+    })
+    .catch((err) => next(err));
 };
 
 // Delete a comment on a picture
-exports.deleteComment = (req, res) => {
+exports.deleteComment = (req, res, next) => {
   const {
     params: { id },
   } = req;
 
-  Comments.destroy({
-    where: { id },
-  })
+  Comments.findById(id)
+    .then((comment) => comment.destroy())
     .then(() => {
-      res.status(200).send({
+      return res.status(200).send({
         message: 'Comment deleted successfully',
       });
     })
-    .catch(() => {
-      defaultErrorHandler(
-        res,
-        'Something went wrong while deleting the comment'
-      );
-    });
+    .catch((err) => next(err));
 };
 
 // Patch Comment
-exports.updateComment = async (req, res) => {
+exports.updateComment = (req, res, next) => {
   const {
     params: { id },
+    body: { comment },
   } = req;
 
-  Comments.update(req.body, {
-    where: { id },
-    returning: true,
-  })
-    .then(([rowsUpdated]) => {
-      if (rowsUpdated > 0) {
-        res.status(200).send({
-          message: 'Comment was updated successfully',
-        });
-      } else {
-        noPathErrorHandler(res, 'Comment');
-      }
+  Comments.findById(id)
+    .then((commentInstance) => commentInstance.updateComment(comment))
+    .then(() => {
+      return res.status(200).send({
+        message: 'Comment updated successfully',
+      });
     })
-    .catch(() => {
-      defaultErrorHandler(
-        res,
-        'Something went wrong while updating the comment'
-      );
-    });
+    .catch((err) => next(err));
 };

@@ -1,63 +1,62 @@
-// for not found paths
-exports.defaultExpirationHandler = (res, message) => {
-  res.status(401).send({
-    error: {
-      status: 401,
-      message: `Expired: ${message}`,
-    },
-  });
+global.StatusError = class extends Error {
+  constructor(message, status) {
+    super(message);
+    this.status = status;
+  }
 };
 
-exports.unauthorizedHandler = (res, message) => {
-  res.status(403).send({
-    error: {
-      status: 403,
-      message: `Unauthorized: ${message}`,
-    },
-  });
-};
+exports.noPathHandler = (_req, _res, next) =>
+  next(new StatusError('Path', 404));
 
-exports.noPathErrorHandler = (res, message) => {
-  res.status(404).send({
-    error: {
-      status: 404,
-      message: `${message} Not found`,
-    },
-  });
-};
+exports.errorHandler = (err, _req, res, _next) => {
+  let message, status;
 
-exports.defaultConflictHandler = (res, message) => {
-  res.status(409).send({
-    error: {
-      status: 409,
-      message: `Conflict: ${message}`,
-    },
-  });
-};
+  if (err instanceof StatusError) {
+    message = err.message;
+    status = err.status;
+  } else if (process.env.ERR_VERBOSE === 'true') {
+    return res.status(500).send({
+      err: err.stack,
+    });
+  } else {
+    message = 'Something went wrong';
+    status = 500;
+  }
 
-exports.defaultWrongInputHandler = (res, message) => {
-  res.status(422).send({
-    error: {
-      status: 422,
-      message: `Unprocessable Entity: ${message}`,
-    },
-  });
-};
+  switch (status) {
+    case 400:
+      message = `Bad request: ${message}`;
+      break;
 
-exports.defaultErrorHandler = (res, message) => {
-  res.status(500).send({
-    error: {
-      status: 500,
-      message: `Internal Server Error: ${message}`,
-    },
-  });
-};
+    case 401:
+      message = `Unauthorized: ${message}`;
+      break;
 
-exports.defaultPasswordMismatch = (res, message) => {
-  res.status(403).send({
-    error: {
-      status: 403,
-      message: `forbidden: ${message}`,
-    },
+    case 403:
+      message = `Forbidden: ${message}`;
+      break;
+
+    case 404:
+      message = `${message} not found`;
+      break;
+
+    case 409:
+      message = `Conflict: ${message}`;
+      break;
+
+    case 422:
+      message = `Unprocessable Entity: ${message}`;
+      break;
+
+    case 500:
+      message = `Internal Server Error: ${message}`;
+      break;
+
+    default:
+      break;
+  }
+
+  return res.status(status).send({
+    error: { message },
   });
 };

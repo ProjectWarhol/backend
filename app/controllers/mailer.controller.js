@@ -15,36 +15,34 @@ const transportObject = {
   },
 };
 
-const sendMail = async (email, subject, template) => {
+const sendMail = (email, subject, template) => {
   const transporter = nodemailer.createTransport(transportObject);
 
-  const response = await transporter.sendMail({
+  return transporter.sendMail({
     from: `"Warhol" <${process.env.EMAIL_USER_ACCOUNT}>`,
     to: `${email}`,
     subject: `${subject}`,
     text: `Warhol - update Password instructions`,
     html: template,
   });
-
-  return response;
 };
 
-exports.sendResetPasswordInstructions = async (req, res, next) => {
+exports.sendResetPasswordInstructions = (req, res, next) => {
   const { email } = req.body;
-  const { resetToken } = req.body.resetToken[0].dataValues;
-  await sendMail(
-    email,
-    'Reseting Password Instructions',
-    resetTemplate(resetToken)
-  ).catch((err) => {
-    const error = new Error(
-      'Something went wrong while sending reset instructions'
-    );
-    error.err = err;
-    next(error);
-  });
+  const { resetToken } = res.locals;
 
-  res.status(200).send({
-    message: 'reset instructions successfully send',
-  });
+  sendMail(email, 'Reset Password Instructions', resetTemplate(resetToken))
+    .then(() => {
+      return res.status(200).send({
+        message: 'Reset instructions successfully sent',
+      });
+    })
+    .catch(() => {
+      next(
+        new StatusError(
+          'Something went wrong while sending reset instructions',
+          500
+        )
+      );
+    });
 };

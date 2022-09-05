@@ -13,13 +13,12 @@ const {
   findWalletById,
   deleteWallet,
 } = require('../service/user.account');
-const {
-  defaultWrongInputHandler,
-} = require('../middlewares/error_handlers.middleware');
 
 // create a wallet with private/public keys
 exports.createWallet = async (req, res, next) => {
-  const { id } = req.body;
+  const {
+    body: { id },
+  } = req;
 
   const wallet = await createCustodialWallet();
   const walletPublicKey = { publicKey: wallet.wallet.address };
@@ -28,7 +27,7 @@ exports.createWallet = async (req, res, next) => {
 
   const storedWallet = await addWalletToDatabase(walletPublicKey, res, next);
   const userObject = await updateUserWalletId(storedWallet, id, res, next);
-  console.log('WALLET');
+
   req.body.walletInformation = walletInformation;
   req.body.mnemonicPhrase = mnemonicPhrase;
   req.body.walletId = userObject.walletId;
@@ -39,7 +38,10 @@ exports.createWallet = async (req, res, next) => {
 
 // store and encrypt privateKey with private/public key and password
 exports.storePrivateKey = async (req, res, next) => {
-  const { password, id, walletId } = req.body;
+  const {
+    body: { password, id, walletId },
+  } = req;
+
   const wallet = {
     address: req.body.walletInformation.address,
     privateKey: req.body.walletInformation.privateKey,
@@ -56,19 +58,21 @@ exports.storePrivateKey = async (req, res, next) => {
 
   const encryptedPrivateKey = await storeCustodialWallet(wallet, password);
   if (!encryptedPrivateKey) {
-    defaultWrongInputHandler(res, 'wallet input');
+    return next(new StatusError('Wrong input', 400));
   }
 
   const encryptedData = changeObjectToData(encryptedPrivateKey, mnemonicHash);
   await updateWallet(encryptedData, walletId, res, next);
 
-  next();
+  return next();
 };
 
 // get a wallet using walletId and password
 exports.retrieveWallet = async (req, res) => {
-  const { id } = req.params;
-  const { password } = req.body;
+  const {
+    body: { password },
+    params: { id },
+  } = req;
 
   const userAccount = await findWalletById(id, res);
   const encryptedAccount = walletObject(userAccount);

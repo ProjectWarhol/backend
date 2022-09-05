@@ -15,14 +15,6 @@ const {
   defaultConflictHandler,
 } = require('../middlewares/error_handlers.middleware');
 
-exports.findUserById = async (id, res) => {
-  const user = await User.findByPk(id, { rejectOnEmpty: true }).catch(() => {
-    noPathErrorHandler(res, 'User');
-  });
-
-  return user;
-};
-
 exports.updateUserWalletId = async (storedWallet, id, res, next) => {
   const state = await User.update(
     {
@@ -91,58 +83,6 @@ exports.createUser = async (req, res) => {
   }
 
   return user[0];
-};
-
-exports.retrieveByUserName = async (userName, res) => {
-  const user = await User.findOne({
-    where: { userName },
-    rejectOnEmpty: true,
-  }).catch(() => {
-    noPathErrorHandler(res, 'User');
-  });
-
-  return user;
-};
-
-exports.retrieveById = async (id, res) => {
-  const user = await User.findByPk(id).catch(() => {
-    noPathErrorHandler('User', res);
-  });
-
-  return user;
-};
-
-exports.retrieveByToken = async (token, res) => {
-  const data = await User.findOne({
-    where: {
-      [Op.or]: [
-        {
-          resetToken: token,
-        },
-      ],
-    },
-    rejectOnEmpty: true,
-  }).catch(() => {
-    noPathErrorHandler(res, 'token');
-  });
-
-  return data;
-};
-
-exports.updateResetToken = async (req, res, body) => {
-  const data = await User.update(body, {
-    where: { email: req.body.email },
-    returning: true,
-  }).catch(() => {
-    defaultErrorHandler(res, 'Something went wrong while updating user');
-  });
-
-  if (!data[0]) {
-    noPathErrorHandler('User', res);
-  }
-
-  req.body.resetToken = data[1];
-  return data[1];
 };
 
 exports.updateUser = async (req, res, id) => {

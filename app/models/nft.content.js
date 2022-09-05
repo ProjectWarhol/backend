@@ -1,6 +1,8 @@
 const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 
+const { commentObject } = require('../util/commentObject');
+
 module.exports = (sequelize, DataTypes) => {
   class NftContent extends Model {
     static associate(models) {
@@ -19,7 +21,77 @@ module.exports = (sequelize, DataTypes) => {
         },
         allowNull: false,
       });
+
+      this.hasMany(models.NftVote, {
+        foreignKey: {
+          name: 'contentId',
+          type: DataTypes.UUID,
+        },
+        allowNull: false,
+      });
     }
+
+    static findById = (id) => {
+      return NftContent.findByPk(id, { rejectOnEmpty: true }).catch(() => {
+        throw new StatusError('Nft', 404);
+      });
+    };
+
+    getNftComments = (offset, limit) => {
+      return this.getComments({
+        ...{ offset },
+        ...{ limit },
+        include: [sequelize.models.User],
+      })
+        .then((comments) => comments.map((comment) => commentObject(comment)))
+        .catch(() => {
+          throw new StatusError(
+            'Something went wrong while fetching comments',
+            500
+          );
+        });
+    };
+
+    createNftComment = (userId, comment) => {
+      return this.createComment({
+        ...{ userId },
+        ...{ comment },
+        include: [sequelize.models.User],
+      }).catch(() => {
+        throw new StatusError(
+          'Something went wrong while creating comment',
+          500
+        );
+      });
+    };
+
+    getVotes = () => {
+      return this.countNftVotes({ where: { type: true } })
+        .then((upvotes) =>
+          this.countNftVotes({ where: { type: false } }).then((downvotes) => [
+            { upvotes },
+            { downvotes },
+          ])
+        )
+        .catch(() => {
+          throw new StatusError(
+            'Something went wrong while fetching votes',
+            500
+          );
+        });
+    };
+
+    createVote = (userId, type) => {
+      return this.createNftVote({
+        ...{ userId },
+        ...{ type },
+      }).catch((err) => {
+        if (err.name === 'SequelizeUniqueConstraintError') {
+          throw new StatusError('Vote already exists', 409);
+        }
+        throw new StatusError('Something went wrong while creating vote', 500);
+      });
+    };
   }
 
   NftContent.init(
