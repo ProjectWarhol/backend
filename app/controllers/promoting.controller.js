@@ -43,7 +43,8 @@ exports.promotingOneUser = async (req, res, next) => {
     params: { promotedId },
   } = req;
 
-  Promoting.createPromotion(userId, promotedId)
+  User.findById(promotedId)
+    .then(() => Promoting.createPromotion(userId, promotedId))
     .then(() => {
       return res.status(200).send({
         message: 'Promotion created successfully',
@@ -59,7 +60,8 @@ exports.unpromotingOneUser = async (req, res, next) => {
     params: { promotedId },
   } = req;
 
-  Promoting.deletePromotion(userId, promotedId)
+  User.findById(promotedId)
+    .then(() => Promoting.deletePromotion(userId, promotedId))
     .then(() => {
       return res.status(200).send({
         message: 'Promotion deleted successfully',
