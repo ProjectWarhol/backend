@@ -1,0 +1,26 @@
+version: "3.8"
+services:
+  redis:
+    image: redis
+    networks: 
+      - webnet
+  db:
+    image: postgres
+    networks: 
+      - webnet
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_DB: warhol
+  web:
+    image: crac-backend
+    ports:
+      - "3000:3000"
+    networks:
+      - webnet
+    environment:
+      DB_DEVELOPMENT_HOST: db
+      REDIS_HOST: redis
+    command: ["./wait-for-it.sh", "db:5432", "--", "node", "app.js"]
+networks:
+  webnet:
