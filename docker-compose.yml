@@ -1,26 +1,30 @@
-version: "3.8"
+version: '3.8'
 services:
   redis:
     image: redis
-    networks: 
+    networks:
       - webnet
   db:
-    image: postgres
-    networks: 
+    image: postgres:14.5-alpine
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    networks:
       - webnet
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: postgres
       POSTGRES_DB: warhol
   web:
-    image: crac-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - '3000:3000'
     networks:
       - webnet
     environment:
       DB_DEVELOPMENT_HOST: db
       REDIS_HOST: redis
-    command: ["./wait-for-it.sh", "db:5432", "--", "node", "app.js"]
+    command: ['./wait-for-it.sh', 'db:5432', '--', 'node', 'app.js']
 networks:
   webnet:

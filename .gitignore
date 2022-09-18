@@ -137,3 +137,5 @@ app/middlewares/tmp_nft_sources
 
 #redis binary dumb files
 *.rdb
+
+pgdata
