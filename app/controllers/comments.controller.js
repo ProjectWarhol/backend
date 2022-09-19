@@ -41,15 +41,22 @@ exports.createComment = (req, res, next) => {
 exports.deleteComment = (req, res, next) => {
   const {
     params: { id },
+    body: { userId },
   } = req;
 
   Comments.findById(id)
-    .then((comment) => comment.destroy())
+    .then((comment) => {
+      if (comment.userId !== userId) {
+        return next(new StatusError('unauthorized', 401));
+      }
+      return comment.destroy();
+    })
     .then(() => {
       return res.status(200).send({
         message: 'Comment deleted successfully',
       });
     })
+
     .catch((err) => next(err));
 };
 
@@ -58,10 +65,16 @@ exports.updateComment = (req, res, next) => {
   const {
     params: { id },
     body: { comment },
+    body: { userId },
   } = req;
 
   Comments.findById(id)
-    .then((commentInstance) => commentInstance.updateComment(comment))
+    .then((commentInstance) => {
+      if (commentInstance.userId !== userId) {
+        return next(new StatusError('unauthorized', 401));
+      }
+      return commentInstance.updateComment(comment);
+    })
     .then(() => {
       return res.status(200).send({
         message: 'Comment updated successfully',

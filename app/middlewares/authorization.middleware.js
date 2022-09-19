@@ -16,15 +16,15 @@ exports.checkLoginInput = (req, _res, next) => {
     .matches(/^[a-z0-9-_.]{4,20}$/i)
     .withMessage('email')
     .run(req)
-      .then(() => {
-        if (validationResult(req).errors.length === 2) {
-          return next(new StatusError('Invalid username or email', 422));
-        }
-        if (validationResult(req).errors.length === 1) {
-          req.body.type = validationResult(req).errors[0].msg;
-          return next();
-        }
+    .then(() => {
+      if (validationResult(req).errors.length === 2) {
+        return next(new StatusError('Invalid username or email', 422));
+      }
+      if (validationResult(req).errors.length === 1) {
+        req.body.type = validationResult(req).errors[0].msg;
+        return next();
+      }
 
-        return next(new StatusError('Something went wrong', 500));
-      })
+      return next(new StatusError('Something went wrong', 500));
+    });
 };
