@@ -56,6 +56,12 @@ module.exports = {
         allowNull: false,
         defaultValue: 0,
       },
+
+      employees: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
       promoting: {
         type: DataTypes.INTEGER,
         allowNull: false,

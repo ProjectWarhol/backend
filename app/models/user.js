@@ -16,6 +16,15 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       });
 
+      this.hasMany(models.Employment, {
+        as: 'employees',
+        foreignKey: {
+          name: 'userId',
+          type: DataTypes.UUID,
+        },
+        allowNull: false,
+      });
+
       this.hasMany(models.Promoting, {
         foreignKey: {
           name: 'userId',
