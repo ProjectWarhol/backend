@@ -98,7 +98,6 @@ You need to install the following things to be able to run this project on your 
   - Used for keeping a counter of each user's requests every minute
   - A middleware drops the requests if the user surpasses their rate
 
-
 ### Documentation
 
 A documentation of this project can be found in the `https://www.notion.so/Backend-104f26d1a13b4f44ae26f7226cbc1e05` for the backend. It contains several sub-folders for the individual parts of the backend (i.e. a ER Diagram for the database, and a documentation of the API endpoints).

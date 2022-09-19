@@ -13,7 +13,9 @@ const {
   storePrivateKey,
 } = require('../controllers/wallet.controller');
 const { userHasNotWallet } = require('../middlewares/verification.middleware');
-const { checkUserIdentity } = require('../middlewares/authentication.middleware');
+const {
+  checkUserIdentity,
+} = require('../middlewares/authentication.middleware');
 
 // Post login request
 router.post('/login', checkLoginInput, session.login);
@@ -28,7 +30,12 @@ router.get('/session', session.validateSession);
 router.get('/:userName', isLoggedIn, user.retrieveOne);
 
 // patch User Password
-router.patch('/updatePassword', isLoggedIn, checkUserIdentity, user.updatePassword);
+router.patch(
+  '/updatePassword',
+  isLoggedIn,
+  checkUserIdentity,
+  user.updatePassword
+);
 
 // Update a User with id
 router.patch('/:id', isLoggedIn, user.updateOne);

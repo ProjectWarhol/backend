@@ -8,7 +8,7 @@ exports.login = (req, res, next) => {
 
   User.findByLogin(type, userCredential)
     .catch(() => {
-      throw new StatusError('Wrong credentials', 403)
+      throw new StatusError('Wrong credentials', 403);
     })
     .then((user) => {
       return user.login(password, req);
