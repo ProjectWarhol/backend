@@ -8,9 +8,8 @@ RUN npm install
 
 COPY . /app
 COPY wait-for-it.sh /app
+RUN chmod +x ./wait-for-it.sh
 
-EXPOSE 5432
-EXPOSE 3000
 
 # Container
 CMD ["npm", "start"]
