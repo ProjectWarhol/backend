@@ -46,6 +46,15 @@ module.exports = {
         employees: 0,
         verified: true,
       },
+      {
+        userName: 'Julius_Klingelhoeller',
+        email: 'julian.klingelhoeller@warhol.com',
+        passwordHash: await bcrypt.hash('JuliusKlingelhoeller', 12),
+        promoters: 12,
+        promoting: 13,
+        employees: 0,
+        verified: true,
+      },
     ]);
   },
 

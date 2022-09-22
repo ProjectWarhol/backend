@@ -34,7 +34,7 @@ module.exports = {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       },
-      employeedId: {
+      employeeId: {
         type: DataTypes.UUID,
         references: {
           model: {
@@ -48,16 +48,16 @@ module.exports = {
       },
     });
     await queryInterface.addConstraint('Employment', {
-      fields: ['employeedId'],
+      fields: ['employeeId'],
       type: 'check',
       where: {
-        employeedId: {
+        employeeId: {
           [Sequelize.Op.ne]: { [Sequelize.Op.col]: 'Employment.userId' },
         },
       },
     });
     await queryInterface.addConstraint('Employment', {
-      fields: ['userId', 'employeedId'],
+      fields: ['userId', 'employeeId'],
       type: 'unique',
     });
   },

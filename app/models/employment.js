@@ -14,22 +14,20 @@ module.exports = (sequelize, DataTypes) => {
 
       this.belongsTo(models.User, {
         foreignKey: {
-          name: 'employeedId',
+          name: 'employeeId',
           type: DataTypes.UUID,
         },
         allowNull: false,
       });
     }
 
-    static createemploymentId = (userId, employeedId) => {
+    static employ = (userId, employeeId) => {
       return Employment.create({
         ...{ userId },
-        ...{ employeedId },
+        ...{ employeeId },
       }).catch((err) => {
         if (err.name === 'SequelizeUniqueConstraintError') {
           throw new StatusError('Employment already exists', 409);
-        } else if (err.parent.constraint === 'Employement_employeeId_ck') {
-          throw new StatusError('Self-employment', 409);
         } else {
           throw new StatusError(
             'Something went wrong while creating employment',
@@ -39,26 +37,26 @@ module.exports = (sequelize, DataTypes) => {
       });
     };
 
-    static deleteEmplyoment = (userId, employeedId) => {
-      return Employment.destroy({
-        where: {
-          ...{ userId },
-          ...{ employeedId },
-        },
-        individualHooks: true,
-      })
-        .catch(() => {
-          throw new StatusError(
-            'Something went wrong while deleting employment',
-            500
-          );
-        })
-        .then((destroyed) => {
-          if (destroyed === 0) {
-            throw new StatusError('Employment', 404);
-          }
-        });
-    };
+    // static deleteEmplyoment = (userId, employeedId) => {
+    //   return Employment.destroy({
+    //     where: {
+    //       ...{ userId },
+    //       ...{ employeedId },
+    //     },
+    //     individualHooks: true,
+    //   })
+    //     .catch(() => {
+    //       throw new StatusError(
+    //         'Something went wrong while deleting employment',
+    //         500
+    //       );
+    //     })
+    //     .then((destroyed) => {
+    //       if (destroyed === 0) {
+    //         throw new StatusError('Employment', 404);
+    //       }
+    //     });
+    // };
   }
 
   Employment.init(
@@ -75,25 +73,19 @@ module.exports = (sequelize, DataTypes) => {
     {
       hooks: {
         afterCreate: async (newEmployment) => {
-          const { userId, employeedId } = newEmployment;
+          const { userId } = newEmployment;
 
-          await sequelize.models.User.increment('employed', {
+          await sequelize.models.User.increment('employeesCount', {
             where: { id: userId },
           });
-          await sequelize.models.User.increment('employees', {
-            where: { id: employeedId },
-          });
         },
-        afterDestroy: async (oldEmployment) => {
-          const { userId, employeedId } = oldEmployment;
+        // afterDestroy: async (oldEmployment) => {
+        //   const { userId } = oldEmployment;
 
-          await sequelize.models.User.decrement('employed', {
-            where: { id: userId },
-          });
-          await sequelize.models.User.decrement('employees', {
-            where: { id: employeedId },
-          });
-        },
+        //   await sequelize.models.User.decrement('employeesCount', {
+        //     where: { id: userId },
+        //   });
+        // },
       },
       sequelize,
       timestamps: true,

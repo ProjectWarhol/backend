@@ -170,6 +170,34 @@ module.exports = (sequelize, DataTypes) => {
           );
         });
     };
+
+    employedBy = () => {
+      return sequelize.models.Employment.findAll({
+        attributes: [],
+        where: {
+          userId: this.id,
+        },
+        include: [
+          {
+            model: User,
+            on: {
+              id: {
+                [Sequelize.Op.eq]: Sequelize.col('Employment.employeedId'),
+              },
+            },
+          },
+        ],
+      })
+        .then((employees) =>
+          employees.map((employee) => employee.User.stripSensitive())
+        )
+        .catch(() => {
+          throw new StatusError(
+            'Something went wrong while fetching employees',
+            500
+          );
+        });
+    };
   }
   User.init(
     {
@@ -227,6 +255,14 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       promoters: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+        validate: {
+          min: 0,
+        },
+      },
+      employeesCount: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
