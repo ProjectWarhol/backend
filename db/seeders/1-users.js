@@ -15,6 +15,7 @@ module.exports = {
         promoting: 1001,
         employees: 0,
         verified: true,
+        isCompany: false,
         walletId: walletIds[0][0].id,
       },
       {
@@ -25,6 +26,7 @@ module.exports = {
         promoting: 7654,
         employees: 50,
         verified: false,
+        isCompany: false,
         walletId: walletIds[0][1].id,
       },
       {
@@ -35,6 +37,7 @@ module.exports = {
         promoting: 900,
         employees: 0,
         verified: false,
+        isCompany: false,
         walletId: walletIds[0][2].id,
       },
       {
@@ -45,6 +48,7 @@ module.exports = {
         promoting: 1234,
         employees: 0,
         verified: true,
+        isCompany: false,
       },
       {
         userName: 'Julius_Klingelhoeller',
@@ -54,6 +58,17 @@ module.exports = {
         promoting: 13,
         employees: 0,
         verified: true,
+        isCompany: false,
+      },
+      {
+        userName: 'Crack',
+        email: 'Crac@warhol.unos',
+        passwordHash: await bcrypt.hash('whoarewe', 12),
+        promoters: 12,
+        promoting: 13,
+        employees: 0,
+        verified: true,
+        isCompany: true,
       },
     ]);
   },

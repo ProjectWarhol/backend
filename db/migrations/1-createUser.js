@@ -72,6 +72,11 @@ module.exports = {
         allowNull: false,
         defaultValue: false,
       },
+      isCompany: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
       walletId: {
         type: DataTypes.UUID,
         references: {

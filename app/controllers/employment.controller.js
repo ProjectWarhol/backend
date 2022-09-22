@@ -27,7 +27,11 @@ exports.employOneUser = async (req, res, next) => {
   } = req;
 
   User.findById(employeeId)
-    .then(() => {
+    .then(() => User.findById(userId))
+    .then((user) => {
+      if (user.isCompany === false) {
+        throw new StatusError('User is not a company', 409);
+      }
       if (employeeId === userId) {
         throw new StatusError('Employment already exists', 409);
       }
