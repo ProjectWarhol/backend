@@ -37,26 +37,26 @@ module.exports = (sequelize, DataTypes) => {
       });
     };
 
-    // static deleteEmplyoment = (userId, employeedId) => {
-    //   return Employment.destroy({
-    //     where: {
-    //       ...{ userId },
-    //       ...{ employeedId },
-    //     },
-    //     individualHooks: true,
-    //   })
-    //     .catch(() => {
-    //       throw new StatusError(
-    //         'Something went wrong while deleting employment',
-    //         500
-    //       );
-    //     })
-    //     .then((destroyed) => {
-    //       if (destroyed === 0) {
-    //         throw new StatusError('Employment', 404);
-    //       }
-    //     });
-    // };
+    static deleteEmplyoment = (userId, employeeId) => {
+      return Employment.destroy({
+        where: {
+          ...{ userId },
+          ...{ employeeId },
+        },
+        individualHooks: true,
+      })
+        .catch(() => {
+          throw new StatusError(
+            'Something went wrong while deleting employment',
+            500
+          );
+        })
+        .then((destroyed) => {
+          if (destroyed === 0) {
+            throw new StatusError('Employment', 404);
+          }
+        });
+    };
   }
 
   Employment.init(
@@ -79,13 +79,13 @@ module.exports = (sequelize, DataTypes) => {
             where: { id: userId },
           });
         },
-        // afterDestroy: async (oldEmployment) => {
-        //   const { userId } = oldEmployment;
+        afterDestroy: async (oldEmployment) => {
+          const { userId } = oldEmployment;
 
-        //   await sequelize.models.User.decrement('employeesCount', {
-        //     where: { id: userId },
-        //   });
-        // },
+          await sequelize.models.User.decrement('employeesCount', {
+            where: { id: userId },
+          });
+        },
       },
       sequelize,
       timestamps: true,

@@ -42,18 +42,18 @@ exports.employOneUser = async (req, res, next) => {
 };
 
 // Delete entry in Employment
-// exports.unemployOneUser = async (req, res, next) => {
-//   const {
-//     body: { employeeId },
-//     params: { userId },
-//   } = req;
+exports.unemployOneUser = async (req, res, next) => {
+  const {
+    body: { employeeId },
+    params: { userId },
+  } = req;
 
-//   User.findById(employeeId)
-//     .then(() => Employment.deleteEmplyoment(userId, employeeId))
-//     .then(() => {
-//       return res.status(200).send({
-//         message: 'Employment deleted successfully',
-//       });
-//     })
-//     .catch((err) => next(err));
-// };
+  User.findById(employeeId)
+    .then(() => Employment.deleteEmplyoment(userId, employeeId))
+    .then(() => {
+      return res.status(200).send({
+        message: 'Employment deleted successfully',
+      });
+    })
+    .catch((err) => next(err));
+};
