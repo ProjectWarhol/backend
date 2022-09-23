@@ -25,6 +25,6 @@ jobs:
 
     steps:
       - name: Build the Redis image
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         run: docker build . -t crac-backend
 
