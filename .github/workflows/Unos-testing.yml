@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -17,3 +17,22 @@ jobs:
           node-version: 16
       - run: npm ci
       - run: npm test:dev
+
+  publish-npm:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
+      - run: npm ci
+        env:
+          TEST_EMAIL: ${{secrets.test_email}}
+          TEST_PASSWORD: ${{secrets.test_password}}
+          DB_DEVELOPMENT_HOST: ${{secrets.db_host}}
+          DB_DEVELOPMENT_DATABASE=: ${{secrets.db_database}}
+          DB_DEVELOPMENT_USERNAME: ${{secrets.db_user}}
+          DB_DEVELOPMENT_PASSWORD: ${{secrets.db_password}}
+          DB_DEVELOPMENT_PORT: ${{secrets.db_port}}
