@@ -19,15 +19,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    
-  # Add tests command later
-
-  # cd:
-  #   runs-on: self-hosted
-  #   needs: [ci]
-  #   if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }} 
-        
-  #   steps:
-  #     - name: Checkout source code
-  #       uses: actions/checkout@v2
-
