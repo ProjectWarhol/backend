@@ -36,7 +36,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          repository: warhol-backend
+          repository: takahiromitsui/warhol-backend
           push: true
           tags: latest
 
