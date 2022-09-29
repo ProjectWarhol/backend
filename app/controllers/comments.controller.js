@@ -1,3 +1,4 @@
+const { sequelize } = require('../models');
 const db = require('../models');
 
 const { NftContent, Comments } = db;
@@ -9,15 +10,31 @@ exports.retrieveComments = (req, res, next) => {
     params: { id },
   } = req;
 
-  NftContent.findById(id)
-    .then((nft) => nft.getNftComments(Number(offset), 20))
-    .then((comments) => {
+  try {
+    sequelize.transaction(async (t) => {
+      const nftContent = await NftContent.findById(id, { transaction: t });
+      const comments = await nftContent.getNftComments(offset, 20, {
+        transaction: t,
+      });
+
+      const count = await Comments.count({
+        where: {
+          contentId: id,
+        },
+        transaction: t,
+      });
+
       return res.status(200).send({
         message: 'Comments sent successfully',
-        data: comments,
+        data: {
+          comments,
+          count,
+        },
       });
-    })
-    .catch((err) => next(err));
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 // Post a comment on a picture
