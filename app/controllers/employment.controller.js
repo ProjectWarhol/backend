@@ -32,9 +32,6 @@ exports.employOneUser = async (req, res, next) => {
       if (user.isCompany === false) {
         throw new StatusError('User is not a company', 409);
       }
-      if (employeeId === userId) {
-        throw new StatusError('Employment already exists', 409);
-      }
     })
     .then(() => Employment.employ(userId, employeeId))
     .then(() => {
