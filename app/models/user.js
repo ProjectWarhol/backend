@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       });
 
-      this.hasMany(models.Company, {
+      this.hasOne(models.Employment, {
         foreignKey: {
           name: 'companyId',
           type: DataTypes.UUID,
