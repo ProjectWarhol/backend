@@ -32,6 +32,14 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       });
 
+      this.hasMany(models.Company, {
+        foreignKey: {
+          name: 'companyId',
+          type: DataTypes.UUID,
+        },
+        allowNull: true,
+      });
+
       this.hasMany(models.Comments, {
         foreignKey: {
           name: 'userId',
