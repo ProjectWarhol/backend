@@ -4,7 +4,7 @@ const Sequelize = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Company extends Model {
     static associate(models) {
-      this.hasOne(models.User, {
+      this.belongsTo(models.User, {
         foreignKey: {
           name: 'ownerUserId',
           type: DataTypes.UUID,
@@ -12,12 +12,13 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       });
 
-      this.hasMany(models.Employment, {
+      this.hasMany(models.User, {
         foreignKey: {
-          name: 'employeeId',
+          name: 'companyId',
           type: DataTypes.UUID,
         },
         allowNull: true,
+        constraints: false,
       });
     }
 

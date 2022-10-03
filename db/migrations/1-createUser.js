@@ -78,6 +78,10 @@ module.exports = {
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE',
       },
+      companyId: {
+        type: DataTypes.UUID,
+        allowNull: true,
+      },
     });
     await queryInterface.addConstraint('User', {
       fields: ['email'],
