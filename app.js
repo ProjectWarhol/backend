@@ -10,11 +10,13 @@ const {
   noPathHandler,
   errorHandler,
 } = require('./app/middlewares/error_handlers.middleware');
+const { setHeaders } = require('./app/middlewares/headers.middleware');
 const db = require('./app/models');
 
 require('dotenv').config();
 
 const app = express();
+app.disable('x-powered-by');
 
 app.use(express.json());
 
@@ -69,6 +71,8 @@ const reqLimiter = rateLimit({
 app.use(reqLimiter);
 
 app.use(require('sanitize').middleware);
+
+app.use(setHeaders);
 
 app.use(mainRoute);
 app.use(noPathHandler);
