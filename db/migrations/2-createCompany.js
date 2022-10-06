@@ -5,26 +5,34 @@ module.exports = {
     await queryInterface.sequelize.query(
       'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
     );
-    await queryInterface.createTable('User', {
+    await queryInterface.createTable('Company', {
       id: {
         type: DataTypes.UUID,
         defaultValue: Sequelize.literal('uuid_generate_v4()'),
         primaryKey: true,
         allowNull: false,
       },
-      userName: {
+      companyName: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      email: {
+      website: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      passwordHash: {
+      primaryColor: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      avatar: {
+      secondaryColor: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      address: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      logo: {
         type: Sequelize.STRING,
         allowNull: false,
         defaultValue: 'https://pbs.twimg.com/media/FB6YhR8WQAI5MnM.png', // remove this later
@@ -39,38 +47,22 @@ module.exports = {
         allowNull: false,
         defaultValue: Sequelize.fn('now'),
       },
-      resetToken: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      resetTokenExp: {
-        type: DataTypes.DATE,
-        allowNull: true,
-      },
+
       bio: {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      promoters: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0,
-      },
-      promoting: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0,
-      },
+
       verified: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false,
       },
-      walletId: {
+      ownerUserId: {
         type: DataTypes.UUID,
         references: {
           model: {
-            tableName: 'UserAccount',
+            tableName: 'User',
           },
           key: 'id',
         },
@@ -78,22 +70,18 @@ module.exports = {
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE',
       },
-      companyId: {
-        type: DataTypes.UUID,
-        allowNull: true,
-      },
     });
-    await queryInterface.addConstraint('User', {
-      fields: ['email'],
+    await queryInterface.addConstraint('Company', {
+      fields: ['website'],
       type: 'unique',
     });
-    await queryInterface.addConstraint('User', {
-      fields: ['userName'],
+    await queryInterface.addConstraint('Company', {
+      fields: ['companyName'],
       type: 'unique',
     });
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable('User');
+    await queryInterface.dropTable('Company');
   },
 };

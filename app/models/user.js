@@ -32,6 +32,14 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       });
 
+      this.hasOne(models.Company, {
+        foreignKey: {
+          name: 'ownerUserId',
+          type: DataTypes.UUID,
+        },
+        allowNull: true,
+      });
+
       this.hasMany(models.Comments, {
         foreignKey: {
           name: 'userId',
@@ -54,6 +62,15 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.UUID,
         },
         allowNull: true,
+      });
+
+      this.belongsTo(models.Company, {
+        foreignKey: {
+          name: 'companyId',
+          type: DataTypes.UUID,
+        },
+        allowNull: true,
+        constraints: false,
       });
     }
 
