@@ -13,7 +13,7 @@ module.exports = router;
 router.post('/', isLoggedIn, company.createCompany);
 
 // Delete a company
-// router.delete('/:id', isLoggedIn, company.deleteCompany);
+router.delete('/', isLoggedIn, company.deleteCompany);
 
 // Patch a company
 // router.patch('/:id', isLoggedIn, company.updateCompany);
