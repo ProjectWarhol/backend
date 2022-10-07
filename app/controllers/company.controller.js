@@ -74,3 +74,44 @@ exports.deleteCompany = async (req, res, next) => {
     })
     .catch((err) => next(err));
 };
+
+// Patch a company
+
+exports.patchCompany = async (req, res, next) => {
+  const {
+    body: {
+      id,
+      userId,
+      companyName,
+      website,
+      primaryColor,
+      secondaryColor,
+      address,
+      logo,
+      bio,
+    },
+  } = req;
+
+  Company.findById(id)
+    .then((company) => {
+      if (company.ownerUserId !== userId) {
+        return next(new StatusError('unauthorized', 401));
+      }
+      return company.update({
+        companyName,
+        website,
+        primaryColor,
+        secondaryColor,
+        address,
+        logo,
+        bio,
+      });
+    })
+    .then((company) => {
+      return res.status(200).send({
+        message: 'Company updated successfully',
+        data: company,
+      });
+    })
+    .catch((err) => next(err));
+};
