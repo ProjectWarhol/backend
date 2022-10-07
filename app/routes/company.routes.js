@@ -16,4 +16,4 @@ router.post('/', isLoggedIn, company.createCompany);
 router.delete('/', isLoggedIn, company.deleteCompany);
 
 // Patch a company
-// router.patch('/:id', isLoggedIn, company.updateCompany);
+router.patch('/', isLoggedIn, company.patchCompany);
