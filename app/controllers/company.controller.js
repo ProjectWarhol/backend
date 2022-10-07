@@ -53,3 +53,24 @@ exports.createCompany = async (req, res, next) => {
     })
     .catch((err) => next(err));
 };
+
+// Delete a company
+exports.deleteCompany = async (req, res, next) => {
+  const {
+    body: { id, userId },
+  } = req;
+
+  Company.findById(id)
+    .then((company) => {
+      if (company.ownerUserId !== userId) {
+        return next(new StatusError('unauthorized', 401));
+      }
+      return company.destroy();
+    })
+    .then(() => {
+      return res.status(200).send({
+        message: 'Company deleted successfully',
+      });
+    })
+    .catch((err) => next(err));
+};
