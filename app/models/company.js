@@ -76,9 +76,6 @@ module.exports = (sequelize, DataTypes) => {
       logo: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: {
-          isUrl: true,
-        },
         defaultValue: 'https://pbs.twimg.com/media/FB6YhR8WQAI5MnM.png', // remove this later
       },
 
