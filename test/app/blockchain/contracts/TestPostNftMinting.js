@@ -155,7 +155,7 @@ contract('PostNftMinting', (accounts) => {
     } catch (e) {
       assert.strictEqual(
         e.reason,
-        'ERC721: transfer caller is not owner nor approved',
+        'ERC721: caller is not token owner nor approved',
         'Caller is not the owner of token'
       );
     }
@@ -171,7 +171,7 @@ contract('PostNftMinting', (accounts) => {
     } catch (e) {
       assert.strictEqual(
         e.reason,
-        'ERC721: operator query for nonexistent token',
+        'ERC721: invalid token ID',
         'Token does not exist'
       );
     }
