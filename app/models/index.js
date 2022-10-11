@@ -1,7 +1,22 @@
 const fs = require('fs');
 
 const path = require('path');
-require('dotenv').config();
+
+const updateEnvVariables = (keys) => {
+  for (const key of keys) {
+    delete process.env[key];
+  }
+};
+const databaseEnvVariables = [
+  'DB_DATABASE',
+  'DB_USERNAME',
+  'DB_PASSWORD',
+  'DB_HOST',
+  'DB_PORT',
+];
+updateEnvVariables(databaseEnvVariables);
+
+require('dotenv').config({ override: true });
 
 const Sequelize = require('sequelize');
 
@@ -11,15 +26,13 @@ const config = require('../../config/config')[env];
 
 const db = {};
 const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
+  process.env.DB_DATABASE,
+  process.env.DB_USERNAME,
+  process.env.DB_PASSWORD,
   {
-    host: config.host,
-    port: Number(config.port),
-    dialect: config.dialect,
-    logging: config.logging,
-    ssl: config.ssl,
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    dialect: 'postgres',
     dialectOptions: config.dialectOptions,
     define: {
       freezeTableName: true,
