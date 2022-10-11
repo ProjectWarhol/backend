@@ -2,11 +2,8 @@ const fs = require('fs');
 
 const path = require('path');
 
-const updateEnvVariables = (keys) => {
-  for (const key of keys) {
-    delete process.env[key];
-  }
-};
+const { updateEnvVariables } = require('../helpers/env.handler');
+
 const databaseEnvVariables = [
   'DB_DATABASE',
   'DB_USERNAME',
@@ -16,7 +13,7 @@ const databaseEnvVariables = [
 ];
 updateEnvVariables(databaseEnvVariables);
 
-require('dotenv').config({ override: true });
+require('dotenv').config();
 
 const Sequelize = require('sequelize');
 
