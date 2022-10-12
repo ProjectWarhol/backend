@@ -43,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          is: /^[a-z0-9-_.]{4,20}$/i,
+          is: /^[a-z0-9-_. ]{4,20}$/i,
         },
       },
       website: {
