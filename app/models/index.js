@@ -1,5 +1,7 @@
 const fs = require('fs');
 
+const Sequelize = require('sequelize');
+
 const path = require('path');
 
 const { updateEnvVariables } = require('../helpers/env.handler');
@@ -11,11 +13,10 @@ const databaseEnvVariables = [
   'DB_HOST',
   'DB_PORT',
 ];
-updateEnvVariables(databaseEnvVariables);
 
 require('dotenv').config();
 
-const Sequelize = require('sequelize');
+updateEnvVariables(databaseEnvVariables);
 
 const basename = path.basename(module.filename);
 const env = process.env.NODE_ENV || 'development';
