@@ -1,12 +1,9 @@
-/* eslint-disable prefer-arrow/prefer-arrow-functions */
-/* eslint-disable func-style */
-/* eslint-disable import/prefer-default-export */
 /* eslint-disable no-restricted-syntax */
-/* eslint-disable no-console */
-/* eslint-disable consistent-return */
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable no-undef */
 
-export function updateEnvVariablesables(keys) {
+exports.updateEnvVariables = (keys) => {
   for (const key of keys) {
     delete process.env[key];
   }
-}
+};
