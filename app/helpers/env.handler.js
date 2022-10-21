@@ -1,5 +1,5 @@
 exports.updateEnvVariables = (keys) => {
-  for (const key of keys) {
-    delete process.env[key];
-  }
+  keys.map((key) => {
+    return delete process.env[key];
+  });
 };
