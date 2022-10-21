@@ -67,11 +67,24 @@ exports.deleteCompany = async (req, res, next) => {
       }
       return company.destroy();
     })
+    .then(async () => {
+      const owner = await Company.findOne({
+        where: {
+          ownerUserId: userId,
+        },
+      });
+      if (owner === null) {
+        User.findById(userId).then((user) => {
+          user.update({ isCompanyOwner: false });
+        });
+      }
+    })
     .then(() => {
       return res.status(200).send({
         message: 'Company deleted successfully',
       });
     })
+
     .catch((err) => next(err));
 };
 
