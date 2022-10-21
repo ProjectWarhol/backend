@@ -23,15 +23,15 @@ exports.createCompany = async (req, res, next) => {
 
   User.findById(userId)
     .then((user) => {
-      const ownerUserId = user.id;
-      Company.findOrCreate({
+      user.update({ isCompanyOwner: true });
+      return Company.findOrCreate({
         where: {
-          [Op.or]: [{ companyName }, { website }, { ownerUserId }],
+          [Op.or]: [{ companyName }, { website }],
         },
         defaults: {
           companyName,
           website,
-          ownerUserId,
+          ownerUserId: userId,
           primaryColor: primaryColor || '#000000',
           secondaryColor: secondaryColor || '#000000',
           address: address || '',
