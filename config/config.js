@@ -9,6 +9,15 @@ const commonConfig = {
   dialect: 'postgres',
 };
 
+const testConfig = () => {
+  commonConfig.database = process.env.DB_DATABASE_TEST;
+  commonConfig.username = process.env.DB_USERNAME_TEST;
+  commonConfig.password = process.env.DB_PASSWORD_TEST;
+  commonConfig.host = process.env.DB_HOST_TEST;
+  commonConfig.port = process.env.DB_PORT_TEST;
+  return commonConfig;
+};
+
 module.exports = {
   development: {
     ...commonConfig,
@@ -21,5 +30,8 @@ module.exports = {
         rejectUnauthorized: false,
       },
     },
+  },
+  test: {
+    ...testConfig(),
   },
 };
