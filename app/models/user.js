@@ -40,6 +40,14 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       });
 
+      this.hasMany(models.JobPosition, {
+        foreignKey: {
+          name: 'userId',
+          type: DataTypes.UUID,
+        },
+        allowNull: false,
+      });
+
       this.hasMany(models.Comments, {
         foreignKey: {
           name: 'userId',
@@ -62,15 +70,6 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.UUID,
         },
         allowNull: true,
-      });
-
-      this.belongsTo(models.Company, {
-        foreignKey: {
-          name: 'companyId',
-          type: DataTypes.UUID,
-        },
-        allowNull: true,
-        constraints: false,
       });
     }
 
@@ -251,6 +250,12 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       verified: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+
+      isCompanyOwner: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false,
