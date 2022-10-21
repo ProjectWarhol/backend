@@ -2,6 +2,8 @@ const fs = require('fs');
 
 const path = require('path');
 
+const Sequelize = require('sequelize');
+
 const { updateEnvVariables } = require('../helpers/env.handler');
 
 const databaseEnvVariables = [
@@ -15,7 +17,6 @@ updateEnvVariables(databaseEnvVariables);
 
 require('dotenv').config();
 
-const Sequelize = require('sequelize');
 
 const basename = path.basename(module.filename);
 const env = process.env.NODE_ENV || 'development';
@@ -23,13 +24,13 @@ const config = require('../../config/config')[env];
 
 const db = {};
 const sequelize = new Sequelize(
-  process.env.DB_DATABASE,
-  process.env.DB_USERNAME,
-  process.env.DB_PASSWORD,
+  config.database,
+  config.username,
+  config.password,
   {
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    dialect: 'postgres',
+    host: config.host,
+    port: Number(config.DB_PORT),
+    dialect: config.dialect,
     dialectOptions: config.dialectOptions,
     define: {
       freezeTableName: true,
