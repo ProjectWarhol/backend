@@ -8,12 +8,12 @@ const {
 const { isLoggedIn } = require('../middlewares/authorization.middleware');
 
 // Create a new Company
-router.post('/', isLoggedIn, checkUserIdentity, company.createComment);
+router.post('/', isLoggedIn, checkUserIdentity, company.createCompany);
 
-// Delete Comment
-router.delete('/', isLoggedIn, checkUserIdentity, company.deleteComment);
+// Delete Company
+router.delete('/', isLoggedIn, checkUserIdentity, company.deleteCompany);
 
-// Patch Comment
-router.patch('/', isLoggedIn, checkUserIdentity, company.updateComment);
+// Patch Company
+router.patch('/', isLoggedIn, checkUserIdentity, company.patchCompany);
 
 module.exports = router;
