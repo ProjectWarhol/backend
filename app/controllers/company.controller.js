@@ -44,7 +44,7 @@ exports.createCompany = async (req, res, next) => {
     .then(([company, created]) => {
       if (!created) {
         return res.status(400).send({
-          message: 'Company already exists or user is already owner',
+          message: 'Company already exists',
         });
       }
       return res.status(200).send({
