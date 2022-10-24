@@ -23,10 +23,12 @@ exports.login = (req, res, next) => {
 };
 
 // log out user & destroy session
-exports.logout = (req, res, _next) => {
-  req.session.destroy();
-  return res.clearCookie('my.sid', { path: '/' }).status(200).send({
-    message: 'Successfully logged out',
+exports.logout = (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    return res.clearCookie('my.sid', { path: '/' }).status(200).send("Successfully logged out");
   });
 };
 
