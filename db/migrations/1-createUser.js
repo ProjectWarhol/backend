@@ -66,6 +66,11 @@ module.exports = {
         allowNull: false,
         defaultValue: false,
       },
+      isCompanyOwner: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
       walletId: {
         type: DataTypes.UUID,
         references: {

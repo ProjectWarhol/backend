@@ -12,13 +12,20 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       });
 
-      this.hasMany(models.User, {
+      this.hasMany(models.JobPosition, {
         foreignKey: {
           name: 'companyId',
           type: DataTypes.UUID,
         },
-        allowNull: true,
-        constraints: false,
+        allowNull: false,
+      });
+
+      this.belongsTo(models.User, {
+        foreignKey: {
+          name: 'id',
+          type: DataTypes.UUID,
+        },
+        allowNull: false,
       });
     }
 
