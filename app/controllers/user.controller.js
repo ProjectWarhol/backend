@@ -3,21 +3,16 @@ const db = require('../models');
 
 const { User } = db;
 
-// Update a user by the id in the request
+// Update a user
 exports.updateOne = (req, res, next) => {
-  const {
-    params: { id },
-  } = req;
+  const { user } = req;
 
-  User.findById(id)
-    .then((user) => {
-      user.set(req.body);
-      return user.save();
-    })
-    .then((user) => {
+  user
+    .update(req.body)
+    .then((updatedUser) => {
       return res.status(200).send({
         message: 'User was updated successfully',
-        user: user.stripSensitive(),
+        user: updatedUser.stripSensitive(),
       });
     })
     .catch((err) => next(err));

@@ -42,7 +42,7 @@ router.get('/:userName', isLoggedIn, user.retrieveOne);
 router.patch('/updatePassword', isLoggedIn, user.updatePassword);
 
 // Update a User with id
-router.patch('/:id', isLoggedIn, user.updateOne);
+router.patch('/', isLoggedIn, user.updateOne);
 
 // Set resetPassword attributes & send resetPasswordMail
 router.post(
