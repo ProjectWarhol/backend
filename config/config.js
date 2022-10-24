@@ -1,3 +1,15 @@
+const fs = require('fs');
+const { updateEnvVariables } = require('../app/helpers/env.handler');
+
+const databaseEnvVariables = [
+  'DB_DATABASE',
+  'DB_USERNAME',
+  'DB_PASSWORD',
+  'DB_HOST',
+  'DB_PORT',
+];
+updateEnvVariables(databaseEnvVariables);
+
 require('dotenv').config(); // this is important!
 
 const commonConfig = {
@@ -26,8 +38,8 @@ module.exports = {
     ...commonConfig,
     dialectOptions: {
       ssl: {
-        require: true,
         rejectUnauthorized: false,
+        ca: fs.readFileSync('ca-certificate.crt').toString(),
       },
     },
   },
