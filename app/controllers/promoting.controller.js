@@ -55,12 +55,11 @@ exports.promotingOneUser = async (req, res, next) => {
 // Delete entry in Promoting
 exports.unpromotingOneUser = async (req, res, next) => {
   const {
-    body: { userId },
     params: { promotedId },
   } = req;
 
   User.findById(promotedId)
-    .then(() => Promoting.deletePromotion(userId, promotedId))
+    .then(() => Promoting.deletePromotion(req.user.id, promotedId))
     .then(() => {
       return res.status(200).send({
         message: 'Promotion deleted successfully',
