@@ -39,12 +39,11 @@ exports.userIsPromoted = async (req, res, next) => {
 // Create entry in Promoting
 exports.promotingOneUser = async (req, res, next) => {
   const {
-    body: { userId },
     params: { promotedId },
   } = req;
 
   User.findById(promotedId)
-    .then(() => Promoting.createPromotion(userId, promotedId))
+    .then(() => Promoting.createPromotion(req.user.id, promotedId))
     .then(() => {
       return res.status(200).send({
         message: 'Promotion created successfully',
