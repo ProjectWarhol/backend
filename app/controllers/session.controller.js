@@ -1,27 +1,3 @@
-const db = require('../models');
-
-const { User } = db;
-
-// login user and return sessionToken as cookie
-exports.login = (req, res, next) => {
-  const { userCredential, password, type } = req.body;
-
-  User.findByLogin(type, userCredential)
-    .catch(() => {
-      throw new StatusError('Wrong credentials', 403);
-    })
-    .then((user) => {
-      return user.login(password, req);
-    })
-    .then(() => {
-      return res.status(200).send({
-        message: 'Successfully logged in',
-        user: req.session.user,
-      });
-    })
-    .catch((err) => next(err));
-};
-
 // validate existing session from client
 exports.validateSession = (req, res, next) => {
   const { user } = req;
@@ -32,7 +8,7 @@ exports.validateSession = (req, res, next) => {
       user: user.stripSensitive(),
     });
   }
-  
+
   return next(new StatusError('Invalid session', 403));
 };
 
