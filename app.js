@@ -15,6 +15,8 @@ const db = require('./app/models');
 
 require('dotenv').config();
 
+const env = process.env.NODE_ENV || 'development';
+
 const app = express();
 app.disable('x-powered-by');
 
@@ -53,22 +55,23 @@ app.use(
     },
   })
 );
+if (env !== 'production') {
+  const client = new RedisClient({
+    host: process.env.REDIS_HOST || 'localhost',
+    port: process.env.REDIS_PORT || 6379,
+  });
 
-const client = new RedisClient({
-  host: process.env.REDIS_HOST || 'localhost',
-  port: process.env.REDIS_PORT || 6379,
-});
-
-const reqLimiter = rateLimit({
-  windowMs: (process.env.REQ_WINDOW_MINUTES || 1) * 60 * 1000,
-  max: process.env.MAX_REQ || 50,
-  legacyHeaders: false,
-  store: new RedisStore({
-    sendCommand: (...args) => client.call(...args),
-  }),
-});
-
-app.use(reqLimiter);
+  const reqLimiter = rateLimit({
+    windowMs: (process.env.REQ_WINDOW_MINUTES || 1) * 60 * 1000,
+    max: process.env.MAX_REQ || 50,
+    legacyHeaders: false,
+    store: new RedisStore({
+      sendCommand: (...args) => client.call(...args),
+    }),
+  });
+  app.use(reqLimiter);
+}
+db.sequelize.sync({ alter: true });
 
 app.use(require('sanitize').middleware);
 
@@ -77,8 +80,6 @@ app.use(setHeaders);
 app.use(mainRoute);
 app.use(noPathHandler);
 app.use(errorHandler);
-
-db.sequelize.sync({ alter: true });
 
 module.exports = app;
 
