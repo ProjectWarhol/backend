@@ -29,9 +29,18 @@ router.post('/logout', isLoggedIn, (req, res, next) => {
     if (err) {
       return next(err);
     }
+<<<<<<< HEAD
     return res.clearCookie('my.sid', { path: '/' }).status(200).json({
       message: 'Successfully logged out',
     });
+=======
+    return res
+      .clearCookie('my.sid', { path: '/' })
+      .status(200)
+      .json({
+        message: 'Successfully logged out'
+      });
+>>>>>>> d33bdd3 (ref: moved logout to routes)
   });
 });
 

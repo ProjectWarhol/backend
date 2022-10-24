@@ -22,16 +22,6 @@ exports.login = (req, res, next) => {
     .catch((err) => next(err));
 };
 
-// log out user & destroy session
-exports.logout = (req, res, next) => {
-  req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
-    return res.clearCookie('my.sid', { path: '/' }).status(200).send("Successfully logged out");
-  });
-};
-
 // validate existing session from client
 exports.validateSession = (req, res, next) => {
   const currentUser = req.session.user;
