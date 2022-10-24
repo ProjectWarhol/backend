@@ -61,6 +61,7 @@ router.post(
   userHasNotWallet,
   createWallet,
   storePrivateKey,
+  passport.authenticate('local'),
   session.expressValidationResponse
 );
 

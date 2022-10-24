@@ -94,6 +94,7 @@ exports.expressSignup = async (req, res, next) => {
   if (!user || res.headersSent) return;
 
   req.body.id = user.id;
+  req.body.userCredential = req.body.userName;
 
   next();
 };
