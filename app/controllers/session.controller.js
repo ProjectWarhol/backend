@@ -24,17 +24,15 @@ exports.login = (req, res, next) => {
 
 // validate existing session from client
 exports.validateSession = (req, res, next) => {
-  const currentUser = req.session.user;
+  const { user } = req;
 
-  if (currentUser) {
-    return res.status(200).send({
+  if (user) {
+    return res.status(200).json({
       message: 'Valid session',
-      user: currentUser,
+      user: user.stripSensitive(),
     });
   }
-
-  res.clearCookie('my.sid', { path: '/' });
-  req.session.destroy();
+  
   return next(new StatusError('Invalid session', 403));
 };
 
