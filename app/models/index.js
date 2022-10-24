@@ -1,7 +1,5 @@
 const fs = require('fs');
 
-const Sequelize = require('sequelize');
-
 const path = require('path');
 
 const Sequelize = require('sequelize');
@@ -15,6 +13,7 @@ const databaseEnvVariables = [
   'DB_HOST',
   'DB_PORT',
 ];
+updateEnvVariables(databaseEnvVariables);
 
 require('dotenv').config();
 
