@@ -63,11 +63,12 @@ exports.replacePassword = (req, res, next) => {
 // Patch User password
 exports.updatePassword = async (req, res, next) => {
   const {
-    body: { userId, oldPassword, newPassword },
+    user,
+    body: { oldPassword, newPassword },
   } = req;
 
-  User.findById(userId)
-    .then((user) => user.replacePassword(oldPassword, newPassword))
+  user
+    .replacePassword(oldPassword, newPassword)
     .then(() => {
       return res.status(200).send({
         message: 'Password successfully updated',
