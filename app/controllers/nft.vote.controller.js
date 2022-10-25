@@ -2,12 +2,12 @@ const db = require('../models');
 
 const { NftContent, NftVote } = db;
 
-exports.retrieveNftVotes = async (req, res, next) => {
+exports.retrieveNftVotes = (req, res, next) => {
   const {
-    params: { id },
+    params: { nftId },
   } = req;
 
-  NftContent.findById(id)
+  NftContent.findById(nftId)
     .then((nft) => nft.getVotes())
     .then((votes) => {
       return res.status(200).send({
@@ -21,13 +21,14 @@ exports.retrieveNftVotes = async (req, res, next) => {
     .catch((err) => next(err));
 };
 
-exports.createNftVote = async (req, res, next) => {
+exports.createNftVote = (req, res, next) => {
   const {
-    params: { id },
-    body: { type, userId },
+    params: { nftId },
+    body: { type },
+    user: { id: userId },
   } = req;
 
-  NftContent.findById(id)
+  NftContent.findById(nftId)
     .then((nft) => nft.createVote(userId, type))
     .then(() => {
       return res.status(200).send({
@@ -37,13 +38,13 @@ exports.createNftVote = async (req, res, next) => {
     .catch((err) => next(err));
 };
 
-exports.deleteNftVote = async (req, res, next) => {
+exports.deleteNftVote = (req, res, next) => {
   const {
-    params: { id },
-    body: { userId },
+    params: { nftId },
+    user: { id: userId },
   } = req;
 
-  NftVote.findByContentAndUserId(id, userId)
+  NftVote.findByContentAndUserId(nftId, userId)
     .then((vote) => vote.destroy())
     .then(() => {
       return res.status(200).send({
@@ -53,13 +54,13 @@ exports.deleteNftVote = async (req, res, next) => {
     .catch((err) => next(err));
 };
 
-exports.updateNftVote = async (req, res, next) => {
+exports.updateNftVote = (req, res, next) => {
   const {
-    params: { id },
-    body: { userId },
+    params: { nftId },
+    user: { id: userId },
   } = req;
 
-  NftVote.findByContentAndUserId(id, userId)
+  NftVote.findByContentAndUserId(nftId, userId)
     .then((vote) => vote.switchType())
     .then(() => {
       return res.status(200).send({

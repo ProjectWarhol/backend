@@ -5,11 +5,12 @@ const {
   retrieveWallet,
   deleteWallet,
 } = require('../controllers/wallet.controller');
+const { isLoggedIn } = require('../middlewares/authorization.middleware');
 
 // Get wallet request
-router.get('/', retrieveWallet);
+router.get('/', isLoggedIn, retrieveWallet);
 
 // Delete wallet request
-router.delete('/', deleteWallet);
+router.delete('/', isLoggedIn, deleteWallet);
 
 module.exports = router;

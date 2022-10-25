@@ -5,15 +5,15 @@ const comments = require('../controllers/comments.controller');
 const { isLoggedIn } = require('../middlewares/authorization.middleware');
 
 // Fetch comments on a picture
-router.get('/:id', isLoggedIn, comments.retrieveComments);
+router.get('/:nftId', isLoggedIn, comments.retrieveComments);
 
 // Create comment on a picture
-router.post('/:id', isLoggedIn, comments.createComment);
+router.post('/:nftId', isLoggedIn, comments.createComment);
 
 // Delete Comment
-router.delete('/:id', isLoggedIn, comments.deleteComment);
+router.delete('/:commentid', isLoggedIn, comments.deleteComment);
 
 // Patch Comment
-router.patch('/:id', isLoggedIn, comments.updateComment);
+router.patch('/:commentid', isLoggedIn, comments.updateComment);
 
 module.exports = router;
