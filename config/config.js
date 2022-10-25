@@ -1,59 +1,49 @@
+const fs = require('fs');
+const { updateEnvVariables } = require('../app/helpers/env.handler');
+
+const databaseEnvVariables = [
+  'DB_DATABASE',
+  'DB_USERNAME',
+  'DB_PASSWORD',
+  'DB_HOST',
+  'DB_PORT',
+];
+updateEnvVariables(databaseEnvVariables);
+
 require('dotenv').config(); // this is important!
 
-const sequelizeLogging = process.env.SEQUELIZE_LOGGING || 'true';
-const logging = sequelizeLogging === 'true' ? console.log : false; // eslint-disable-line no-console
+const commonConfig = {
+  database: process.env.DB_DATABASE,
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  dialect: 'postgres',
+};
+
+const testConfig = () => {
+  commonConfig.database = process.env.DB_DATABASE_TEST;
+  commonConfig.username = process.env.DB_USERNAME_TEST;
+  commonConfig.password = process.env.DB_PASSWORD_TEST;
+  commonConfig.host = process.env.DB_HOST_TEST;
+  commonConfig.port = process.env.DB_PORT_TEST;
+  return commonConfig;
+};
 
 module.exports = {
   development: {
-    username: process.env.DB_DEVELOPMENT_USERNAME,
-    password: process.env.DB_DEVELOPMENT_PASSWORD,
-    database: process.env.DB_DEVELOPMENT_DATABASE,
-    host: process.env.DB_DEVELOPMENT_HOST,
-    port: process.env.DB_DEVELOPMENT_PORT,
-    logging,
-    dialect: 'postgres',
-    ssl: false,
-  },
-  staging: {
-    username: process.env.DB_STAGING_USERNAME,
-    password: process.env.DB_STAGING_PASSWORD,
-    database: process.env.DB_STAGING_DATABASE,
-    host: process.env.DB_STAGING_HOST,
-    port: process.env.DB_STAGING_PORT,
-    logging,
-    dialect: 'postgres',
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false,
-      },
-    },
-    ssl: true,
+    ...commonConfig,
   },
   production: {
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    logging,
-    dialect: 'postgres',
+    ...commonConfig,
     dialectOptions: {
       ssl: {
-        require: true,
         rejectUnauthorized: false,
+        ca: fs.readFileSync('ca-certificate.crt').toString(),
       },
     },
-    ssl: false,
   },
   test: {
-    username: process.env.DB_TEST_USERNAME,
-    password: process.env.DB_TEST_PASSWORD,
-    database: process.env.DB_TEST_DATABASE,
-    host: process.env.DB_TEST_HOST,
-    port: process.env.DB_TEST_PORT,
-    logging,
-    dialect: 'postgres',
-    ssl: false,
+    ...testConfig(),
   },
 };
