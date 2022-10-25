@@ -139,3 +139,5 @@ app/middlewares/tmp_nft_sources
 *.rdb
 
 pgdata
+
+*.crt

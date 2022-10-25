@@ -1,4 +1,4 @@
-# UNOS – Backend
+# CRAC – Backend
 
 This repository contains:
 
@@ -10,7 +10,7 @@ This repository contains:
 You need to install the following things to be able to run this project on your own hardware:
 
 1. [nodeJS](https://nodejs.org/en/download/) (LTS v16.13.0)
-2. At leaset two [PostgreSQL](https://www.postgresql.org/download/) v10 (or higher) instances for development & testing (we recommend v13 or higher)
+2. At least two [PostgreSQL](https://www.postgresql.org/download/) v10 (or higher) instances for development & testing (we recommend v13 or higher)
 3. A [Redis](https://redis.io/docs/getting-started/installation/) instance.
 
 ## Getting Started
@@ -22,9 +22,9 @@ You need to install the following things to be able to run this project on your 
 1. (On windows if using cmd please us `windows powershell cmd`) navigate to the `bin` folder in the postgresql folder.
 2. create a new user `psql -U userName` and enter a `password` when prompted.
 3. Set up a local Database by running `CREATE DATABASE name`.
-   EX. (CREATE DATABASE myDatabase)
-4. (optional) you may have to give your account database priviledges using the `GRANT ALL PRIVILEGES` command.
-   EX. (GRANT ALL PRIVILEGES ON myDB . \* TO 'user'@'localhost';)
+   e.g., (CREATE DATABASE myDatabase)
+4. (optional) you may have to give your account database privileges using the `GRANT ALL PRIVILEGES` command.
+   e.g., (GRANT ALL PRIVILEGES ON myDB . \* TO 'user'@'localhost';)
 
 #### Redis
 
@@ -47,17 +47,17 @@ You need to install the following things to be able to run this project on your 
    ```
 
 3. Duplicate `.env.example` file and rename it to `.env`
-4. Add enviroment variables to `.env`
+4. Add environment variables to `.env`
 
    1. Enter a random `string` variable for the `FOO_COOKIE_SECRET` in order to have session cookie generated
-   2. `DB_DEVELOPMENT_HOST`=localhost
-   3. `DB_DEVELOPMENT_DATABASE` => the name of the database created for this project
+   2. `DB_HOST`=localhost
+      `DB_DATABASE` => the name of the database created for this project
 
-      `DB_DEVELOPMENT_USERNAME` => the username that has access to the development database
+      `DB_USERNAME` => the username that has access to the development database
 
-      `DB_DEVELOPMENT_PASSWORD` => your database user password (note if the password containes numbers, you may have to use single quotes EX. 'password123')
+      `DB_PASSWORD` => your database user password (note if the password contains numbers, you may have to use single quotes e.g., 'password123')
 
-      `DB_DEVELOPMENT_PORT` => usualy is '5432'
+      `DB_PORT` => usually is '5432'
 
 5. Setup testing and development database
 
@@ -76,7 +76,7 @@ You need to install the following things to be able to run this project on your 
 ### Commands
 
 1. Run `npm run dev` to start the development server (default port: 3000)
-2. Run `npm run test:dev` to run development tests only
+2. Run `npm run test:dev` to run development tests only (make sure you set up testing environment variables)
 3. Run `npm run lint` for linting with ESLint
 4. Run `npm run format` for formatting with Prettier
 
@@ -113,7 +113,7 @@ A documentation of this project can be found in the `https://www.notion.so/Backe
 
 ## Authors
 
-- Omar Badawy – [@osbadawy](https://github.com/osbadawy) – Backend
+- Omar Badawy – [@osbadawy](https://github.com/osbadawy) – Backend/Frontend
 - Massimiliano Ricci – [@mellifluus](https://github.com/mellifluus) – Backend
-- Takahiro Mitsui – [@takahiromitsui](https://github.com/takahiromitsui) – Blockchain
+- Takahiro Mitsui – [@takahiromitsui](https://github.com/takahiromitsui) – Blockchain/Dev Ops
 - Maurice Gerhardt – [@heymage](https://github.com/heymage) – Blockchain
