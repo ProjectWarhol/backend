@@ -10,7 +10,6 @@ const {
   createWallet,
   storePrivateKey,
 } = require('../controllers/wallet.controller');
-// const { userHasNotWallet } = require('../middlewares/verification.middleware');
 
 // Post login request
 router.post('/login', passport.authenticate('local'), session.login);
