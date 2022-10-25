@@ -5,7 +5,7 @@ module.exports = {
     await queryInterface.sequelize.query(
       'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
     );
-    await queryInterface.createTable('Comments', {
+    await queryInterface.createTable('Comment', {
       id: {
         type: DataTypes.UUID,
         defaultValue: Sequelize.literal('uuid_generate_v4()'),
@@ -60,6 +60,6 @@ module.exports = {
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable('Comments');
+    await queryInterface.dropTable('Comment');
   },
 };

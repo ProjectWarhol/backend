@@ -1,15 +1,15 @@
 const db = require('../models');
 
-const { NftContent, Comments } = db;
+const { NftContent, Comment } = db;
 
 // Retrieve comments on picture
 exports.retrieveComments = (req, res, next) => {
   const {
     body: { offset },
-    params: { id },
+    params: { nftId },
   } = req;
 
-  NftContent.findById(id)
+  NftContent.findById(nftId)
     .then((nft) => nft.getNftComments(Number(offset), 20))
     .then((comments) => {
       return res.status(200).send({
@@ -45,11 +45,9 @@ exports.deleteComment = (req, res, next) => {
     user: { id: userId },
   } = req;
 
-  Comments.findById(commentId)
+  Comment.findById(commentId)
     .then((comment) => {
-      if (comment.userId !== userId) {
-        return next(new StatusError('unauthorized', 401));
-      }
+      if (comment.userId !== userId) throw new StatusError('unauthorized', 401);
       return comment.destroy();
     })
     .then(() => {
@@ -68,11 +66,10 @@ exports.updateComment = (req, res, next) => {
     user: { id: userId },
   } = req;
 
-  Comments.findById(commentId)
+  Comment.findById(commentId)
     .then((commentInstance) => {
-      if (commentInstance.userId !== userId) {
-        return next(new StatusError('unauthorized', 401));
-      }
+      if (commentInstance.userId !== userId)
+        throw new StatusError('unauthorized', 401);
       return commentInstance.updateComment(comment);
     })
     .then(() => {

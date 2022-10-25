@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       });
 
-      this.hasMany(models.Comments, {
+      this.hasMany(models.Comment, {
         foreignKey: {
           name: 'contentId',
           type: DataTypes.UUID,

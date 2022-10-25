@@ -11,9 +11,9 @@ router.get('/:nftId', isLoggedIn, comments.retrieveComments);
 router.post('/:nftId', isLoggedIn, comments.createComment);
 
 // Delete Comment
-router.delete('/:commentid', isLoggedIn, comments.deleteComment);
+router.delete('/:commentId', isLoggedIn, comments.deleteComment);
 
 // Patch Comment
-router.patch('/:commentid', isLoggedIn, comments.updateComment);
+router.patch('/:commentId', isLoggedIn, comments.updateComment);
 
 module.exports = router;

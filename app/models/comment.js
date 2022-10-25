@@ -2,7 +2,7 @@ const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class Comments extends Model {
+  class Comment extends Model {
     static associate(models) {
       this.belongsTo(models.User, {
         foreignKey: {
@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static findById = (id) => {
-      return Comments.findByPk(id, { rejectOnEmpty: true }).catch(() => {
+      return Comment.findByPk(id, { rejectOnEmpty: true }).catch(() => {
         throw new StatusError('Comment', 404);
       });
     };
@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     };
   }
 
-  Comments.init(
+  Comment.init(
     {
       id: {
         type: DataTypes.UUID,
@@ -48,8 +48,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       timestamps: true,
-      modelName: 'Comments',
+      modelName: 'Comment',
     }
   );
-  return Comments;
+  return Comment;
 };
