@@ -54,6 +54,8 @@
     "morgan": "^1.10.0",
     "nft.storage": "^6.0.2",
     "nodemailer": "^6.6.3",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
     "rate-limit-redis": "^3.0.1",

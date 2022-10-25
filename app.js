@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 const morgan = require('morgan');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
@@ -14,6 +15,8 @@ const { setHeaders } = require('./app/middlewares/headers.middleware');
 const db = require('./app/models');
 
 require('dotenv').config();
+require('./app/passport/setup')(passport);
+require('./app/passport/strategies').register(passport);
 
 // const env = process.env.NODE_ENV || 'development';
 
