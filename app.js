@@ -28,7 +28,7 @@ if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('combined'));
 }
 
-if (['staging', 'production'].includes(process.env.NODE_ENV)) {
+if (['production'].includes(process.env.NODE_ENV)) {
   app.set('trust proxy', 1);
 }
 
@@ -47,10 +47,8 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      sameSite: ['staging', 'production'].includes(process.env.NODE_ENV)
-        ? 'none'
-        : 'lax',
-      secure: ['staging', 'production'].includes(process.env.NODE_ENV),
+      sameSite: ['production'].includes(process.env.NODE_ENV) ? 'none' : 'lax',
+      secure: ['production'].includes(process.env.NODE_ENV),
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days in milliseconds
     },
   })
