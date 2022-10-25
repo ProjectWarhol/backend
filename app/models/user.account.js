@@ -12,6 +12,12 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       });
     }
+
+    static findById = (id) => {
+      return UserAccount.findByPk(id, { rejectOnEmpty: true }).catch(() => {
+        throw new StatusError('Wallet', 404);
+      });
+    };
   }
 
   UserAccount.init(

@@ -7,9 +7,9 @@ const {
 } = require('../controllers/wallet.controller');
 
 // Get wallet request
-router.get('/:id', retrieveWallet);
+router.get('/', retrieveWallet);
 
 // Delete wallet request
-router.delete('/:id', deleteWallet);
+router.delete('/', deleteWallet);
 
 module.exports = router;

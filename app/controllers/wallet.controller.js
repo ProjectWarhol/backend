@@ -1,26 +1,17 @@
 const bcrypt = require('bcrypt');
-const Web3 = require('web3');
 const {
   createCustodialWallet,
-  // storeCustodialWallet,
+  encryptPrivateKey,
 } = require('./custodial_wallet');
-const { updateUserWalletId } = require('../service/user');
 const { decryptPrivateKey } = require('./custodial_wallet');
 const { walletObject } = require('../util/walletObject');
-const { encryptedWalletObject } = require('../util/encryptedWalletObject');
-const {
-  // addWalletToDatabase,
-  // updateWallet,
-  findWalletById,
-  deleteWallet,
-} = require('../service/user.account');
+const { encryptedWalletObject } = require('../util/walletObject');
 const db = require('../models');
 
 const { UserAccount } = db;
-const web3 = new Web3();
 
 // create a wallet with private/public keys
-exports.createWallet = (req, res, next) => {
+exports.createWallet = (_req, res, next) => {
   return createCustodialWallet()
     .then(([wallet, seedPhrase]) => {
       res.locals.wallet = wallet;
@@ -52,7 +43,7 @@ exports.storePrivateKey = async (req, res, next) => {
     .hash(res.locals.mnemonicPhrase, passwordHash)
     .then((mnemonicHash) => {
       wallet.mnemonicHash = mnemonicHash;
-      return web3.eth.accounts.encrypt(res.locals.wallet.privateKey, password);
+      return encryptPrivateKey(res.locals.wallet.privateKey, password);
     })
     .then((encryptedPrivateKey) => {
       if (!encryptedPrivateKey) throw new StatusError('Wrong Input', 422);
@@ -67,33 +58,38 @@ exports.storePrivateKey = async (req, res, next) => {
 };
 
 // get a wallet using walletId and password
-exports.retrieveWallet = async (req, res) => {
+exports.retrieveWallet = async (req, res, next) => {
   const {
+    user: { walletId },
     body: { password },
-    params: { id },
   } = req;
 
-  const userAccount = await findWalletById(id, res);
-  const encryptedAccount = walletObject(userAccount);
-  const account = await decryptPrivateKey(encryptedAccount, password);
-
-  res.status(200).send({
-    message: 'wallet successfully sent',
-    walletId: userAccount.id,
-    account,
-  });
+  return UserAccount.findById(walletId)
+    .then((wallet) => walletObject(wallet))
+    .then((wallet) => decryptPrivateKey(wallet, password))
+    .then((data) => {
+      return res.status(200).send({
+        message: 'Wallet successfully sent',
+        walletId,
+        account: data,
+      });
+    })
+    .catch((err) => {
+      if (!(err instanceof StatusError))
+        return next(new StatusError("Couldn't decrypt wallet", 422));
+      return next(err);
+    });
 };
 
-// delete wallet by id
-exports.deleteWallet = async (req, res, next) => {
-  const walletId = req.params.id;
-  const { id } = req.body;
-  const deleteObject = { dataValues: '' };
+exports.deleteWallet = (req, res, next) => {
+  const { walletId } = req.user;
 
-  await deleteWallet(walletId, res, next);
-  await updateUserWalletId(deleteObject, id, res, next);
-
-  res.status(200).send({
-    message: 'wallet successfully deleted',
-  });
+  return UserAccount.findById(walletId)
+    .then((wallet) => wallet.destroy())
+    .then(() => {
+      res.status(200).send({
+        message: 'Wallet successfully deleted',
+      });
+    })
+    .catch((err) => next(err));
 };

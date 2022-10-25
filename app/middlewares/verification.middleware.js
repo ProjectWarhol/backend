@@ -1,5 +1,3 @@
-// const { checkIfUserHasWallet } = require('../util/accessRight');
-
 exports.userHasNotWallet = async (req, _res, next) => {
   if (req.user.walletId) {
     return next(new StatusError('User already has a wallet', 403));
