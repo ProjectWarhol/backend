@@ -28,7 +28,7 @@ exports.createWallet = (_req, res, next) => {
 };
 
 // encrypt privateKey with private/public key and password and store
-exports.storePrivateKey = async (req, res, next) => {
+exports.storePrivateKey = (req, res, next) => {
   const {
     body: { password },
   } = req;
@@ -58,7 +58,7 @@ exports.storePrivateKey = async (req, res, next) => {
 };
 
 // get a wallet using walletId and password
-exports.retrieveWallet = async (req, res, next) => {
+exports.retrieveWallet = (req, res, next) => {
   const {
     user: { walletId },
     body: { password },

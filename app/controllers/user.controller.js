@@ -55,7 +55,7 @@ exports.replacePassword = (req, res, next) => {
 };
 
 // Patch User password
-exports.updatePassword = async (req, res, next) => {
+exports.updatePassword = (req, res, next) => {
   const {
     user,
     body: { oldPassword, newPassword },

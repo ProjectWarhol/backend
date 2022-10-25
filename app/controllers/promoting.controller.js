@@ -3,7 +3,7 @@ const db = require('../models');
 const { Promoting, User } = db;
 
 // Get all users that a user with userId promotes
-exports.userPromoting = async (req, res, next) => {
+exports.userPromoting = (req, res, next) => {
   const {
     params: { userId },
   } = req;
@@ -20,7 +20,7 @@ exports.userPromoting = async (req, res, next) => {
 };
 
 // Get all users that promote a user with promotedId
-exports.userIsPromoted = async (req, res, next) => {
+exports.userIsPromoted = (req, res, next) => {
   const {
     params: { promotedId },
   } = req;
@@ -67,7 +67,7 @@ exports.sessionPromoted = (req, res, next) => {
 };
 
 // Create entry in Promoting
-exports.promotingOneUser = async (req, res, next) => {
+exports.promotingOneUser = (req, res, next) => {
   const {
     params: { promotedId },
   } = req;
@@ -83,7 +83,7 @@ exports.promotingOneUser = async (req, res, next) => {
 };
 
 // Delete entry in Promoting
-exports.unpromotingOneUser = async (req, res, next) => {
+exports.unpromotingOneUser = (req, res, next) => {
   const {
     params: { promotedId },
   } = req;
