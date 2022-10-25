@@ -1,13 +1,11 @@
 const express = require('express');
+const passport = require('passport');
 
 const router = express.Router();
 const user = require('../controllers/user.controller');
 const session = require('../controllers/session.controller');
 const mailer = require('../controllers/mailer.controller');
-const {
-  isLoggedIn,
-  checkLoginInput,
-} = require('../middlewares/authorization.middleware');
+const { isLoggedIn } = require('../middlewares/authorization.middleware');
 const {
   createWallet,
   storePrivateKey,
@@ -18,7 +16,7 @@ const {
 } = require('../middlewares/authentication.middleware');
 
 // Post login request
-router.post('/login', checkLoginInput, session.login);
+router.post('/login', passport.authenticate('local'), session.login);
 
 // Post logout request
 router.post('/logout', isLoggedIn, session.logout);
