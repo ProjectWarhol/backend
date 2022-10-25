@@ -3,36 +3,18 @@ const bip39 = require('bip39');
 
 const web3 = new Web3();
 
-exports.generateSeedPhrase = () => {
-  const mnemonic = bip39.generateMnemonic();
-  return mnemonic;
-};
+const generateSeedPhrase = () => bip39.generateMnemonic();
+exports.generateSeedPhrase = generateSeedPhrase;
 
 exports.createCustodialWallet = () => {
+  const seedPhrase = generateSeedPhrase();
   const wallet = web3.eth.accounts.create();
-  const seedPhrase = exports.generateSeedPhrase();
-  const data = {
-    wallet,
-    seedPhrase,
-  };
-  return data;
+
+  return Promise.all([wallet, seedPhrase]);
 };
 
-exports.storeCustodialWallet = (custodialWalletData, password) => {
-  try {
-    const { seedPhrase } = custodialWalletData;
-    const { address, privateKey } = custodialWalletData;
-    const encryptedPrivateKey = web3.eth.accounts.encrypt(privateKey, password);
-    const data = {
-      address,
-      encryptedPrivateKey,
-      seedPhrase,
-    };
-    return data;
-  } catch (err) {
-    return false;
-  }
-};
+exports.storeCustodialWallet = (privateKey, password) =>
+  web3.eth.accounts.encrypt(privateKey, password);
 
 exports.decryptPrivateKey = async (encryptedPrivateKey, password) => {
   try {

@@ -1,4 +1,3 @@
-const { createUser } = require('../service/user');
 const db = require('../models');
 
 const { User } = db;
@@ -89,12 +88,16 @@ exports.retrieveOne = (req, res, next) => {
 };
 
 // set updatePassword attributes
-exports.expressSignup = async (req, res, next) => {
-  const user = await createUser(req, res);
-  if (!user || res.headersSent) return;
+exports.expressSignup = (req, res, next) => {
+  const {
+    body: { userName, email, password },
+  } = req;
 
-  req.body.id = user.id;
-  req.body.userCredential = req.body.userName;
-
-  next();
+  User.createNewUser(userName, email, password)
+    .then((user) => {
+      res.locals.user = user;
+      req.body.userCredential = userName;
+      return next();
+    })
+    .catch((err) => next(err));
 };

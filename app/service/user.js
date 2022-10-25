@@ -4,15 +4,11 @@
 const bcrypt = require('bcrypt');
 const db = require('../models');
 
-const {
-  User,
-  Sequelize: { Op },
-} = db;
+const { User } = db;
 const {
   defaultErrorHandler,
   noPathErrorHandler,
   defaultPasswordMismatch,
-  defaultConflictHandler,
 } = require('../middlewares/error_handlers.middleware');
 
 exports.updateUserWalletId = async (storedWallet, id, res, next) => {
@@ -52,37 +48,6 @@ exports.getUserPasswordHash = async (id, res, password) => {
   }
 
   return user.passwordHash;
-};
-
-exports.createUser = async (req, res) => {
-  const {
-    body: { userName, email, password },
-  } = req;
-
-  const passwordHash = await bcrypt.hash(password, 12);
-
-  const user = await User.findOrCreate({
-    where: {
-      [Op.or]: [{ userName }, { email }],
-    },
-    defaults: {
-      ...{ userName },
-      ...{ email },
-      ...{ passwordHash },
-      createdAt: Date.now(),
-      promoters: 0,
-      promoting: 0,
-      verified: false,
-    },
-  }).catch(() => {
-    defaultErrorHandler(res, 'something went wrong while creating user');
-  });
-
-  if (!user[1]) {
-    defaultConflictHandler(res, 'Email or username already in use');
-  }
-
-  return user[0];
 };
 
 exports.updateUser = async (req, res, id) => {

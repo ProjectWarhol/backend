@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const { sessionObject } = require('../util/sessionObject');
 const { generateToken } = require('../util/tokenGenerator');
 
+const { Op } = Sequelize;
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
@@ -71,6 +73,29 @@ module.exports = (sequelize, DataTypes) => {
         },
         allowNull: true,
       });
+    }
+
+    static createNewUser(userName, email, password) {
+      return bcrypt
+        .hash(password, 12)
+        .then((passwordHash) => {
+          return User.findOrCreate({
+            where: {
+              [Op.or]: [{ userName }, { email }],
+            },
+            defaults: {
+              ...{ userName },
+              ...{ email },
+              ...{ passwordHash },
+            },
+          });
+        })
+        .then(([user, created]) => {
+          if (!created) {
+            throw new StatusError('User already exists', 409);
+          }
+          return user;
+        });
     }
 
     static findById = (id) => {

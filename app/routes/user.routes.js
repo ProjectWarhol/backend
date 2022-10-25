@@ -10,7 +10,7 @@ const {
   createWallet,
   storePrivateKey,
 } = require('../controllers/wallet.controller');
-const { userHasNotWallet } = require('../middlewares/verification.middleware');
+// const { userHasNotWallet } = require('../middlewares/verification.middleware');
 
 // Post login request
 router.post('/login', passport.authenticate('local'), (req, res, _next) =>
@@ -58,7 +58,6 @@ router.post('/updatePassword/:token', user.replacePassword);
 router.post(
   '/express',
   user.expressSignup,
-  userHasNotWallet,
   createWallet,
   storePrivateKey,
   passport.authenticate('local'),

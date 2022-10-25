@@ -35,11 +35,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true, // false
       },
-      versionId: {
-        type: DataTypes.UUID,
+      address: {
+        type: DataTypes.STRING,
         allowNull: true, // false
       },
-      address: {
+      mnemonicHash: {
         type: DataTypes.STRING,
         allowNull: true, // false
       },

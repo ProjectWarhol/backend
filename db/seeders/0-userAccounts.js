@@ -5,19 +5,20 @@ const {
 module.exports = {
   up: async (queryInterface) => {
     const publicKeys = [
-      await createCustodialWallet().wallet.address,
-      await createCustodialWallet().wallet.address,
-      await createCustodialWallet().wallet.address,
+      await createCustodialWallet(),
+      await createCustodialWallet(),
+      await createCustodialWallet(),
     ];
+
     await queryInterface.bulkInsert('UserAccount', [
       {
-        publicKey: publicKeys[0],
+        publicKey: publicKeys[0][0].address,
       },
       {
-        publicKey: publicKeys[1],
+        publicKey: publicKeys[1][0].address,
       },
       {
-        publicKey: publicKeys[2],
+        publicKey: publicKeys[2][0].address,
       },
     ]);
   },

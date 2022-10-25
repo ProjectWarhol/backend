@@ -1,70 +1,69 @@
+const bcrypt = require('bcrypt');
+const Web3 = require('web3');
 const {
   createCustodialWallet,
-  storeCustodialWallet,
+  // storeCustodialWallet,
 } = require('./custodial_wallet');
 const { updateUserWalletId } = require('../service/user');
 const { decryptPrivateKey } = require('./custodial_wallet');
 const { walletObject } = require('../util/walletObject');
-const { hashMnemonic } = require('../util/mnumonicHashing');
-const { changeObjectToData } = require('../util/privateKeyObject');
+const { encryptedWalletObject } = require('../util/encryptedWalletObject');
 const {
-  addWalletToDatabase,
-  updateWallet,
+  // addWalletToDatabase,
+  // updateWallet,
   findWalletById,
   deleteWallet,
 } = require('../service/user.account');
+const db = require('../models');
+
+const { UserAccount } = db;
+const web3 = new Web3();
 
 // create a wallet with private/public keys
-exports.createWallet = async (req, res, next) => {
-  const {
-    body: { id },
-  } = req;
-
-  const wallet = await createCustodialWallet();
-  const walletPublicKey = { publicKey: wallet.wallet.address };
-  const walletInformation = wallet.wallet;
-  const mnemonicPhrase = wallet.seedPhrase;
-
-  const storedWallet = await addWalletToDatabase(walletPublicKey, res, next);
-  const userObject = await updateUserWalletId(storedWallet, id, res, next);
-
-  req.body.walletInformation = walletInformation;
-  req.body.mnemonicPhrase = mnemonicPhrase;
-  req.body.walletId = userObject.walletId;
-  req.body.id = userObject.id;
-
-  next();
+exports.createWallet = (req, res, next) => {
+  return createCustodialWallet()
+    .then(([wallet, seedPhrase]) => {
+      res.locals.wallet = wallet;
+      res.locals.mnemonicPhrase = seedPhrase;
+      return wallet.address;
+    })
+    .then((publicKey) => UserAccount.create({ publicKey }))
+    .then((userAccount) => {
+      res.locals.userAccount = userAccount;
+      return res.locals.user.update({ walletId: userAccount.id });
+    })
+    .then(() => next())
+    .catch((err) => next(err));
 };
 
-// store and encrypt privateKey with private/public key and password
+// encrypt privateKey with private/public key and password and store
 exports.storePrivateKey = async (req, res, next) => {
   const {
-    body: { password, id, walletId },
+    body: { password },
   } = req;
 
+  const { passwordHash } = res.locals.user;
+
   const wallet = {
-    address: req.body.walletInformation.address,
-    privateKey: req.body.walletInformation.privateKey,
-    index: req.body.walletInformation.index,
-    mnemonicPhrase: req.body.mnemonicPhrase,
+    address: res.locals.wallet.address,
   };
 
-  const mnemonicHash = await hashMnemonic(
-    id,
-    res,
-    wallet.mnemonicPhrase,
-    password
-  );
-
-  const encryptedPrivateKey = await storeCustodialWallet(wallet, password);
-  if (!encryptedPrivateKey) {
-    return next(new StatusError('Wrong input', 400));
-  }
-
-  const encryptedData = changeObjectToData(encryptedPrivateKey, mnemonicHash);
-  await updateWallet(encryptedData, walletId, res, next);
-
-  return next();
+  bcrypt
+    .hash(res.locals.mnemonicPhrase, passwordHash)
+    .then((mnemonicHash) => {
+      wallet.mnemonicHash = mnemonicHash;
+      return web3.eth.accounts.encrypt(res.locals.wallet.privateKey, password);
+    })
+    .then((encryptedPrivateKey) => {
+      if (!encryptedPrivateKey) throw new StatusError('Wrong Input', 422);
+      wallet.encryptedPrivateKey = encryptedPrivateKey;
+      return encryptedWalletObject(wallet);
+    })
+    .then((encryptedWallet) =>
+      res.locals.userAccount.update({ ...encryptedWallet })
+    )
+    .then(() => next())
+    .catch((err) => next(err));
 };
 
 // get a wallet using walletId and password
