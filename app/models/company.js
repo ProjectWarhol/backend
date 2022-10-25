@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static findById = (id) => {
+      if (!id) throw new StatusError('Company', 404);
       return Company.findByPk(id, { rejectOnEmpty: true }).catch(() => {
         throw new StatusError('Company', 404);
       });

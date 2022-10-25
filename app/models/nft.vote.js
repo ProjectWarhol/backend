@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static findByContentAndUserId = (contentId, userId) => {
+      if (!contentId || !userId) throw new StatusError('Vote', 404);
       return NftVote.findOne({
         where: {
           ...{ contentId },

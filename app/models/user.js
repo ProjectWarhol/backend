@@ -99,12 +99,14 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static findById = (id) => {
+      if (!id) throw new StatusError('User', 404);
       return User.findByPk(id, { rejectOnEmpty: true }).catch(() => {
         throw new StatusError('User', 404);
       });
     };
 
     static findByLogin = (type, userCredential) => {
+      if (!type || !userCredential) throw new StatusError('User', 404);
       return User.findOne({
         where: { [type]: userCredential },
         rejectOnEmpty: true,
@@ -114,6 +116,7 @@ module.exports = (sequelize, DataTypes) => {
     };
 
     static findByToken = (resetToken) => {
+      if (!resetToken) throw new StatusError('User', 404);
       return User.findOne({
         where: { resetToken },
         rejectOnEmpty: true,

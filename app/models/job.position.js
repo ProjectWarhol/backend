@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static findById = (id) => {
+      if (!id) throw new StatusError('JobPosition', 404);
       return JobPosition.findByPk(id, { rejectOnEmpty: true }).catch(() => {
         throw new StatusError('JobPosition', 404);
       });

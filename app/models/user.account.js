@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static findById = (id) => {
+      if (!id) throw new StatusError('Wallet', 404);
       return UserAccount.findByPk(id, { rejectOnEmpty: true }).catch(() => {
         throw new StatusError('Wallet', 404);
       });

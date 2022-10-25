@@ -32,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     static findById = (id) => {
+      if (!id) throw new StatusError('Nft', 404);
       return NftContent.findByPk(id, { rejectOnEmpty: true }).catch(() => {
         throw new StatusError('Nft', 404);
       });
