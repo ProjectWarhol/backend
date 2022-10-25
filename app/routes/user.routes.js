@@ -16,9 +16,7 @@ const {
 } = require('../middlewares/authentication.middleware');
 
 // Post login request
-router.post('/login', passport.authenticate('local'), (req, res, _next) =>
-  res.status(200).json(req.user.stripSensitive())
-);
+router.post('/login', passport.authenticate('local'), session.login);
 
 // Post logout request
 router.post('/logout', isLoggedIn, session.logout);
