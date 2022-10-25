@@ -51,6 +51,21 @@ exports.sessionPromotes = (req, res, next) => {
     .catch((err) => next(err));
 };
 
+// Get users that LOGGED IN user is promoted by
+exports.sessionPromoted = (req, res, next) => {
+  const { user } = req;
+
+  user
+    .promotedBy()
+    .then((promoters) => {
+      return res.status(200).send({
+        message: 'Promoters sent successfully',
+        data: promoters,
+      });
+    })
+    .catch((err) => next(err));
+};
+
 // Create entry in Promoting
 exports.promotingOneUser = async (req, res, next) => {
   const {
