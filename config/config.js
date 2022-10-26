@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { updateEnvVariables } = require('../app/helpers/env.handler');
+const { updateEnvVariables } = require('../app/util/env.handler');
 
 const databaseEnvVariables = [
   'DB_DATABASE',
