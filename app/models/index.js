@@ -4,7 +4,7 @@ const path = require('path');
 
 const Sequelize = require('sequelize');
 
-const { updateEnvVariables } = require('../helpers/env.handler');
+const { updateEnvVariables } = require('../util/env.handler');
 
 const databaseEnvVariables = [
   'DB_DATABASE',

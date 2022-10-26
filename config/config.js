@@ -1,5 +1,5 @@
-const fs = require('fs');
-const { updateEnvVariables } = require('../app/helpers/env.handler');
+const { updateEnvVariables } = require('../app/util/env.handler');
+const { readFileToString } = require('../app/util/readFile');
 
 const databaseEnvVariables = [
   'DB_DATABASE',
@@ -39,7 +39,7 @@ module.exports = {
     dialectOptions: {
       ssl: {
         rejectUnauthorized: false,
-        ca: fs.readFileSync('ca-certificate.crt').toString(),
+        ca: readFileToString('ca-certificate.crt'),
       },
     },
   },
