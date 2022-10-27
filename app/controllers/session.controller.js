@@ -1,7 +1,9 @@
 exports.login = (req, res, _next) => {
+  const { user } = req;
+
   return res.status(200).json({
     message: 'Successfully logged in',
-    user: req.user.stripSensitive(),
+    user: user.stripSensitive(),
   });
 };
 
@@ -31,11 +33,19 @@ exports.validateSession = (req, res, next) => {
 };
 
 exports.expressValidationResponse = (req, res, _next) => {
+  const {
+    user: { id: userId, walletId },
+  } = req;
+
+  const {
+    locals: { wallet: walletInformation, mnemonicPhrase },
+  } = res;
+
   return res.status(200).send({
     message: 'Express signup complete',
-    userId: req.user.id,
-    walletId: req.user.walletId,
-    walletInformation: res.locals.wallet,
-    mnemonicPhrase: res.locals.mnemonicPhrase,
+    userId,
+    walletId,
+    walletInformation,
+    mnemonicPhrase,
   });
 };

@@ -70,10 +70,11 @@ exports.sessionPromoted = (req, res, next) => {
 exports.promotingOneUser = (req, res, next) => {
   const {
     params: { promotedId },
+    user: { id: promoterId },
   } = req;
 
   User.findById(promotedId)
-    .then(() => Promoting.createPromotion(req.user.id, promotedId))
+    .then(() => Promoting.createPromotion(promoterId, promotedId))
     .then(() => {
       return res.status(200).send({
         message: 'Promotion created successfully',
@@ -86,10 +87,11 @@ exports.promotingOneUser = (req, res, next) => {
 exports.unpromotingOneUser = (req, res, next) => {
   const {
     params: { promotedId },
+    user: { id: promoterId },
   } = req;
 
   User.findById(promotedId)
-    .then(() => Promoting.deletePromotion(req.user.id, promotedId))
+    .then(() => Promoting.deletePromotion(promoterId, promotedId))
     .then(() => {
       return res.status(200).send({
         message: 'Promotion deleted successfully',
