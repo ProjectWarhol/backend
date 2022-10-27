@@ -6,7 +6,10 @@ const user = require('../controllers/user.controller');
 const session = require('../controllers/session.controller');
 const mailer = require('../controllers/mailer.controller');
 const { isLoggedIn } = require('../middlewares/authorization.middleware');
-const { checkEmail } = require('../middlewares/validation.middleware');
+const {
+  checkUsername,
+  checkEmail,
+} = require('../middlewares/validation.middleware');
 const {
   createWallet,
   storePrivateKey,
@@ -43,6 +46,7 @@ router.post('/updatePassword/:token', user.replacePassword);
 // express signup
 router.post(
   '/express',
+  checkUsername,
   checkEmail,
   user.expressSignup,
   createWallet,
