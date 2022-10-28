@@ -65,21 +65,15 @@ exports.deleteCompany = async (req, res, next) => {
   Company.findById(id)
     .then((company) => {
       if (company.ownerUserId !== userId) {
-        return next(new StatusError('unauthorized', 401));
+        throw new StatusError('unauthorized', 401);
       }
       return company.destroy();
     })
-    .then(async () => {
-      const owner = await Company.findOne({
-        where: {
-          ownerUserId: userId,
-        },
-      });
-      if (owner === null) {
-        User.findById(userId).then((user) => {
-          user.update({ isCompanyOwner: false });
-        });
-      }
+    .then(() => {
+      return User.findById(userId);
+    })
+    .then((user) => {
+      user.update({ isCompanyOwner: false });
     })
     .then(() => {
       return res.status(200).send({
