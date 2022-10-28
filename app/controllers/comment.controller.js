@@ -1,15 +1,15 @@
 const db = require('../models');
 
-const { NftContent, Comments } = db;
+const { NftContent, Comment } = db;
 
 // Retrieve comments on picture
 exports.retrieveComments = (req, res, next) => {
   const {
     body: { offset },
-    params: { id },
+    params: { nftId },
   } = req;
 
-  NftContent.findById(id)
+  NftContent.findById(nftId)
     .then((nft) => nft.getNftComments(Number(offset), 20))
     .then((comments) => {
       return res.status(200).send({
@@ -23,11 +23,12 @@ exports.retrieveComments = (req, res, next) => {
 // Post a comment on a picture
 exports.createComment = (req, res, next) => {
   const {
-    body: { comment, userId },
-    params: { id },
+    body: { comment },
+    params: { nftId },
+    user: { id: userId },
   } = req;
 
-  NftContent.findById(id)
+  NftContent.findById(nftId)
     .then((nft) => nft.createNftComment(userId, comment))
     .then(() => {
       return res.status(200).send({
@@ -40,15 +41,13 @@ exports.createComment = (req, res, next) => {
 // Delete a comment on a picture
 exports.deleteComment = (req, res, next) => {
   const {
-    params: { id },
-    body: { userId },
+    params: { commentId },
+    user: { id: userId },
   } = req;
 
-  Comments.findById(id)
+  Comment.findById(commentId)
     .then((comment) => {
-      if (comment.userId !== userId) {
-        return next(new StatusError('unauthorized', 401));
-      }
+      if (comment.userId !== userId) throw new StatusError('unauthorized', 401);
       return comment.destroy();
     })
     .then(() => {
@@ -56,23 +55,21 @@ exports.deleteComment = (req, res, next) => {
         message: 'Comment deleted successfully',
       });
     })
-
     .catch((err) => next(err));
 };
 
 // Patch Comment
 exports.updateComment = (req, res, next) => {
   const {
-    params: { id },
+    params: { commentId },
     body: { comment },
-    body: { userId },
+    user: { id: userId },
   } = req;
 
-  Comments.findById(id)
+  Comment.findById(commentId)
     .then((commentInstance) => {
-      if (commentInstance.userId !== userId) {
-        return next(new StatusError('unauthorized', 401));
-      }
+      if (commentInstance.userId !== userId)
+        throw new StatusError('unauthorized', 401);
       return commentInstance.updateComment(comment);
     })
     .then(() => {

@@ -62,6 +62,9 @@ app.use(
 //     port: process.env.REDIS_PORT || 6379,
 //   });
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 //   const reqLimiter = rateLimit({
 //     windowMs: (process.env.REQ_WINDOW_MINUTES || 1) * 60 * 1000,
 //     max: process.env.MAX_REQ || 50,

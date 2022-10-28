@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const { sessionObject } = require('../util/sessionObject');
 const { generateToken } = require('../util/tokenGenerator');
 
+const { Op } = Sequelize;
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
@@ -48,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       });
 
-      this.hasMany(models.Comments, {
+      this.hasMany(models.Comment, {
         foreignKey: {
           name: 'userId',
           type: DataTypes.UUID,
@@ -73,13 +75,38 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
+    static createNewUser(userName, email, password) {
+      return bcrypt
+        .hash(password, 12)
+        .then((passwordHash) => {
+          return User.findOrCreate({
+            where: {
+              [Op.or]: [{ userName }, { email }],
+            },
+            defaults: {
+              ...{ userName },
+              ...{ email },
+              ...{ passwordHash },
+            },
+          });
+        })
+        .then(([user, created]) => {
+          if (!created) {
+            throw new StatusError('User already exists', 409);
+          }
+          return user;
+        });
+    }
+
     static findById = (id) => {
+      if (!id) throw new StatusError('User', 404);
       return User.findByPk(id, { rejectOnEmpty: true }).catch(() => {
         throw new StatusError('User', 404);
       });
     };
 
     static findByLogin = (type, userCredential) => {
+      if (!type || !userCredential) throw new StatusError('User', 404);
       return User.findOne({
         where: { [type]: userCredential },
         rejectOnEmpty: true,
@@ -89,6 +116,7 @@ module.exports = (sequelize, DataTypes) => {
     };
 
     static findByToken = (resetToken) => {
+      if (!resetToken) throw new StatusError('User', 404);
       return User.findOne({
         where: { resetToken },
         rejectOnEmpty: true,

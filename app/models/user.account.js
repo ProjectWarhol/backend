@@ -12,6 +12,13 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       });
     }
+
+    static findById = (id) => {
+      if (!id) throw new StatusError('Wallet', 404);
+      return UserAccount.findByPk(id, { rejectOnEmpty: true }).catch(() => {
+        throw new StatusError('Wallet', 404);
+      });
+    };
   }
 
   UserAccount.init(
@@ -35,11 +42,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true, // false
       },
-      versionId: {
-        type: DataTypes.UUID,
+      address: {
+        type: DataTypes.STRING,
         allowNull: true, // false
       },
-      address: {
+      mnemonicHash: {
         type: DataTypes.STRING,
         allowNull: true, // false
       },

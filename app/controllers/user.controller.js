@@ -1,23 +1,17 @@
-const { createUser } = require('../service/user');
 const db = require('../models');
 
 const { User } = db;
 
-// Update a user by the id in the request
+// Update a user
 exports.updateOne = (req, res, next) => {
-  const {
-    params: { id },
-  } = req;
+  const { user } = req;
 
-  User.findById(id)
-    .then((user) => {
-      user.set(req.body);
-      return user.save();
-    })
-    .then((user) => {
+  user
+    .update(req.body)
+    .then((updatedUser) => {
       return res.status(200).send({
         message: 'User was updated successfully',
-        user: user.stripSensitive(),
+        user: updatedUser.stripSensitive(),
       });
     })
     .catch((err) => next(err));
@@ -61,13 +55,14 @@ exports.replacePassword = (req, res, next) => {
 };
 
 // Patch User password
-exports.updatePassword = async (req, res, next) => {
+exports.updatePassword = (req, res, next) => {
   const {
-    body: { userId, oldPassword, newPassword },
+    user,
+    body: { oldPassword, newPassword },
   } = req;
 
-  User.findById(userId)
-    .then((user) => user.replacePassword(oldPassword, newPassword))
+  user
+    .replacePassword(oldPassword, newPassword)
     .then(() => {
       return res.status(200).send({
         message: 'Password successfully updated',
@@ -93,11 +88,16 @@ exports.retrieveOne = (req, res, next) => {
 };
 
 // set updatePassword attributes
-exports.expressSignup = async (req, res, next) => {
-  const user = await createUser(req, res);
-  if (!user || res.headersSent) return;
+exports.expressSignup = (req, res, next) => {
+  const {
+    body: { userName, email, password },
+  } = req;
 
-  req.body.id = user.id;
-
-  next();
+  User.createNewUser(userName, email, password)
+    .then((user) => {
+      res.locals.user = user;
+      req.body.userCredential = userName;
+      return next();
+    })
+    .catch((err) => next(err));
 };

@@ -10,7 +10,7 @@ const commentsRoutes = require('./comments.routes');
 const nftVoteRoutes = require('./nft.vote.routes');
 
 // this file acts as the main router for all incoming requests
-router.get('/', (req, res) => {
+router.get('/', (_req, res) => {
   res.send('Warhol');
 });
 
