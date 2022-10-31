@@ -75,7 +75,13 @@ app.use(passport.session());
 //   });
 //   app.use(reqLimiter);
 // }
-db.sequelize.sync({ alter: true });
+db.sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection to db established');
+    db.sequelize.sync({ alter: true });
+  })
+  .catch((err) => console.error(err));
 
 app.use(require('sanitize').middleware);
 
