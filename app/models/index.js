@@ -23,18 +23,20 @@ const config = require('../../config/config')[env];
 
 const db = {};
 const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  {
-    host: config.host,
-    port: Number(config.DB_PORT),
-    dialect: config.dialect,
-    dialectOptions: config.dialectOptions,
-    define: {
-      freezeTableName: true,
-    },
-  }
+  // config.database,
+  // config.username,
+  // config.password,
+  // {
+  //   host: config.host,
+  //   port: Number(config.DB_PORT),
+  //   dialect: config.dialect,
+  //   dialectOptions: config.dialectOptions,
+  //   define: {
+  //     freezeTableName: true,
+  //   },
+  // }
+  `${config.url}?sslmode=require`,
+  config
 );
 
 fs.readdirSync(__dirname)

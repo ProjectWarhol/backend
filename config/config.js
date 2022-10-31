@@ -1,5 +1,5 @@
 const { updateEnvVariables } = require('../app/util/env.handler');
-const { readFileToString } = require('../app/util/readFile');
+// const { readFileToString } = require('../app/util/readFile');
 
 const databaseEnvVariables = [
   'DB_DATABASE',
@@ -13,11 +13,12 @@ updateEnvVariables(databaseEnvVariables);
 require('dotenv').config(); // this is important!
 
 const commonConfig = {
-  database: process.env.DB_DATABASE,
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
+  // database: process.env.DB_DATABASE,
+  // username: process.env.DB_USERNAME,
+  // password: process.env.DB_PASSWORD,
+  // host: process.env.DB_HOST,
+  // port: process.env.DB_PORT,
+  url: process.env.DB_URL,
   dialect: 'postgres',
 };
 
@@ -36,10 +37,14 @@ module.exports = {
   },
   production: {
     ...commonConfig,
+    define: {
+      freezeTableName: true,
+    },
     dialectOptions: {
       ssl: {
+        require: true,
         rejectUnauthorized: false,
-        ca: readFileToString('ca-certificate.crt'),
+        // ca: readFileToString('ca-certificate.crt'),
       },
     },
   },
