@@ -12,7 +12,6 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write",
-    "prepare": "husky install",
     "setup:db": "sequelize db:drop && sequelize db:create && sequelize db:migrate && sequelize db:seed:all",
     "setup:prod:db": "NODE_ENV=production sequelize db:migrate && sequelize db:seed:all",
     "setup:testing": "NODE_ENV=test npm run setup:db",
