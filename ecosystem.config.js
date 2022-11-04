@@ -17,7 +17,6 @@ module.exports = {
 
   deploy: {
     production: {
-      name: 'npm run prod',
       user: 'root',
       host: '46.101.106.146',
       ref: 'origin/feature/pm2/ci',
@@ -29,10 +28,8 @@ module.exports = {
         SEQUELIZE_LOGGING: process.env.SEQUELIZE_LOGGING,
         DB_URL: process.env.DB_URL,
       },
-      script: 'npm run prod',
-      'pre-deploy-local': '',
       'post-deploy':
-        'npm install && pm2 startOrRestart ecosystem.config.js --env production && pm2 save',
+        'npm install && npm run prod && pm2 startOrRestart ecosystem.config.js --env production && pm2 save',
     },
   },
 };
