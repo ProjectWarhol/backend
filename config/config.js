@@ -35,9 +35,14 @@ module.exports = {
     ...commonConfig,
   },
   production: {
-    ...commonConfig,
+    url: process.env.DB_URL,
+    dialect: 'postgres',
+    define: {
+      freezeTableName: true,
+    },
     dialectOptions: {
       ssl: {
+        require: true,
         rejectUnauthorized: false,
         ca: readFileToString('ca-certificate.crt'),
       },
