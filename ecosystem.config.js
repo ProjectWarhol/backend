@@ -31,7 +31,7 @@ module.exports = {
       script: 'npm run prod',
       'pre-deploy-local': '',
       'post-deploy':
-        'npm install && pm2 startOrRestart ecosystem.json --env production',
+        'npm install && pm2 startOrRestart ecosystem.config.js --env production',
     },
   },
 };
