@@ -150,7 +150,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       timestamps: true,
-      modelName: 'NftContent',
+      tableName: 'NftContent',
     }
   );
   return NftContent;

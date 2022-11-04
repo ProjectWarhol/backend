@@ -86,7 +86,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       timestamps: true,
       updatedAt: false,
-      modelName: 'NftVote',
+      tableName: 'NftVote',
     }
   );
   return NftVote;
