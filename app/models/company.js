@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
           name: 'id',
           type: DataTypes.UUID,
         },
+        as: 'owner',
         allowNull: false,
       });
     }
@@ -51,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          is: /^[a-z0-9-_.]{4,20}$/i,
+          len: [4, 255],
         },
       },
       website: {
