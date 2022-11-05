@@ -31,7 +31,7 @@ if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('combined'));
 }
 
-if (['production'].includes(process.env.NODE_ENV)) {
+if (process.env.NODE_ENV === 'production') {
   app.set('trust proxy', 1);
 }
 
@@ -48,7 +48,6 @@ app.use(
     secret: process.env.FOO_COOKIE_SECRET,
     resave: false,
     saveUninitialized: false,
-    proxy: true,
     cookie: {
       httpOnly: true,
       sameSite: ['production'].includes(process.env.NODE_ENV) ? 'none' : 'lax',

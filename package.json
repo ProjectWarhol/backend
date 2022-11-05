@@ -8,7 +8,7 @@
     "test:dev": "NODE_ENV=test npm run test ./test/*.test.js",
     "dev": "NODE_ENV=development nodemon --trace-warnings app.js",
     "start": "node app.js",
-    "prod": "NODE_ENV=production NODE_EXTRA_CA_CERTS=/Users/massi/Documents/CODE/SE/ProjectWarhol/backend/ca-certificate.crt node app.js",
+    "prod": "NODE_ENV=production NODE_EXTRA_CA_CERTS=/root/nodocker/backend/ca-certificate.crt node app.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write",
