@@ -78,7 +78,6 @@
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "husky": "^7.0.2",
     "lint-staged": "^11.1.2",
-    
     "nodemon": "^2.0.12",
     "prettier": "^2.3.2",
     "sequelize-cli": "^6.2.0",
