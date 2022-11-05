@@ -1,4 +1,4 @@
-// /* eslint-disable arrow-body-style, prefer-arrow/prefer-arrow-functions, no-undef */
+/* eslint-disable arrow-body-style, prefer-arrow/prefer-arrow-functions, no-undef */
 // const chai = require('chai');
 // const chaiHttp = require('chai-http');
 // const app = require('../app');

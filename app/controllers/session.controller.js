@@ -1,4 +1,5 @@
 exports.login = (req, res, _next) => {
+  console.log('user inside sessionController.login:', req.user);
   const { user } = req;
 
   return res.status(200).json({
