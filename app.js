@@ -48,6 +48,7 @@ app.use(
     secret: process.env.FOO_COOKIE_SECRET,
     resave: false,
     saveUninitialized: false,
+    proxy: true,
     cookie: {
       httpOnly: true,
       sameSite: ['production'].includes(process.env.NODE_ENV) ? 'none' : 'lax',

@@ -1,5 +1,5 @@
 const { updateEnvVariables } = require('../app/util/env.handler');
-// const { readFileToString } = require('../app/util/readFile');
+const { readFileToString } = require('../app/util/readFile');
 
 const databaseEnvVariables = [
   'DB_DATABASE',
@@ -42,9 +42,9 @@ module.exports = {
     },
     dialectOptions: {
       ssl: {
-        require: true,
-        rejectUnauthorized: false,
-        // ca: readFileToString('ca-certificate.crt'),
+        require: 'verify-full',
+        rejectUnauthorized: true,
+        ca: readFileToString('ca-certificate.crt'),
       },
     },
   },
