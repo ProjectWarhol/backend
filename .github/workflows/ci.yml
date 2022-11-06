@@ -41,7 +41,7 @@ jobs:
         run: npm i pm2
 
       - name: Deploy
-        run: env $(cat .env | grep -v \"#\" | xargs) pm2 deploy ecosystem.config.js staging
+        run: pm2 deploy ecosystem.config.js staging
 
   # cd-build-and-deploy-backend:
   #   runs-on: ubuntu-latest
