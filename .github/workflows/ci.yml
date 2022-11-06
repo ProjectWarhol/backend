@@ -17,26 +17,46 @@ jobs:
         with:
           node-version: 16
     # Add tests step later
-
-  cd-build-and-deploy-backend:
+  cd:
     runs-on: ubuntu-latest
     needs: [ci]
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
 
     steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Login to DockerHub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          build-args: |
-            'NODE_ENV=production'
-          push: true
-          tags: warholcrac/warhol-backend:latest
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_PRIVATE_KEY" > ./deploy.key
+          sudo chmod 600 ./deploy.key
+          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+          SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
+      - name: Deploy
+        run: env $(cat .env | grep -v \"#\" | xargs) pm2 deploy ecosystem.config.js staging
+        # Or alternately, put this deploy script in your package.json's scripts and run it using yarn/npm:
+        # run: yarn deploy
+
+  # cd-build-and-deploy-backend:
+  #   runs-on: ubuntu-latest
+  #   needs: [ci]
+  #   if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+
+  #   steps:
+  #     - name: Set up QEMU
+  #       uses: docker/setup-qemu-action@v2
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v2
+  #     - name: Login to DockerHub
+  #       uses: docker/login-action@v2
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
+  #     - name: Build and push
+  #       uses: docker/build-push-action@v3
+  #       with:
+  #         build-args: |
+  #           'NODE_ENV=production'
+  #         push: true
+  #         tags: warholcrac/warhol-backend:latest
