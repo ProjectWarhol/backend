@@ -29,7 +29,7 @@ module.exports = {
         DB_URL: process.env.DB_URL,
       },
       'post-deploy':
-        'npm install && npm run prod && pm2 startOrRestart ecosystem.config.js --env production && pm2 save',
+        'npm install && pm2 start npm -- run prod && pm2 startOrRestart ecosystem.config.js --env production && pm2 save',
     },
   },
 };
