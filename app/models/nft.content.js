@@ -29,6 +29,14 @@ module.exports = (sequelize, DataTypes) => {
         },
         allowNull: false,
       });
+
+      this.belongsTo(models.Company, {
+        foreignKey: {
+          name: 'companyId',
+          type: DataTypes.UUID,
+        },
+        allowNull: true,
+      });
     }
 
     static findById = (id) => {

@@ -4,16 +4,22 @@ module.exports = {
       `SELECT id from "User";`
     );
 
+    const companyIds = (
+      await queryInterface.sequelize.query(`SELECT id from "Company";`)
+    )[0];
+
     await queryInterface.bulkInsert('NftContent', [
       {
         title: 'A nice nft',
         userId: userIds[0][0].id,
         categories: ['art', 'music'],
+        companyId: companyIds[0].id,
       },
       {
         title: 'A nicer nft',
         userId: userIds[0][1].id,
         categories: ['nsfw', 'anime', 'art'],
+        companyId: companyIds[1].id,
       },
       {
         title: 'An even nicer nft',
@@ -24,6 +30,7 @@ module.exports = {
         title: 'A beautiful nft',
         userId: userIds[0][3].id,
         categories: ['foo', 'bar', 'baz'],
+        companyId: companyIds[2].id,
       },
     ]);
   },

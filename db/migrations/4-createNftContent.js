@@ -78,6 +78,18 @@ module.exports = {
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE',
       },
+      companyId: {
+        type: DataTypes.UUID,
+        references: {
+          model: {
+            tableName: 'Company',
+          },
+          key: 'id',
+        },
+        allowNull: true,
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
+      },
     });
   },
 
