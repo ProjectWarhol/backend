@@ -41,7 +41,7 @@ jobs:
         run: sudo npm install pm2@latest -g
 
       - name: Deploy
-        run: pm2 deploy ecosystem.config.js staging
+        run: pm2 deploy ecosystem.config.js
 
   # cd-build-and-deploy-backend:
   #   runs-on: ubuntu-latest
