@@ -19,6 +19,7 @@ module.exports = {
     production: {
       user: 'root',
       host: '46.101.106.146',
+      key: 'deploy_key',
       ref: 'origin/feature/pm2/ci',
       repo: 'https://github.com/ProjectWarhol/backend.git',
       path: '/var/www/production',
