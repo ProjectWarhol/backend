@@ -17,7 +17,7 @@ module.exports = {
 
   deploy: {
     production: {
-      user: 'root',
+      user: 'taka',
       host: '46.101.106.146',
       key: 'deploy.key',
       ref: 'origin/feature/pm2/ci',
