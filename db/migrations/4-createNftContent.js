@@ -51,6 +51,11 @@ module.exports = {
         allowNull: false,
         defaultValue: false,
       },
+      categories: {
+        type: Sequelize.ARRAY(Sequelize.STRING),
+        allowNull: false,
+        defaultValue: [],
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
