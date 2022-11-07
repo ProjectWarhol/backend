@@ -20,7 +20,7 @@ module.exports = {
       user: 'taka',
       host: '46.101.106.146',
       ssh_options: 'StrictHostKeyChecking=no',
-      key: 'deploy.key',
+      key: '~/.ssh/deploy.key',
       ref: 'origin/feature/pm2/ci',
       repo: 'https://github.com/ProjectWarhol/backend.git',
       path: '/var/www/production',
