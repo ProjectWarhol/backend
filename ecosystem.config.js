@@ -20,7 +20,7 @@ module.exports = {
       user: 'taka',
       host: '46.101.106.146',
       ssh_options: 'StrictHostKeyChecking=no',
-      key: '~/.ssh/deploy.key',
+      // key: '~/.ssh/deploy.key',
       ref: 'origin/main',
       repo: 'https://github.com/ProjectWarhol/backend.git',
       path: '/var/www/production',
@@ -31,7 +31,7 @@ module.exports = {
         DB_URL: process.env.DB_URL,
       },
       'post-deploy':
-        'npm install && pm2 start npm -- run prod && pm2 startOrRestart ecosystem.config.js --env production && pm2 save',
+        'git config --global --add safe.directory /var/www/production/source && npm install && pm2 start npm -- run prod && pm2 startOrRestart ecosystem.config.js --env production && pm2 save',
     },
   },
 };
