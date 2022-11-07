@@ -17,7 +17,7 @@ module.exports = {
 
   deploy: {
     production: {
-      user: 'root',
+      user: 'taka',
       host: '46.101.106.146',
       ssh_options: 'StrictHostKeyChecking=no',
       key: 'deploy.key',
