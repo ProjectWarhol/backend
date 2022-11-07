@@ -41,7 +41,7 @@ jobs:
         run: sudo npm install pm2@latest -g
 
       - name: Deploy
-        run: git config --global --add safe.directory /var/www/production/source && pm2 deploy ecosystem.config.js production
+        run: pm2 deploy ecosystem.config.js production
 
   # cd-build-and-deploy-backend:
   #   runs-on: ubuntu-latest
