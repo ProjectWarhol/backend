@@ -17,7 +17,7 @@ module.exports = {
 
   deploy: {
     production: {
-      user: 'deployer',
+      user: 'root',
       host: '46.101.106.146',
       // key: '~/.ssh/deploy.key',
       key: process.env.SSH_KEY_PATH_TEST,
