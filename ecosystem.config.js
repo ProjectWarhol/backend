@@ -18,7 +18,7 @@ module.exports = {
   deploy: {
     production: {
       user: 'deployer',
-      host: process.env.IP_ADDRESS,
+      host: process.env.IP_ADDRESS ? process.env.IP_ADDRESS : '~/ip/ip_address',
       key: '~/.ssh/deploy.key',
       ref: 'origin/main',
       repo: 'https://github.com/ProjectWarhol/backend.git',
