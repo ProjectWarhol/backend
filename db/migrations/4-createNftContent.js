@@ -51,6 +51,11 @@ module.exports = {
         allowNull: false,
         defaultValue: false,
       },
+      categories: {
+        type: Sequelize.ARRAY(Sequelize.STRING),
+        allowNull: false,
+        defaultValue: [],
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
@@ -66,6 +71,18 @@ module.exports = {
         references: {
           model: {
             tableName: 'User',
+          },
+          key: 'id',
+        },
+        allowNull: true,
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
+      },
+      companyId: {
+        type: DataTypes.UUID,
+        references: {
+          model: {
+            tableName: 'Company',
           },
           key: 'id',
         },

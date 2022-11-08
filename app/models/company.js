@@ -28,6 +28,14 @@ module.exports = (sequelize, DataTypes) => {
         as: 'owner',
         allowNull: false,
       });
+
+      this.hasMany(models.NftContent, {
+        foreignKey: {
+          name: 'companyId',
+          type: DataTypes.UUID,
+        },
+        allowNull: true,
+      });
     }
 
     static findById = (id) => {

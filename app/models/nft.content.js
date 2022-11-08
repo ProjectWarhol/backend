@@ -29,6 +29,14 @@ module.exports = (sequelize, DataTypes) => {
         },
         allowNull: false,
       });
+
+      this.belongsTo(models.Company, {
+        foreignKey: {
+          name: 'companyId',
+          type: DataTypes.UUID,
+        },
+        allowNull: true,
+      });
     }
 
     static findById = (id) => {
@@ -145,6 +153,10 @@ module.exports = (sequelize, DataTypes) => {
       hasSold: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
+      },
+      categories: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        defaultValue: [],
       },
     },
     {

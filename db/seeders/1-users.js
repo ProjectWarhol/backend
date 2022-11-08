@@ -44,6 +44,7 @@ module.exports = {
         promoters: 2000,
         promoting: 1234,
         verified: true,
+        isCompanyOwner: false,
       },
     ]);
   },
