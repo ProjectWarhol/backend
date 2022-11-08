@@ -36,12 +36,20 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
           SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
+      - name: Create env file
+        run: |
+          touch .env
+          echo IP_ADDRESS=${{ secrets.IP_ADDRESS }} >> .env
+          echo NODE_ENV=production >> .env
+          echo FOO_COOKIE_SECRET=${{ secrets.FOO_COOKIE_SECRET }} >> .env
+          echo SEQUELIZE_LOGGING=${{ secrets.SEQUELIZE_LOGGING }} >> .env
+          echo DB_URL=${{ secrets.DB_URL }} >> .env
 
       - name: Install PM2
         run: sudo npm install pm2@latest -g
 
       - name: Deploy
-        run: pm2 deploy ecosystem.config.js production
+        run: env $(cat .env | grep -v \"#\" | xargs) && pm2 deploy ecosystem.config.js production
 
   # cd-build-and-deploy-backend:
   #   runs-on: ubuntu-latest
