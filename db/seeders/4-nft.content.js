@@ -12,24 +12,24 @@ module.exports = {
       {
         title: 'A nice nft',
         userId: userIds[0][0].id,
-        categories: ['art', 'music'],
+        categories: ['rpg', 'fantasy'],
         companyId: companyIds[0].id,
       },
       {
         title: 'A nicer nft',
         userId: userIds[0][1].id,
-        categories: ['nsfw', 'anime', 'art'],
+        categories: ['fps', 'war-sim', 'sci-fi'],
         companyId: companyIds[1].id,
       },
       {
         title: 'An even nicer nft',
         userId: userIds[0][2].id,
-        categories: ['animals', 'food', 'travel', 'baz'],
+        categories: ['metroidvania', 'rpg'],
       },
       {
         title: 'A beautiful nft',
         userId: userIds[0][3].id,
-        categories: ['foo', 'bar', 'baz'],
+        categories: ['space-sim', 'flight-sim'],
         companyId: companyIds[2].id,
       },
     ]);

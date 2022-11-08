@@ -76,7 +76,7 @@ exports.retrieveFiltered = (req, res, next) => {
   }
 
   return res.status(200).json({
-    message: 'Contents retrieved',
+    message: 'No content',
     data: [],
   });
 };
