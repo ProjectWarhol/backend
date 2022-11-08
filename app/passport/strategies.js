@@ -13,11 +13,6 @@ exports.register = async (passport) => {
         usernameField: 'userCredential',
       },
       async (userCredential, password, done) => {
-        console.log(
-          'userCredential, password inside passport.stratety:',
-          userCredential,
-          password
-        );
         const user = await User.findOne({
           where: {
             [Op.or]: [{ email: userCredential }, { userName: userCredential }],

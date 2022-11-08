@@ -4,7 +4,7 @@
   "description": "unos backend",
   "main": "app.js",
   "scripts": {
-    "test": "NODE_ENV=test mocha --globals userTestId",
+    "test": "NODE_ENV=test mocha",
     "test:dev": "NODE_ENV=test npm run test ./test/*.test.js",
     "dev": "NODE_ENV=development nodemon --trace-warnings app.js",
     "start": "node app.js",
