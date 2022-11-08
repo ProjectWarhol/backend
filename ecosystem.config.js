@@ -20,7 +20,7 @@ module.exports = {
       user: 'deployer',
       host: '46.101.106.146',
       // key: '~/.ssh/deploy.key',
-      key: process.env.SSH_KEY_PATH,
+      key: process.env.SSH_KEY_PATH_TEST,
       ref: 'origin/main',
       repo: 'https://github.com/ProjectWarhol/backend.git',
       path: '/var/www/production',
