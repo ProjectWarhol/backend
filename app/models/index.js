@@ -22,20 +22,18 @@ const env = process.env.NODE_ENV || 'development';
 const config = require('../../config/config')[env];
 
 const db = {};
-const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  {
-    host: config.host,
-    port: Number(config.DB_PORT),
-    dialect: config.dialect,
-    dialectOptions: config.dialectOptions,
-    define: {
-      freezeTableName: true,
-    },
-  }
-);
+const sequelize =
+  env === 'production'
+    ? new Sequelize(`${config.url}?sslmode=require`, config)
+    : new Sequelize(config.database, config.username, config.password, {
+        host: config.host,
+        port: Number(config.DB_PORT),
+        dialect: config.dialect,
+        dialectOptions: config.dialectOptions,
+        define: {
+          freezeTableName: true,
+        },
+      });
 
 fs.readdirSync(__dirname)
   .filter(
