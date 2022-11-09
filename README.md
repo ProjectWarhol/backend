@@ -83,7 +83,7 @@ You need to install the following things to be able to run this project on your 
 ## Continuous Integration/Delivery
 
 This repository includes a CI/CD pipeline (Github actions) to check pull-request and merge to the main branch. These GitHub actions automatically deploy the latest main branch by PM2 on Digitalocean. [PM2](https://pm2.keymetrics.io) is a daemon process manager that will keep our application online. The overview is as follows:
-![crac_ci_cd](https://user-images.githubusercontent.com/78789212/200856947-4d655ad2-ce1f-4883-bd83-f5b489d3f675.png)
+![crac_ci_cd](https://user-images.githubusercontent.com/78789212/200859463-fc45dc28-0cca-4a1b-9ddf-df190ea9fe5f.png)
 
 ## Other
 
