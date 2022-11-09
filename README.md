@@ -80,6 +80,9 @@ You need to install the following things to be able to run this project on your 
 3. Run `npm run lint` for linting with ESLint
 4. Run `npm run format` for formatting with Prettier
 
+## Continuous Integration/Delivery
+This repository includes a CI/CD pipeline (Github actions) to check pull-request and merge to the main branch. These GitHub actions automatically deploy the latest main branch by PM2 on Digitalocean. [PM2](https://pm2.keymetrics.io) is a daemon process manager that will keep our application online. The overview is as follows:
+
 ## Other
 
 ### Project Architecture
