@@ -16,6 +16,11 @@ router.get('/', (_req, res) => {
   res.send('Warhol');
 });
 
+router.post('/csp-reports', (req, res) => {
+  console.error(req.body);
+  res.status(204).end();
+});
+
 router.use('/users', userRoutes);
 router.use('/promoting', promotingRoutes);
 router.use('/promoted', promotedRoutes);
