@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const passport = require('passport');
 const morgan = require('morgan');
 const session = require('express-session');
@@ -31,7 +32,15 @@ if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('combined'));
 }
 
-if (['production'].includes(process.env.NODE_ENV)) {
+if (process.env.NODE_ENV === 'production') {
+  app.use(
+    cors({
+      origin: '*', // TEMP, change to production domain
+      credentials: true,
+      methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+    })
+  );
+
   app.set('trust proxy', 1);
 }
 
