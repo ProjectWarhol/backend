@@ -5,7 +5,7 @@ exports.setHeaders = (_req, res, next) => {
     'Content-Security-Policy':
       "default-src 'self'; report-uri https://unosapp.com/csp-reports; report-to csp-endpoint",
     'Strict-Transport-Security':
-      'max-age=31536000; includeSubDomains; preload;',
+      'max-age=31536000; includeSubDomains; preload',
     'X-Frame-Options': 'deny',
     'X-Content-Type-Options': 'nosniff',
     'X-Permitted-Cross-Domain-Policies': 'none',
