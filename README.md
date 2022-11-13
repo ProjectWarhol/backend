@@ -84,6 +84,14 @@ You need to install the following things to be able to run this project on your 
 This repository includes a CI/CD pipeline (Github actions) to check pull-request and merge to the main branch. These GitHub actions automatically deploy the latest main branch by PM2 on Digitalocean. [PM2](https://pm2.keymetrics.io) is a daemon process manager that will keep our application online. The overview is as follows:
 ![crac_ci_cd](https://user-images.githubusercontent.com/78789212/201517440-0ea21617-74c3-44ba-9eba-ddcb1686ce1d.png)
 
+## Cloud Architecture
+
+CRAC project has hosted this backend app on Digitalocean. As the first plan, we have used Docker for CI/CD pipelines, which have now been replaced with PM2 settings.
+
+CRAC project has utilised NGINX as a reverse proxy.
+
+The overview is as follows:
+![crac_cloud_infra](https://user-images.githubusercontent.com/78789212/201524737-e7e0eb78-e6c0-4136-a5a7-18bfb184f07a.png)
 
 ## Other
 
