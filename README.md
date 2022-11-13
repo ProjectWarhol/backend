@@ -46,6 +46,17 @@ You need to install the following things to be able to run this project on your 
       `DB_PASSWORD` => your database user password (note if the password contains numbers, you may have to use single quotes e.g., 'password123')
 
       `DB_PORT` => usually is '5432'
+   3. Variables for testing
+
+      `DB_HOST_TEST`=your testing host name
+
+      `DB_DATABASE_TEST` => your testing database name
+
+      `DB_USERNAME_TEST` => your username for testing database
+
+      `DB_PASSWORD_TEST` => your database user password (note if the password contains numbers, you may have to use single quotes e.g., 'password123')
+
+      `DB_PORT_TEST` => your testing database port
 
 5. Setup testing and development database
 
@@ -71,7 +82,8 @@ You need to install the following things to be able to run this project on your 
 ## Continuous Integration/Delivery
 
 This repository includes a CI/CD pipeline (Github actions) to check pull-request and merge to the main branch. These GitHub actions automatically deploy the latest main branch by PM2 on Digitalocean. [PM2](https://pm2.keymetrics.io) is a daemon process manager that will keep our application online. The overview is as follows:
-![crac_ci_cd](https://user-images.githubusercontent.com/78789212/200859463-fc45dc28-0cca-4a1b-9ddf-df190ea9fe5f.png)
+![crac_ci_cd](https://user-images.githubusercontent.com/78789212/201517440-0ea21617-74c3-44ba-9eba-ddcb1686ce1d.png)
+
 
 ## Other
 
@@ -87,7 +99,7 @@ This repository includes a CI/CD pipeline (Github actions) to check pull-request
   - ORM: Sequelize.js
   - Stores data needed by frontend for UI (Promotions, Comments, Votes...)
   - Stores sensitive user info (password hashes, wallets...)
-- Redis:
+- ~~Redis~~ => Replaced it with NGINX:
   - Used for keeping a counter of each user's requests every minute
   - A middleware drops the requests if the user surpasses their rate
 
