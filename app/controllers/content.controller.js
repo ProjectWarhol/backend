@@ -80,3 +80,14 @@ exports.retrieveFiltered = (req, res, next) => {
     data: [],
   });
 };
+
+exports.getAllPosts = (req, res, next) => {
+  NftContent.findAll()
+    .then((content) => {
+      res.status(200).json({
+        message: 'Contents retrieved',
+        data: content,
+      });
+    })
+    .catch((err) => next(err));
+};
