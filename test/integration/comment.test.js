@@ -19,7 +19,7 @@ describe('Integration Test', function () {
   let testUserCookie;
 
   before(async function () {
-    this.timeout(10000);
+    // this.timeout(10000);
     const agent = chai.request.agent(app);
 
     // drop all tables

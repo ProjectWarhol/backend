@@ -46,6 +46,7 @@ You need to install the following things to be able to run this project on your 
       `DB_PASSWORD` => your database user password (note if the password contains numbers, you may have to use single quotes e.g., 'password123')
 
       `DB_PORT` => usually is '5432'
+
    3. Variables for testing
 
       `DB_HOST_TEST`=your testing host name
