@@ -5,7 +5,7 @@ const company = require('../controllers/company.controller');
 const { isLoggedIn } = require('../middlewares/authorization.middleware');
 
 // Create a new Company
-router.post('/', isLoggedIn, company.createCompany);
+router.post('/', isLoggedIn, company.createOneCompany);
 
 // Delete Company
 router.delete('/', isLoggedIn, company.deleteCompany);

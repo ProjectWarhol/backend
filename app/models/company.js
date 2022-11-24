@@ -1,6 +1,8 @@
 const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 
+const { Op } = Sequelize;
+
 module.exports = (sequelize, DataTypes) => {
   class Company extends Model {
     static associate(models) {
@@ -44,6 +46,38 @@ module.exports = (sequelize, DataTypes) => {
         throw new StatusError('Company', 404);
       });
     };
+
+    static createCompany = (
+      companyName,
+      website,
+      primaryColor,
+      secondaryColor,
+      address,
+      logo,
+      bio
+    ) => {
+      return Company.findorCreate({
+        where: {
+          [Op.or]: [{ companyName }, { website }],
+        },
+        defaults: {
+          ...{ primaryColor },
+          ...{ secondaryColor },
+          ...{ address },
+          ...{ logo },
+          ...{ bio },
+        },
+      }).catch((err) => {
+        if (err.name === 'SequelizeUniqueConstraintError') {
+          throw new StatusError('Company already exists', 409);
+        } else {
+          throw new StatusError(
+            'Something went wrong while creating company',
+            500
+          );
+        }
+      });
+    };
   }
 
   Company.init(
@@ -74,25 +108,25 @@ module.exports = (sequelize, DataTypes) => {
 
       primaryColor: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: false,
       },
 
       secondaryColor: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: false,
       },
 
       address: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: false,
       },
 
       logo: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         validate: {
           isUrl: true,
         },

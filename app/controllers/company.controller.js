@@ -1,16 +1,12 @@
 const db = require('../models');
 
-const {
-  Company,
-  User,
-  Sequelize: { Op },
-} = db;
+const { Company, User } = db;
 
 // Create a company
-exports.createCompany = async (req, res, next) => {
+exports.createOneCompany = async (req, res, next) => {
   const {
+    params: { userId },
     body: {
-      userId,
       companyName,
       website,
       primaryColor,
@@ -21,39 +17,25 @@ exports.createCompany = async (req, res, next) => {
     },
   } = req;
 
-  Company.findOrCreate({
-    where: {
-      [Op.or]: [{ companyName }, { website }],
-    },
-    defaults: {
-      companyName,
-      website,
-      ownerUserId: userId,
-      primaryColor: primaryColor || '#000000',
-      secondaryColor: secondaryColor || '#000000',
-      address: address || '',
-      logo: logo || 'https://pbs.twimg.com/media/FB6YhR8WQAI5MnM.png',
-      bio: bio || '',
-      createdAt: Date.now(),
-    },
-  }).then(([company, created]) => {
-    if (!created) {
-      return res.status(400).send({
-        message: 'Company already exists',
+  Company.createCompany(
+    companyName,
+    website,
+    primaryColor,
+    secondaryColor,
+    address,
+    logo,
+    bio
+  )
+    .then(() => {
+      User.setCompanyOwner(userId);
+    })
+    .then((company) => {
+      res.status(200).send({
+        message: 'Company created successfully',
+        data: company,
       });
-    }
-    return User.findById(userId)
-      .then((user) => {
-        user.update({ isCompanyOwner: true });
-      })
-      .then(() => {
-        res.status(200).send({
-          message: 'Company created successfully',
-          data: company,
-        });
-      })
-      .catch((err) => next(err));
-  });
+    })
+    .catch((err) => next(err));
 };
 
 // Delete a company
