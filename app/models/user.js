@@ -125,12 +125,6 @@ module.exports = (sequelize, DataTypes) => {
       });
     };
 
-    static setCompanyOwner = (userId) => {
-      return User.findByPk(userId).then((user) => {
-        user.update({ isCompanyOwner: true });
-      });
-    };
-
     stripSensitive = () => sessionObject(this);
 
     login = (password, req) => {
@@ -284,12 +278,6 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       verified: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: false,
-      },
-
-      isCompanyOwner: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false,

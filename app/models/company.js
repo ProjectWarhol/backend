@@ -48,6 +48,7 @@ module.exports = (sequelize, DataTypes) => {
     };
 
     static createCompany = (
+      userId,
       companyName,
       website,
       primaryColor,
@@ -56,27 +57,31 @@ module.exports = (sequelize, DataTypes) => {
       logo,
       bio
     ) => {
-      return Company.findorCreate({
+      return Company.findOrCreate({
         where: {
           [Op.or]: [{ companyName }, { website }],
         },
         defaults: {
-          ...{ primaryColor },
-          ...{ secondaryColor },
-          ...{ address },
-          ...{ logo },
-          ...{ bio },
+          companyName,
+          website,
+          ownerUserId: userId,
+          primaryColor: primaryColor || '#000000',
+          secondaryColor: secondaryColor || '#000000',
+          address: address || '',
+          logo: logo || 'https://pbs.twimg.com/media/FB6YhR8WQAI5MnM.png',
+          bio: bio || '',
+          createdAt: Date.now(),
         },
-      }).catch((err) => {
-        if (err.name === 'SequelizeUniqueConstraintError') {
-          throw new StatusError('Company already exists', 409);
-        } else {
-          throw new StatusError(
-            'Something went wrong while creating company',
-            500
-          );
-        }
-      });
+      })
+        .then(([company, created]) => {
+          if (!created) {
+            throw new StatusError('Company already exists', 409);
+          }
+          return company;
+        })
+        .catch((err) => {
+          throw err;
+        });
     };
   }
 

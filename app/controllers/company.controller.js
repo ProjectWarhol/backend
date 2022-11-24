@@ -5,8 +5,8 @@ const { Company, User } = db;
 // Create a company
 exports.createOneCompany = async (req, res, next) => {
   const {
-    params: { userId },
     body: {
+      userId,
       companyName,
       website,
       primaryColor,
@@ -18,6 +18,7 @@ exports.createOneCompany = async (req, res, next) => {
   } = req;
 
   Company.createCompany(
+    userId,
     companyName,
     website,
     primaryColor,
@@ -26,9 +27,6 @@ exports.createOneCompany = async (req, res, next) => {
     logo,
     bio
   )
-    .then(() => {
-      User.setCompanyOwner(userId);
-    })
     .then((company) => {
       res.status(200).send({
         message: 'Company created successfully',
