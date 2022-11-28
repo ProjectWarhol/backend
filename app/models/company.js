@@ -83,6 +83,41 @@ module.exports = (sequelize, DataTypes) => {
           throw err;
         });
     };
+
+    static patchCompany = (
+      id,
+      userId,
+      companyName,
+      website,
+      primaryColor,
+      secondaryColor,
+      address,
+      logo,
+      bio
+    ) => {
+      return Company.findById(id)
+        .then((company) => {
+          if (company.ownerUserId !== userId) {
+            throw new StatusError('unauthorized', 401);
+          }
+
+          return company.update({
+            companyName,
+            website,
+            primaryColor,
+            secondaryColor,
+            address,
+            logo,
+            bio,
+          });
+        })
+        .catch(() => {
+          throw new StatusError(
+            'Something went wrong while updating Company',
+            500
+          );
+        });
+    };
   }
 
   Company.init(

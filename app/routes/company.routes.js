@@ -8,9 +8,9 @@ const { isLoggedIn } = require('../middlewares/authorization.middleware');
 router.post('/', isLoggedIn, company.createOneCompany);
 
 // Delete Company
-router.delete('/', isLoggedIn, company.deleteCompany);
+router.delete('/', isLoggedIn, company.deleteOneCompany);
 
 // Patch Company
-router.patch('/', isLoggedIn, company.patchCompany);
+router.patch('/', isLoggedIn, company.patchOneCompany);
 
 module.exports = router;

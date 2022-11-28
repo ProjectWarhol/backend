@@ -1,6 +1,6 @@
 const db = require('../models');
 
-const { Company, User } = db;
+const { Company } = db;
 
 // Create a company
 exports.createOneCompany = async (req, res, next) => {
@@ -37,35 +37,27 @@ exports.createOneCompany = async (req, res, next) => {
 };
 
 // Delete a company
-exports.deleteCompany = async (req, res, next) => {
+exports.deleteOneCompany = async (req, res, next) => {
   const {
     body: { id, userId },
   } = req;
 
   Company.findById(id)
     .then((company) => {
-      if (company.ownerUserId !== userId) {
+      if (company.ownerUserId !== userId)
         throw new StatusError('unauthorized', 401);
-      }
       return company.destroy();
-    })
-    .then(() => {
-      return User.findById(userId);
-    })
-    .then((user) => {
-      user.update({ isCompanyOwner: false });
     })
     .then(() => {
       return res.status(200).send({
         message: 'Company deleted successfully',
       });
     })
-
     .catch((err) => next(err));
 };
 
 // Patch a company
-exports.patchCompany = async (req, res, next) => {
+exports.patchOneCompany = async (req, res, next) => {
   const {
     body: {
       id,
@@ -80,21 +72,17 @@ exports.patchCompany = async (req, res, next) => {
     },
   } = req;
 
-  Company.findById(id)
-    .then((company) => {
-      if (company.ownerUserId !== userId) {
-        return next(new StatusError('unauthorized', 401));
-      }
-      return company.update({
-        companyName,
-        website,
-        primaryColor,
-        secondaryColor,
-        address,
-        logo,
-        bio,
-      });
-    })
+  Company.patchCompany(
+    id,
+    userId,
+    companyName,
+    website,
+    primaryColor,
+    secondaryColor,
+    address,
+    logo,
+    bio
+  )
     .then((company) => {
       return res.status(200).send({
         message: 'Company updated successfully',
