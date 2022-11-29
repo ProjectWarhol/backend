@@ -80,13 +80,18 @@ module.exports = (sequelize, DataTypes) => {
           return company;
         })
         .catch((err) => {
+          if (err.name === 'SequelizeValidationError') {
+            throw new StatusError(
+              'Validation error: Validation on company input failed',
+              409
+            );
+          }
           throw err;
         });
     };
 
     static patchCompany = (
       id,
-      userId,
       companyName,
       website,
       primaryColor,
@@ -97,10 +102,6 @@ module.exports = (sequelize, DataTypes) => {
     ) => {
       return Company.findById(id)
         .then((company) => {
-          if (company.ownerUserId !== userId) {
-            throw new StatusError('unauthorized', 401);
-          }
-
           return company.update({
             companyName,
             website,
@@ -111,7 +112,13 @@ module.exports = (sequelize, DataTypes) => {
             bio,
           });
         })
-        .catch(() => {
+        .catch((err) => {
+          if (err.name === 'SequelizeValidationError') {
+            throw new StatusError(
+              'Validation error: Validation on company input failed',
+              409
+            );
+          }
           throw new StatusError(
             'Something went wrong while updating Company',
             500

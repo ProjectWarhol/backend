@@ -72,17 +72,21 @@ exports.patchOneCompany = async (req, res, next) => {
     },
   } = req;
 
-  Company.patchCompany(
-    id,
-    userId,
-    companyName,
-    website,
-    primaryColor,
-    secondaryColor,
-    address,
-    logo,
-    bio
-  )
+  Company.findById(id)
+    .then((company) => {
+      if (company.ownerUserId !== userId)
+        throw new StatusError('unauthorized', 401);
+      return Company.patchCompany(
+        id,
+        companyName,
+        website,
+        primaryColor,
+        secondaryColor,
+        address,
+        logo,
+        bio
+      );
+    })
     .then((company) => {
       return res.status(200).send({
         message: 'Company updated successfully',
