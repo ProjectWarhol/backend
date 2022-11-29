@@ -17,3 +17,4 @@ router.delete('/:commentId', isLoggedIn, comment.deleteComment);
 router.patch('/:commentId', isLoggedIn, comment.updateComment);
 
 module.exports = router;
+

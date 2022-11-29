@@ -15,7 +15,6 @@ module.exports = {
         promoting: 1001,
         verified: true,
         walletId: walletIds[0][0].id,
-        isCompanyOwner: true,
       },
       {
         userName: 'Takahiro_Mitsui',
@@ -25,7 +24,6 @@ module.exports = {
         promoting: 7654,
         verified: false,
         walletId: walletIds[0][1].id,
-        isCompanyOwner: true,
       },
       {
         userName: 'Massi_Ricci',
@@ -35,7 +33,6 @@ module.exports = {
         promoting: 900,
         verified: false,
         walletId: walletIds[0][2].id,
-        isCompanyOwner: true,
       },
       {
         userName: 'Julian_Romer',
@@ -44,7 +41,6 @@ module.exports = {
         promoters: 2000,
         promoting: 1234,
         verified: true,
-        isCompanyOwner: false,
       },
     ]);
   },
