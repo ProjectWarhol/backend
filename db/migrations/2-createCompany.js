@@ -22,19 +22,19 @@ module.exports = {
       },
       primaryColor: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       secondaryColor: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       address: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       logo: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
         defaultValue: 'https://pbs.twimg.com/media/FB6YhR8WQAI5MnM.png', // remove this later
       },
       createdAt: {

@@ -141,3 +141,6 @@ app/middlewares/tmp_nft_sources
 pgdata
 
 *.crt
+temp_auto_push.bat
+temp_interactive_push.bat
+branch_structure.json
