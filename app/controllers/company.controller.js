@@ -3,7 +3,7 @@ const db = require('../models');
 const { Company } = db;
 
 // Create a company
-exports.createOneCompany = async (req, res, next) => {
+exports.createOneCompany = (req, res, next) => {
   const {
     body: {
       userId,
@@ -37,7 +37,7 @@ exports.createOneCompany = async (req, res, next) => {
 };
 
 // Delete a company
-exports.deleteOneCompany = async (req, res, next) => {
+exports.deleteOneCompany = (req, res, next) => {
   const {
     body: { id, userId },
   } = req;
@@ -57,7 +57,7 @@ exports.deleteOneCompany = async (req, res, next) => {
 };
 
 // Patch a company
-exports.patchOneCompany = async (req, res, next) => {
+exports.patchOneCompany = (req, res, next) => {
   const {
     body: {
       id,
