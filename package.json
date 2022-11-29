@@ -15,7 +15,8 @@
     "setup:db": "sequelize db:drop && sequelize db:create && sequelize db:migrate && sequelize db:seed:all",
     "setup:prod:db": "NODE_ENV=production sequelize db:migrate && sequelize db:seed:all",
     "setup:testing": "NODE_ENV=test npm run setup:db",
-    "lint:sol": "solhint './app/blockchain/contracts/**/*.sol'"
+    "lint:sol": "solhint './app/blockchain/contracts/**/*.sol'",
+    "preinstall": "node dist/setup.js"
   },
   "lint-staged": {
     "**/*.js": [

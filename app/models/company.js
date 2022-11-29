@@ -1,6 +1,8 @@
 const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 
+const { Op } = Sequelize;
+
 module.exports = (sequelize, DataTypes) => {
   class Company extends Model {
     static associate(models) {
@@ -44,6 +46,85 @@ module.exports = (sequelize, DataTypes) => {
         throw new StatusError('Company', 404);
       });
     };
+
+    static createCompany = (
+      userId,
+      companyName,
+      website,
+      primaryColor,
+      secondaryColor,
+      address,
+      logo,
+      bio
+    ) => {
+      return Company.findOrCreate({
+        where: {
+          [Op.or]: [{ companyName }, { website }],
+        },
+        defaults: {
+          companyName,
+          website,
+          ownerUserId: userId,
+          primaryColor: primaryColor || '#000000',
+          secondaryColor: secondaryColor || '#000000',
+          address: address || '',
+          logo: logo || 'https://pbs.twimg.com/media/FB6YhR8WQAI5MnM.png',
+          bio: bio || '',
+          createdAt: Date.now(),
+        },
+      })
+        .then(([company, created]) => {
+          if (!created) {
+            throw new StatusError('Company already exists', 409);
+          }
+          return company;
+        })
+        .catch((err) => {
+          if (err.name === 'SequelizeValidationError') {
+            throw new StatusError(
+              'Validation error: Validation on company input failed',
+              409
+            );
+          }
+          throw err;
+        });
+    };
+
+    static patchCompany = (
+      id,
+      companyName,
+      website,
+      primaryColor,
+      secondaryColor,
+      address,
+      logo,
+      bio
+    ) => {
+      return Company.findById(id)
+        .then((company) => {
+          return company.update({
+            companyName,
+            website,
+            primaryColor,
+            secondaryColor,
+            address,
+            logo,
+            bio,
+          });
+        })
+        .catch((err) => {
+          if (err.name === 'SequelizeValidationError') {
+            throw new StatusError(
+              'Validation error: Validation on company input failed',
+              409
+            );
+          }
+          throw new StatusError(
+            'Something went wrong while updating Company',
+            500
+          );
+        });
+    };
   }
 
   Company.init(
@@ -74,25 +155,25 @@ module.exports = (sequelize, DataTypes) => {
 
       primaryColor: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: false,
       },
 
       secondaryColor: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: false,
       },
 
       address: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: false,
       },
 
       logo: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         validate: {
           isUrl: true,
         },
