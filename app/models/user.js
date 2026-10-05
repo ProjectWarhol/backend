@@ -136,7 +136,8 @@ module.exports = (sequelize, DataTypes) => {
       });
     };
 
-    comparePassword = (password) => bcrypt.compare(password, this.passwordHash);
+    comparePassword = (password) =>
+      bcrypt.compareSync(password, this.passwordHash);
 
     setPassword = (password) => {
       return bcrypt.hash(password, 12).then((passwordHash) => {
